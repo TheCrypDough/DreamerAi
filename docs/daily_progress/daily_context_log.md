@@ -14,4 +14,8 @@ Milestone Completed: Day 1 Initial Project Setup & Refined Configuration. Next T
 
 ## Testing Notes
 
---- 
+---
+
+Suggestion: Replace `react-beautiful-dnd` with `dnd-kit` due to React 19 incompatibility. Task: Day 2 Environment Setup & Core Dependencies, Rationale: `react-beautiful-dnd` requires React <=18, causing conflicts. `dnd-kit` is a modern, compatible alternative, aligning with the 'cutting-edge' principle better than forcing incompatible dependencies. Feeling: Confident this is the best path forward., Date: 2024-05-24
+
+Suggestion: Remove `n8n` from `app/package.json` devDependencies. Task: Day 2 Environment Setup & Core Dependencies, Rationale: Installing `n8n` directly into the frontend project is highly unconventional, significantly bloats `node_modules`, and introduces numerous unrelated warnings/vulnerabilities. n8n should be managed as a separate service/application. Feeling: Strongly recommended., Date: 2024-05-24 

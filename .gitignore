@@ -20,4 +20,7 @@ Thumbs.db
 # Ignore build artifacts
 dist/
 build/
-*.exe 
+*.exe
+
+# Ignore ESLint cache
+.eslintcache 

@@ -8,4 +8,4 @@
 * Status: PENDING
 * Details: Create Python venv, install Python/Node deps, setup linters. Follow detailed steps in DreamerAi_Guide.md Day 2.
 
-## [Add entries for Day 3-12+ marked as PENDING]
+## [Add entries for Day 3-12+ from DreamerAi_Guide.md marked as PENDING]

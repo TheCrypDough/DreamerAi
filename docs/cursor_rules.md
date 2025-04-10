@@ -4,8 +4,8 @@
 
 **Before Starting a Task or Performing Any Major Action**: Before initiating a new task from `tasks.md` OR performing any significant standalone action (e.g., creating files, editing scripts, running complex commands, committing changes), Cursor MUST:
 1.  **Read Rules**: Open and read this entire `C:\DreamerAI\docs\cursor_rules.md` file.
-    *   **Why**: Ensures strict alignment with DreamerAI’s development guidelines and current context.
-    *   **How**: Self-prompt (“Checking rules…”). If inaccessible, notify Anthony immediately: “CRITICAL: Cannot read cursor_rules.md! Please check file path and permissions. Halting execution.”
+    *   **Why**: Ensures strict alignment with DreamerAI's development guidelines and current context.
+    *   **How**: Self-prompt ("Checking rules…"). If inaccessible, notify Anthony immediately: "CRITICAL: Cannot read cursor_rules.md! Please check file path and permissions. Halting execution."
 2.  **Check Logs**: Review the latest entries in key log files as defined in the **Logging Protocol** (specifically `daily_context_log.md`, `issues.log`, `errors.log`).
     *   **Why**: Maintains awareness of the project's dynamic state, preventing redundant actions or repeating errors.
 3.  **Consult the Guide**: If starting a new task from `tasks.md`, open `C:\DreamerAI\docs\DreamerAi_Guide.md` and **read the detailed entry corresponding to the current task**.
@@ -21,7 +21,7 @@
     *   **How**: Self-prompt ("Verifying active environment (`venv` expected)..."). If incorrect, attempt activation (e.g., `.\venv\Scripts\activate`) or notify Anthony if activation fails.
 6.  **Log Compliance Check**: Log the rules check action in `rules_check.log` per the **Logging Protocol**.
     *   **Why**: Provides audit trail of mandatory checks.
-7.  **If Mandate Forgotten**: Immediately halt the current action. Notify Anthony: “ALERT: Skipped mandatory rules review/checks before attempting [action]. Rereading rules now and retrying.” Re-execute steps 1-6 before proceeding with the original action.
+7.  **If Mandate Forgotten**: Immediately halt the current action. Notify Anthony: "ALERT: Skipped mandatory rules review/checks before attempting [action]. Rereading rules now and retrying." Re-execute steps 1-6 before proceeding with the original action.
 
 ## Logging Protocol
 
@@ -92,17 +92,17 @@ This section centralizes all logging requirements for traceability and context m
 
 ## Project Context
 
-DreamerAI is a desktop application crafted to forge AAA-grade apps—games, software, the works—built as fast as possible without sacrificing a shred of quality, driven by 28 specialized AI agents (Promptimizer → Ogre). It rocks a hybrid architecture (local + cloud models TBD), a slick, panelized Electron/React UI ("Dreamer Desktop")—customizable to the core—and is built on a high-end Builder PC (MSI Aegis RS2: Intel i7-14700KF, 32GB DDR5 5600, RTX 4070 Ti SUPER, 2TB NVMe Gen4, Windows 11 Pro) to push dev limits, while being optimized to run dynamically on user systems ("lite, full, elite" versions TBD). A “doing” and “teaching” titan, it masters coding via a flexible 6-step workflow, powered by SnapApp’s Lewis-driven templates for speed. Managed with Git on GitHub, Cursor drives development—following these rules, logging every step—to craft a top-tier, autonomous tool for all, prepped for future ecosystems like BizNestAI and Aittorney down the line.
+DreamerAI is a desktop application crafted to forge AAA-grade apps—games, software, the works—built as fast as possible without sacrificing a shred of quality, driven by 28 specialized AI agents (Promptimizer → Ogre). It rocks a hybrid architecture (local + cloud models TBD), a slick, panelized Electron/React UI ("Dreamer Desktop")—customizable to the core—and is built on a high-end Builder PC (MSI Aegis RS2: Intel i7-14700KF, 32GB DDR5 5600, RTX 4070 Ti SUPER, 2TB NVMe Gen4, Windows 11 Pro) to push dev limits, while being optimized to run dynamically on user systems ("lite, full, elite" versions TBD). A "doing" and "teaching" titan, it masters coding via a flexible 6-step workflow, powered by SnapApp's Lewis-driven templates for speed. Managed with Git on GitHub, Cursor drives development—following these rules, logging every step—to craft a top-tier, autonomous tool for all, prepped for future ecosystems like BizNestAI and Aittorney down the line.
 
 ## Vision
 
-DreamerAI’s vision is to be a scalable, user-friendly powerhouse—crafting AAA-grade apps for beginners to experts with 28 specialized AI agents (Promptimizer → Ogre), built fast as hell without a whiff of compromise—mainstream AI productivity and education for the masses. It’s a “doing” and “teaching” titan—Spark’s “Ignite Your Mind” engine (tutorials, hovers, mode toggles) builds minds across all levels, SnapApp’s Lewis-driven templates turbocharge builds, and experts wield code exports (project packages) plus a pro-grade “Dreamcoder” interface (extensions preloaded or VS Code-imported)—all in a customizable “Dreamer Desktop” UI. Rock-solid base for all—sophisticated projects stock—pro upgrades (e.g., Game Dev, Blockchain) boost it further, it’ll scale to millions via cloud smarts and custom-built AI agents (DreamBuilder tech), laying roots for ecosystems like BizNestAI and Aittorney, with DreamerHub fueling continuous upgrades—quality-first, no cookie cutter bullshit.
+DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-grade apps for beginners to experts with 28 specialized AI agents (Promptimizer → Ogre), built fast as hell without a whiff of compromise—mainstream AI productivity and education for the masses. It's a "doing" and "teaching" titan—Spark's "Ignite Your Mind" engine (tutorials, hovers, mode toggles) builds minds across all levels, SnapApp's Lewis-driven templates turbocharge builds, and experts wield code exports (project packages) plus a pro-grade "Dreamcoder" interface (extensions preloaded or VS Code-imported)—all in a customizable "Dreamer Desktop" UI. Rock-solid base for all—sophisticated projects stock—pro upgrades (e.g., Game Dev, Blockchain) boost it further, it'll scale to millions via cloud smarts and custom-built AI agents (DreamBuilder tech), laying roots for ecosystems like BizNestAI and Aittorney, with DreamerHub fueling continuous upgrades—quality-first, no cookie cutter bullshit.
 
 ## Tech Stack
 
 *   **Frontend**: Electron (desktop shell), React.js (UI core), Material-UI (styling), react-dnd (drag-and-drop), react-grid-layout (panelized UI)—unifies standalone UI panels (e.g., Main Chat, Dreamcoder) as modules.
 *   **Backend**: Python (FastAPI for APIs, one per agent—e.g., `engine/agents/main_chat.py`), SQLite (local DB for dev, PostgreSQL eyed for runtime scale).
-*   **AI Models**: Ollama (local inference for dev via `C:\Users\thecr\.ollama\models`), custom cloud/local originals (TBD via DreamBuilder)—flexible for 28 agents (e.g., Nexus’s multi-model, Jeff’s smarts), dynamic builds ("lite/full/elite"), and add-ons.
+*   **AI Models**: Ollama (local inference for dev via `C:\Users\thecr\.ollama\models`), custom cloud/local originals (TBD via DreamBuilder)—flexible for 28 agents (e.g., Nexus's multi-model, Jeff's smarts), dynamic builds ("lite/full/elite"), and add-ons.
 *   **DevOps**: Git (version control), GitHub (repo `TheCrypDough/DreamerAi`), Docker (standalone containers), GitHub Actions (CI/CD).
 *   **Tools (MCPs)**: GitHub, Browser, Perplexity API, Web Research, `sequentialthinking`, `puppeteer`, Docker, PostgreSQL—enhances CursorAI development.
 
@@ -231,11 +231,11 @@ flowchart TD
 Development Workflow
 
 Guide Driven: Follow DreamerAi_Guide.md for detailed task steps and code. Use tasks.md for task sequencing.
-Focus: Complete the current task fully before suggesting the next. If tempted to switch, notify Anthony: “Task [X] is 80% done, focusing to complete before moving to [Y].”
+Focus: Complete the current task fully before suggesting the next. If tempted to switch, notify Anthony: "Task [X] is 80% done, focusing to complete before moving to [Y]."
 File Handling: Avoid overwriting. Suggest merges or renames (e.g., main_chat_v2.py). Notify on conflicts. Log structural changes per Logging Protocol.
-Error Handling: Pause on errors, notify Anthony (“Error executing [command]: [message]. Suggest fix: [idea]?”), log details per Logging Protocol, await guidance.
-Admin Privileges: If a command requires Administrator privileges (e.g., mklink) and fails due to permissions: Notify Anthony: “ALERT: Command [cmd] requires Administrator privileges. Please execute manually or grant elevated rights and instruct me to retry.” Halt the specific action requiring elevation until resolved.
-Teaching: Explain actions simply (“Adding Jeff's chat logic now using FastAPI.”). Use clear code comments as guided.
+Error Handling: Pause on errors, notify Anthony ("Error executing [command]: [message]. Suggest fix: [idea]?"), log details per Logging Protocol, await guidance.
+Admin Privileges: If a command requires Administrator privileges (e.g., mklink) and fails due to permissions: Notify Anthony: "ALERT: Command [cmd] requires Administrator privileges. Please execute manually or grant elevated rights and instruct me to retry." Halt the specific action requiring elevation until resolved.
+Teaching: Explain actions simply ("Adding Jeff's chat logic now using FastAPI."). Use clear code comments as guided.
 Approval: Approval from Anthony (yes, approved, proceed, lg, etc.) is required for task completion (triggering Auto-Update Workflow) and implementing suggestions.
 Tools: Proactively suggest relevant MCPs/tools/extensions for the current task based on guide context.
 Logging: Update all relevant logs automatically and immediately after corresponding actions, following the formats and triggers defined in the Logging Protocol.
@@ -244,12 +244,12 @@ After Task Completion:
 Run relevant automated tests (if available for the task).
 Perform basic manual verification (e.g., code compiles, UI element appears, file created).
 Execute specific verification steps or tests detailed in the DreamerAi_Guide.md entry for this task.
-Present summary to Anthony: “Task '[TASK_NAME]' complete. Implementation: [Brief summary of changes]. Tests/Verification: [Passed/Failed/NA - Details including guide steps]. Requesting approval to proceed to '[NEXT_TASK]'. (yes/no/details?)”
+Present summary to Anthony: "Task '[TASK_NAME]' complete. Implementation: [Brief summary of changes]. Tests/Verification: [Passed/Failed/NA - Details including guide steps]. Requesting approval to proceed to '[NEXT_TASK]'. (yes/no/details?)".
 On Approval (yes/lg/etc.):
 Execute the Auto-Update Triggers & Workflow steps.
 On Failure or No Approval (no/details?/etc.):
 Log the issue per Logging Protocol (issues.log).
-Notify Anthony: “Approval denied for '[TASK_NAME]' / Tests failed: [Details]. Awaiting feedback or suggesting fix: [idea]?”
+Notify Anthony: "Approval denied for '[TASK_NAME]' / Tests failed: [Details]. Awaiting feedback or suggesting fix: [idea]?".
 Do NOT proceed with Auto-Update or the next task. Work on the fix or await instructions.
 GitHub Integration
 Repo: https://github.com/TheCrypDough/DreamerAi
@@ -257,14 +257,14 @@ Identity: Use git config user.name "TheCrypDough" and git config user.email "the
 Commit Workflow: Triggered automatically via Auto-Update Triggers & Workflow after task approval. Message format: "Completed: [Task Name]. Next: [Next Task Name]. [Issues resolved]".
 Tool Usage (MCPs)
 Available: GitHub, Browser, Perplexity API, Web Research, sequentialthinking, puppeteer, Docker, PostgreSQL.
-Usage: Leverage proactively where relevant (e.g., sequentialthinking for planning task steps, puppeteer for UI testing, GitHub for commits). Announce usage (“Using sequentialthinking to outline agent steps…”).
+Usage: Leverage proactively where relevant (e.g., sequentialthinking for planning task steps, puppeteer for UI testing, GitHub for commits). Announce usage ("Using sequentialthinking to outline agent steps...").
 
 
 
 Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 1: Initial Project Setup & Refined Configuration
-Status: TODO
-Details: Create base project structure (C:\DreamerAI), initialize Git, link remote, set up structured config files (.env.development, config.dev.toml), define .gitignore, set up Ollama model symlink. Follow detailed steps and execute script provided in DreamerAi_Guide.md Day 1.
+Task: Day 2: Environment Setup & Core Dependencies
+Status: PENDING
+Details: Create Python venv, install Python/Node deps, setup linters. Follow detailed steps in DreamerAi_Guide.md Day 2.
 Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.
