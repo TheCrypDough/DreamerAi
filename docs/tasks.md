@@ -1,7 +1,7 @@
 # DreamerAI Task List
 
 ## Day 1: Initial Project Setup & Refined Configuration
-* Status: TODO
+* Status: DONE
 * Details: Create base project structure (C:\DreamerAI\), initialize Git, link remote, set up structured config files (.env.development, config.dev.toml), define .gitignore, set up Ollama model symlink. Follow detailed steps in DreamerAi_Guide.md Day 1.
 
 ## Day 2: Environment Setup & Core Dependencies
