@@ -1,4 +1,4 @@
-# DreamerAI Task List
+# DreamerAI Task List (EVERT "Cursor Task" within the daily DreamerAi_Guide.md entries MUST be logged)
 
 ## Day 1: Initial Project Setup & Refined Configuration
 * Status: DONE
@@ -8,8 +8,10 @@
 * Status: DONE
 * Details: Create Python venv, install Python/Node deps, setup linters. Follow detailed steps in DreamerAi_Guide.md Day 2.
 
-## Day 3: BaseAgent & Logging System
-* Status: PENDING
+### Current Task (Cursor Updates This Automatically After Approval)
+Task: Day 3: BaseAgent & Logging System, 
+Cursor Task 1: Create the file C:\DreamerAI\engine\agents\base.py.
+* Status: TODO
 * Details: Follow detailed steps in DreamerAi_Guide.md Day 3.
 
-## [Add entries for Day 3-12+ from DreamerAi_Guide.md marked as PENDING]
+## [Add entries for Day 3-12+ from DreamerAi_Guide.md. EVERY daily entry MUST list ALL "Cursor task", and all "Cursor Task" must be finished and approved in sequence!]

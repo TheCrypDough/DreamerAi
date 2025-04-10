@@ -267,7 +267,7 @@ Robustness & Security: tenacity (retries D118), python-jose[cryptography], crypt
 Development & Testing: GitPython (VC backend D24), httpx (API testing), pytest, pytest-asyncio (Testing Framework D39), pip-audit (Security Scan D67), black (formatter).
 Data Handling: pandas, numpy, scikit-learn, aiofiles.
 Initializing the Node.js environment (package.json) within C:\DreamerAI\app\ for the frontend.
-Installing essential Node.js libraries via npm, focusing on UI (electron, react, react-dom, @mui/material, @mui/lab, @mui/icons-material, react-beautiful-dnd, react-grid-layout, framer-motion), internationalization (i18next, react-i18next), Authentication/Secure Storage (keytar, electron-oauth2, firebase), communication (ws), validation (joi), tutorials (intro.js), analytics (posthog-js), and linting (eslint).
+Installing essential Node.js libraries via npm, focusing on UI (electron, react, react-dom, @mui/material, @mui/lab, @mui/icons-material, @dnd-kit/core, react-grid-layout, framer-motion), internationalization (i18next, react-i18next), Authentication/Secure Storage (keytar, electron-oauth2, firebase), communication (ws), validation (joi), tutorials (intro.js), analytics (posthog-js), and linting (eslint).
 Confirming n8n Exclusion (Frontend): Reinforcing the architectural decision from D33, the full n8n application is not installed as a frontend dependency, as interaction occurs via backend webhooks with an external n8n service (requiring separate setup later).
 Configuring baseline linting (ESLint) for frontend code quality.
 This intensive setup ensures that the necessary tools and libraries for implementing the agents (Jeff, Arch, Nexus, Billy, Lewis, etc.), core features (DI, PG migration, Auth, Cloud Sync, VC), and UI panels outlined in the roadmap are present from the beginning, preventing downstream integration failures and reinforcing our commitment to a "bulletproof" foundation.
@@ -301,7 +301,7 @@ Cursor Task: Create and activate Python venv in C:\DreamerAI\.
 Cursor Task: Install specified Python dependencies using pip (FastAPI, Uvicorn standard, requests, dotenv, pydantic, loguru, tenacity, pyyaml, numpy, aiofiles, colorama, black, ollama, ragstack, transformers, datasets, redis, GitPython, python-jose[cryptography], cryptography, bleach, cachetools, websockets, scikit-learn, pandas, httpx, psycopg[binary,pool], dependency-injector, pip-audit). Generate requirements.txt via pip freeze.
 Cursor Task: Navigate to C:\DreamerAI\app\.
 Cursor Task: Initialize npm (npm init -y).
-Cursor Task: Install specified Node.js library dependencies using npm install (electron, react, react-dom, @mui/material, @emotion/react, @emotion/styled, react-beautiful-dnd, react-grid-layout, i18next, react-i18next, posthog-js, electron-oauth2, keytar, firebase, ws, framer-motion, joi, @mui/lab, @mui/icons-material, intro.js). Ensure n8n is NOT listed.
+Cursor Task: Install specified Node.js library dependencies using npm install (electron, react, react-dom, @mui/material, @emotion/react, @emotion/styled, @dnd-kit/core, react-grid-layout, i18next, react-i18next, posthog-js, electron-oauth2, keytar, firebase, ws, framer-motion, joi, @mui/lab, @mui/icons-material, intro.js). Ensure n8n is NOT listed.
 Cursor Task: Install Node.js dev dependencies (npm install --save-dev eslint).
 Cursor Task: Initialize ESLint (npx eslint --init, follow React/JS prompts).
 Cursor Task: Navigate back to C:\DreamerAI\.
@@ -323,7 +323,7 @@ cd app
 npm init -y
 
 :: Install Consolidated & Updated Node.js Library Dependencies (EXCLUDING n8n)
-npm install electron react react-dom @mui/material @emotion/react @emotion/styled react-beautiful-dnd react-grid-layout i18next react-i18next posthog-js electron-oauth2 keytar firebase ws framer-motion joi @mui/lab @mui/icons-material intro.js
+npm install electron react react-dom @mui/material @emotion/react @emotion/styled @dnd-kit/core react-grid-layout i18next react-i18next posthog-js electron-oauth2 keytar firebase ws framer-motion joi @mui/lab @mui/icons-material intro.js
 
 :: Install Node.js Dev Dependencies
 npm install --save-dev eslint
