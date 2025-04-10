@@ -19,3 +19,10 @@
 *   **Key Decisions:** Replaced incompatible `react-beautiful-dnd` with `@dnd-kit/core`. Abandoned `eslint-config-airbnb` due to ESLint v9 incompatibility, opting for recommended ESLint/React/JSX-A11y rulesets within flat config. Used `--legacy-peer-deps` to force installations past dependency conflicts.
 *   **Anthony's Feedback:** Directed revert to Day 2 to properly handle dependency conflicts with React 19 / ESLint 9. Emphasized using compatible, modern libraries (`dnd-kit`) and configurations.
 *   **Blocking Issues:** Initial ESLint setup using `npx eslint --init` did not prompt for style guides. Direct installation of `eslint-config-airbnb` failed due to peer dependency conflict with ESLint v9. Installations of other packages were also blocked by ESLint conflicts until `--legacy-peer-deps` flag was used. Resolved by removing `eslint-config-airbnb` and configuring ESLint using recommended rulesets compatible with v9.
+
+## Day 3: BaseAgent & Logging System (2025-04-10)
+
+*   **Summary:** Created `engine/agents/base.py` defining the `BaseAgent` abstract class using Pydantic (including `Message`, `Memory`, `AgentState`) and `abc`. Added `user_dir` parameter to `__init__`. Implemented basic `run` loop with `step` abstraction and basic error handling. Created `engine/core/logger.py` with `DreamerLogger` class using Loguru, configuring console, development file, error file, and rules_check file sinks. Added `log_rules_check` helper. Added test blocks to both files.
+*   **Key Decisions:** Used Loguru for flexible logging. Made `BaseAgent` require `user_dir` on init. Used Pydantic for agent structure.
+*   **Anthony's Feedback:** N/A.
+*   **Blocking Issues:** Initial test of `BaseAgent` failed with Pydantic `ValueError` because `agent_chat_dir` was set before being declared. Resolved by declaring `agent_chat_dir` as a model field.
