@@ -1,0 +1,32 @@
+# DreamerAI Development Configuration
+[ai]
+# Default preference order for LLM fallback
+default_model_preference = ["ollama", "cloud_tier1", "cloud_tier2"]
+# Specific provider assigned to Jeff
+jeff_model_provider = "cloud_tier1"
+
+# Provider Definitions
+[ai.providers.ollama]
+type = "ollama"
+base_url = "http://localhost:11434/api/generate"
+model_name = "gemma2:9b" # Default/Robust local fallback
+
+[ai.providers.cloud_tier1]
+type = "openai_compatible"
+api_key_env = "GROK_API_KEY" # Reads key from .env
+base_url = "https://api.groq.com/openai/v1" # Placeholder - Confirm Official URL
+model_name = "llama3-70b-8192" # Placeholder - Confirm Official Model
+
+[ai.providers.cloud_tier2]
+type = "openai_compatible"
+api_key_env = "DEEPSEEK_API_KEY" # Reads key from .env
+base_url = "https://api.deepseek.com/v1" # Placeholder - Confirm Official URL
+model_name = "deepseek-chat" # Placeholder - Confirm Official Model
+
+[database]
+type = "sqlite"
+path = "C:/DreamerAI/data/db/dreamer.db"
+
+[paths]
+user_dir_base = "C:/DreamerAI/Users"
+project_dir_base = "C:/DreamerAI/projects" 

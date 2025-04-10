@@ -1,0 +1,23 @@
+# Ignore Python virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Ignore Node modules
+node_modules/
+
+# Ignore Log files
+*.log
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore sensitive config
+.env*
+!.env.example
+
+# Ignore build artifacts
+dist/
+build/
+*.exe 
