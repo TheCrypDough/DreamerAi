@@ -263,7 +263,7 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 Current Task (Cursor Updates This Automatically After Approval)
 Task: Day 2: Environment Setup & Core Dependencies
-Status: PENDING
+Status: TODO
 Details: Create Python venv, install Python/Node deps, setup linters. Follow detailed steps in DreamerAi_Guide.md Day 2.
 Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
