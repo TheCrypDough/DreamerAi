@@ -110,7 +110,7 @@ Done
 - **8.4**: Test ChefJeff Class
 - Status: DONE
 - Details: Execute the `if __name__ == "__main__"` test block in `main_chat.py` (`python -m engine.agents.main_chat` after activating venv). Verify output shows connection to RAG (ChromaDB load/query), loading of rules, attempt to call LLM (log should indicate preference for configured 'cloud_tier1' model), placeholder function logs, and a response (or AI unavailable error). Check logs. Follow detailed steps in DreamerAi_Guide.md Day 8.
-- **8.5**: Delete the temporary seed script (`seed_rag_jeff.py`). Stage changes, commit, and push. - **TODO**
+- **8.5**: Delete the temporary seed script (`seed_rag_jeff.py`). Stage changes, commit, and push. - **DONE**
 
 ## Day 9: Agent Communication Bridge
 - **9.1**: Define Bridge Requirements & Plan. - **TODO**
