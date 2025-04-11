@@ -61,4 +61,18 @@ Done
 *   Cursor Task: Stage Day 4 changes, commit, and push. - DONE
 *   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 4. - DONE
 
+## Day 5: SQLite Database & Basic UI Bridge
+* Overall Status: TODO
+* Details: Implement initial SQLite DB setup (engine/core/db.py) for local dev persistence (projects table). Setup basic FastAPI/Uvicorn server (engine/core/server.py) as the backend-frontend bridge. Test bridge with a fetch call from renderer. Follow detailed steps in DreamerAi_Guide.md Day 5.
+* Issues: None anticipated.
+*   Cursor Task: Create the file C:\DreamerAI\engine\core\db.py. - DONE
+*   Cursor Task: Implement the DreamerDB class in db.py using sqlite3 to connect to C:\DreamerAI\data\db\dreamer.db and create the initial projects table. Include basic methods like add_project, get_project, and close. Add logging using logger_instance. Explicitly comment that this is for dev and PostgreSQL is planned for scale. - DONE
+*   Cursor Task: Modify C:\DreamerAI\engine\core\server.py. Import FastAPI and uvicorn. Instantiate the FastAPI app. Add a simple root endpoint (@app.get("/")) that returns {"message": "DreamerAI Backend Online"}. Add the if __name__ == "__main__": block to run the server using uvicorn.run. - DONE
+*   Cursor Task: Modify C:\DreamerAI\app\renderer.js. Add a useEffect hook that runs once on component mount. Inside the hook, use fetch to make a GET request to the backend's root URL (http://localhost:8000/). Log the response to the console to verify the bridge connection. - DONE
+*   Cursor Task: Run the backend server: Open a new terminal in C:\DreamerAI, activate venv (.\venv\Scripts\activate), and run using `uvicorn engine.core.server:app --reload`. Leave this terminal running. - DONE
+*   Cursor Task: Run the frontend app: Open another terminal in C:\DreamerAI\app and run `npm start`. - DONE
+*   Cursor Task: Verify the frontend window opens and check the Electron DevTools console (Ctrl+Shift+I) for the logged message from the successful backend fetch. Verify dreamer.db is created in data/db/. Stop both the frontend app and the backend server (Ctrl+C in terminals). - DONE
+*   Cursor Task: Stage changes, commit, and push. - TODO
+*   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 5. - TODO
+
 ## [Add entries for Day 5+ from DreamerAi_Guide.md marked as PENDING]

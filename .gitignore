@@ -7,7 +7,14 @@ __pycache__/
 node_modules/
 
 # Ignore Log files
-*.log
+# Specifically ignore rotated dev/error logs, allow tracked logs in docs/logs/
+dreamerai_dev_*.log
+errors_*.log
+# Explicitly DO NOT ignore the important tracking logs:
+!docs/logs/issues.log
+!docs/logs/errors.log
+!docs/logs/rules_check.log
+!docs/logs/migration_tracker.md # Ensure this isn't caught by other rules
 
 # Ignore OS-specific files
 .DS_Store
