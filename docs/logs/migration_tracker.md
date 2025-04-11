@@ -45,4 +45,8 @@
 | N/A | N/A | C:\DreamerAI\app\package.json | Node.js Project Manifest | CREATE | 2025-04-10 |
 | N/A | N/A | C:\DreamerAI\app\package-lock.json | Node.js Lock File | CREATE | 2025-04-10 |
 | N/A | N/A | C:\DreamerAI\app\eslint.config.mjs | ESLint Configuration | CREATE | 2025-04-10 |
-| N/A | N/A | C:\DreamerAI\pyproject.toml | Python Tool Configuration | CREATE | 2025-04-10 | 
+| N/A | N/A | C:\DreamerAI\pyproject.toml | Python Tool Configuration | CREATE | 2025-04-10 |
+| N/A | N/A | C:\DreamerAI\engine\ai\nexus.py | Nexus agent file | CREATE | 2025-04-11 |
+| N/A | N/A | C:\DreamerAI\docs\templates\rules_template.md | Rules Template | CREATE | 2025-04-11 |
+| N/A | N/A | C:\DreamerAI\engine\agents\rules_jeff.md | Rules file for Jeff agent | CREATE | 2025-04-11 |
+| N/A | N/A | C:\DreamerAI\scripts\seed_rag_jeff.py | Temporary RAG seeding script for Jeff | CREATE | 2025-04-11 | 
