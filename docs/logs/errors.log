@@ -8,3 +8,33 @@
 [2025-04-11 02:52:00] - Error Resolved: ValidationError: 1 validation error for Nexus llm Field required, Task: Day 7 - Execute Nexus Test Block, Fix: Corrected Nexus.__init__ super() call.
 [2025-04-11 02:58:00] - Error Resolved: AttributeError: type object 'AgentState' has no attribute 'PROCESSING', Task: Day 7 - Execute Nexus Test Block, Fix: Corrected AgentState reference.
 [2025-04-11 03:05:00] - Error Resolved: TypeError: LLM.generate() got an unexpected keyword argument 'config', Task: Day 7 - Execute Nexus Test Block, Fix: Corrected LLM.generate() arguments.
+
+# DreamerAI Critical Errors Log
+
+[2025-04-11 04:34:00] - Error Identified: `AttributeError: 'Client' object has no attribute 'persist'`. Task: Day 8.2 Seed Jeff RAG DB. Script: `scripts/seed_rag_jeff.py`. Reason: ChromaDB API change.
+[2025-04-11 04:35:00] - Error Resolved: `AttributeError: 'Client' object has no attribute 'persist'`. Task: Day 8.2. Fix: Removed `client.persist()` call.
+
+[2025-04-11 05:05:00] - Error Identified: `pydantic_core._pydantic_core.ValidationError: 1 validation error for ChefJeff user_dir Input should be a valid string`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block). Reason: `BaseAgent.user_dir` type hint was `str`, not `Optional[str]`.
+[2025-04-11 05:06:00] - Error Resolved: `ValidationError` on `ChefJeff` init (`user_dir`). Task: Day 8.4. Fix: Modified `BaseAgent` to use `Optional[str]` for `user_dir`.
+
+[2025-04-11 05:10:00] - Error Identified: `ValueError: "ChefJeff" object has no field "rules"`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block). Reason: `rules` assigned in `__init__` after `super()`.
+[2025-04-11 05:12:00] - Error Resolved: `ValueError` on `ChefJeff` init (field assignment). Task: Day 8.4. Fix: Defined `rules` and other fields as class attributes using `pydantic.Field`.
+
+[2025-04-11 05:15:00] - Error Identified: `chromadb.errors.NotFoundError: Collection [jeff_context] does not exists`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block). Reason: Used `get_collection` instead of `get_or_create_collection`.
+[2025-04-11 05:18:00] - Error Resolved: `NotFoundError` on ChromaDB get_collection. Task: Day 8.4. Fix: Changed to `get_or_create_collection`.
+
+[2025-04-11 05:15:00] - Error Identified: `pydantic_core._pydantic_core.ValidationError: 1 validation error for Message role Field required`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - initial message). Reason: Used `sender="User"` instead of `role="user"`.
+[2025-04-11 05:18:00] - Error Resolved: `ValidationError` on `Message` init. Task: Day 8.4. Fix: Changed to `role="user"`.
+
+[2025-04-11 05:22:00] - Error Identified: `AttributeError: 'Memory' object has no attribute 'get_formatted_history'`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - step method). Reason: Incorrect method name used.
+[2025-04-11 05:28:00] - Error Resolved: `AttributeError: 'Memory' object has no attribute 'get_formatted_history'`. Task: Day 8.4. Fix: Changed call to `get_history()` in `step` method (via reapply).
+
+[2025-04-11 05:30:00] - Error Identified: `TypeError: Memory.get_history() got an unexpected keyword argument 'last_n'`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - step method). Reason: `get_history` does not accept `last_n`.
+[2025-04-11 05:31:00] - Error Resolved: `TypeError` on `Memory.get_history` call. Task: Day 8.4. Fix: Removed `last_n=5` argument.
+
+[2025-04-11 05:41:47] - Error Identified: `AttributeError: 'ChefJeff' object has no attribute 'llm'`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - step method). Reason: Incorrect assignment/validation order of `llm` instance in `__init__`.
+[2025-04-11 05:41:47] - Error Identified: `pydantic_core._pydantic_core.ValidationError: 1 validation error for Message role Field required`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - except block). Reason: Used `sender="Jeff"` instead of `role="assistant"`.
+[2025-04-11 05:46:00] - Error Resolved: `AttributeError: 'ChefJeff' object has no attribute 'llm'` & `ValidationError` on error Message init. Task: Day 8.4. Fix: Passed `llm=llm_instance` in `super().__init__` call and corrected error `Message` instantiation to use `role="assistant"`.
+
+[2025-04-11 05:50:00] - Error Identified: `AttributeError: 'Memory' object has no attribute 'get_formatted_history'`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - final print). Reason: Incorrect method name used.
+[2025-04-11 05:55:00] - Error Resolved: `AttributeError` in test block print statement. Task: Day 8.4. Fix: Changed `jeff.memory.get_formatted_history()` to `jeff.memory.get_history()`.
