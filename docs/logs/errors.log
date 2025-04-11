@@ -1,0 +1,5 @@
+# Ensure a newline at the end if the file might be empty or just created
+[2024-05-24 18:21:15] - Error Occurred: Day 1 setup script execution interrupted. Task: Day 1 Initial Project Setup & Refined Configuration. Status: Halted.
+[2024-05-24 18:40:05] - Error Occurred: Failed to create batch file 'C:\DreamerAI\create_dirs.bat' due to invalid path error (EINVAL). Task: Day 1 Initial Project Setup & Refined Configuration. Status: Retrying file creation.
+[2025-04-10 21:23:45] - Error Identified: FastAPI server failed to start via `python -m engine.core.server`. Error: `ERROR:    Error loading ASGI app. Could not import module "server".`. Task: Day 5: SQLite Database & Basic UI Bridge, Status: Investigating.
+[2025-04-10 21:23:45] - Error Resolved: FastAPI server failed to load module via `python -m`. Task: Day 5: SQLite Database & Basic UI Bridge, Fix: Started server successfully using `uvicorn engine.core.server:app --reload` directly from the project root directory.

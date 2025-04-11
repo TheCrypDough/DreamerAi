@@ -284,7 +284,8 @@ flowchart TD
        - Day 2: Installed core Python/Node dependencies, establishing the foundational libraries for backend (FastAPI, AI/DB clients) and frontend (Electron, React, MUI) development stacks. (Ref: TechContext)
        - Day 3: Implemented the BaseAgent abstract class (engine/agents/base.py) serving as the blueprint for all future agents, including basic state, memory, and async execution logic. Established a centralized Loguru-based logging system (engine/core/logger.py) for application-wide and agent-specific tracing. (Ref: SystemPatterns, TechContext)
        - Day 4: Created the basic Electron frontend shell (app/main.js, app/index.html, app/preload.js) and initial React renderer (app/renderer.js). Verified window launch and basic rendering via `npm start`. (Ref: UIContext, TechContext)
-       Last Updated: [2025-04-10 21:25:00] # Updated timestamp
+       - Day 5: Implemented initial SQLite DB setup (`engine/core/db.py`) with `projects` and `chats` tables. Setup basic FastAPI/Uvicorn server (`engine/core/server.py`) including CORS middleware. Verified backend-frontend bridge via `fetch` call in `renderer.js`. DB file creation confirmed. (Ref: SystemPatterns, TechContext, Issues)
+       Last Updated: [2025-04-10 22:29:00] # Updated timestamp
      )
 end
 
@@ -338,9 +339,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 5: SQLite Database & Basic UI Bridge
+Task: Day 6: Config-Driven Hybrid LLM Setup
 Status: TODO
-Details: Implement initial SQLite DB setup (engine/core/db.py) for local dev persistence (projects table). Setup basic FastAPI/Uvicorn server (engine/core/server.py) as the backend-frontend bridge. Test bridge with a fetch call from renderer. Follow detailed steps in DreamerAi_Guide.md Day 5.
+Details: Create `engine/ai/llm.py` implementing the `LLM` class. This class will load provider details (Ollama, Cloud APIs) from `config.dev.toml`, retrieve API keys from `.env.development` via env var names in config, and handle LLM generation with fallback logic based on config preferences. Follow detailed steps in DreamerAi_Guide.md Day 6.
 Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.

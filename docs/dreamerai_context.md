@@ -33,3 +33,10 @@
 *   **Key Decisions:** Used standard Electron setup. Set `nodeIntegration: true`, `contextIsolation: false` for simplicity in early dev (flagged for later security review). Used React 18 `createRoot` API.
 *   **Anthony's Feedback:** Confirmed successful launch via screenshot.
 *   **Blocking Issues:** None.
+
+## Day 5: SQLite Database & Basic UI Bridge (2025-04-10)
+
+*   **Summary:** Implemented `engine/core/db.py` with `DreamerDB` class for SQLite interaction (creating `data/db/dreamer.db` with `projects` and `chats` tables). Modified `engine/core/server.py` to instantiate `DreamerDB` on startup/shutdown and added `CORSMiddleware`. Modified `app/renderer.js` to fetch from the backend root endpoint on mount.
+*   **Key Decisions:** Used SQLite for initial local dev (PostgreSQL planned for scale). Added `CORSMiddleware` to FastAPI. Instantiated DB on server startup.
+*   **Anthony's Feedback:** Confirmed successful backend connection message in frontend. Noted initial failure to create DB file and Electron security warning.
+*   **Blocking Issues:** Initial run failed to create `dreamer.db` because `DreamerDB` wasn't instantiated in `server.py` (resolved). Initial backend start via `python -m` failed due to module loading error (resolved by using `uvicorn` directly). CORS blocked initial frontend fetch (resolved by adding middleware).

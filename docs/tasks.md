@@ -62,7 +62,7 @@ Done
 *   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 4. - DONE
 
 ## Day 5: SQLite Database & Basic UI Bridge
-* Overall Status: TODO
+* Overall Status: DONE
 * Details: Implement initial SQLite DB setup (engine/core/db.py) for local dev persistence (projects table). Setup basic FastAPI/Uvicorn server (engine/core/server.py) as the backend-frontend bridge. Test bridge with a fetch call from renderer. Follow detailed steps in DreamerAi_Guide.md Day 5.
 * Issues: None anticipated.
 *   Cursor Task: Create the file C:\DreamerAI\engine\core\db.py. - DONE
@@ -72,7 +72,7 @@ Done
 *   Cursor Task: Run the backend server: Open a new terminal in C:\DreamerAI, activate venv (.\venv\Scripts\activate), and run using `uvicorn engine.core.server:app --reload`. Leave this terminal running. - DONE
 *   Cursor Task: Run the frontend app: Open another terminal in C:\DreamerAI\app and run `npm start`. - DONE
 *   Cursor Task: Verify the frontend window opens and check the Electron DevTools console (Ctrl+Shift+I) for the logged message from the successful backend fetch. Verify dreamer.db is created in data/db/. Stop both the frontend app and the backend server (Ctrl+C in terminals). - DONE
-*   Cursor Task: Stage changes, commit, and push. - TODO
-*   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 5. - TODO
+*   Cursor Task: Stage changes, commit, and push. - DONE
+*   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 5. - DONE
 
 ## [Add entries for Day 5+ from DreamerAi_Guide.md marked as PENDING]

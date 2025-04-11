@@ -10,29 +10,35 @@ Milestone Completed: Day 3 BaseAgent & Logging System. Next Task: Day 4 Electron
 
 Milestone Completed: Day 4 Electron Frontend Skeleton. Next Task: Day 5 SQLite Database & Basic UI Bridge. Feeling: Basic window is up! Seeing React render feels like progress. Ready for DB and bridge. Date: 2025-04-10
 
+Milestone Completed: Day 5 SQLite Database & Basic UI Bridge. Next Task: Day 6 Config-Driven Hybrid LLM Setup. Feeling: Good progress, DB created and bridge works after fixing initial issues. Ready for core AI logic. Date: 2025-04-10
+
 ## Issues:
 - Day 1: Manual symlink creation required due to permissions. Git commands needed step-by-step execution initially.
 - Day 2 (Revised): Significant npm peer dependency conflicts requiring `--legacy-peer-deps`. Incompatibility of `eslint-config-airbnb` with ESLint v9.
 - Day 3: Initial Pydantic validation error on `BaseAgent` resolved by declaring field. Minor PowerShell errors during testing related to `| cat` piping, but Python scripts executed successfully.
 - Day 4: Proceeding to Day 5.
+- Day 5: Initial `server.py` start failed (module load error). CORS blocked initial fetch. `dreamer.db` not created initially due to missing instantiation. Electron Security Warning logged for later.
 
 ## Next Steps:
 - Day 1: Proceeded to Day 2.
 - Day 2: Proceeded to Day 3.
 - Day 3: Proceeding to Day 4.
 - Day 4: Proceeding to Day 5.
+- Day 5: Proceeding to Day 6.
 
 ## Rules Updates:
 - Day 1: None.
 - Day 2: None.
 - Day 3: None.
 - Day 4: None.
+- Day 5: None.
 
 ## Testing Notes:
 - Day 1: Verified structure, config files, symlink (manual), and GitHub commit.
 - Day 2: Verified venv, requirements.txt, app/node_modules, package.json/lock, eslint.config.mjs. Confirmed n8n exclusion. Manual Git commit needed due to earlier failed installs.
 - Day 3: Verified base.py and logger.py content via read_file. Successfully executed `python -m engine.core.logger` and `python -m engine.agents.base` test blocks.
 - Day 4: Ran `npm start` in `app/`, verified window opened with "Hello from DreamerAI!" message. Checked DevTools console for preload message and errors (none found). Closed app.
+- Day 5: Started backend (`uvicorn`), started frontend (`npm start`). Verified backend connection message in UI and DevTools console. Verified `dreamer.db` file creation. Stopped both processes.
 
 ---
 
