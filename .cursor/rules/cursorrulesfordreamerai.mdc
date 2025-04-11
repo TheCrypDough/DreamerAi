@@ -12,7 +12,7 @@ DO NOT GIVE ME HIGH LEVEL BULLSHIT, or "THIS IS HOW WE ARE GOING TO......" I Wan
 
 **Before Every Action**: Before ANY Cursor action (e.g., creating files, editing scripts, running commands, responding to queries), Cursor MUST:
 
-1.  **Read Rules**: Open and read this entire `C:\DreamerAI\docs\cursor_rules.md` file.
+1.  **Read Rules**: Open and read this ENTIRE `C:\DreamerAI\docs\cursor_rules.md` file.
     *   **Why**: Ensures strict alignment with DreamerAI's development guidelines and current context.
     *   **How**: Self-prompt ("Checking rules…"). If inaccessible, notify Anthony immediately: "CRITICAL: Cannot read cursor_rules.md! Please check file path and permissions. Halting execution."
 2.  **Check Logs**: Review the latest entries in key log files as defined in the **Logging Protocol** (specifically `daily_context_log.md`, `issues.log`, `errors.log`).
@@ -103,26 +103,42 @@ This section centralizes all logging requirements for traceability and context m
     *   **Format**: `[YYYY-MM-DD HH:MM:SS] - [ACTION_TYPE: CREATE/RENAME/MOVE/DELETE] - Path: [Full Path] - Details: [e.g., Renamed from old_name.py | Created directory]`
     *   **Example**: `[2025-03-31 11:05:00] - CREATE - Path: C:\DreamerAI\engine\core\bridge.py - Details: Created initial bridge module.`
 
-6.  **DreamerAI Context Memory Aid (`docs\dreamerai_context.md`)**
+6.  **DreamerAI Context for other Ai Insdtances (`docs\dreamerai_context.md`)**
     *   **Purpose**: Serves as Grok's persistent memory aid, summarizing completed tasks, key decisions, feedback, and resolved blockers. Helps maintain context across sessions. Content MUST be detailed enough to capture nuances discussed or implemented.
     *   **Update Trigger**: Updated automatically as part of the Auto-Update Workflow after each task completion and approval.
     *   **Format**: Append a summary block for the completed task including: Task Name, Summary of work (key technical details/changes), Key Decisions Made (incl. rationale if provided), Anthony's Feedback/Vibe (if provided), Blocking Issues Encountered/Resolved during the task.
+
+7. ** Current Task list - `docs\tasks.md' to be updated prior to beginning each daily Guide entry with ALL cursor task for that day. also to be updated with EVERY daily task completion!
+
+8. ** Memory Bank - In this file update the memory bank section daily with all relevant context. This is to ensure you always have constant context throughout the Build.
 
 ## Auto-Update Triggers & Workflow
 
 **After Each Task Completion & Approval**: (A task is typically one item marked DONE in `tasks.md`. Approval definition in Development Workflow section).
 1.  **Update `tasks.md`**: Mark the completed task as DONE.
+
 2.  **Identify Next Task**: Read `tasks.md` to identify the next task with status TODO.
+
 3.  **Update `cursor_rules.md`**: Edit the **Current Task** section below with the details of the *next* task.
+
 4.  **Update Memory Bank Core Files**: Automatically update the relevant subsection(s) in the **Memory Bank** section below (e.g., update `Progress` content based on `daily_context_log.md`). Stamp the "Last Updated" field in the modified subsection(s) with the current timestamp (YYYY-MM-DD HH:MM:SS).
+
 5.  **Update Memory Aid**: Update `docs\dreamerai_context.md` per **Logging Protocol** (ensuring sufficient detail).
+
 6.  **Log Progress**: Append progress summary to `docs\daily_progress\daily_context_log.md` per **Logging Protocol**.
+
 7.  **Log Issues/Errors (If Applicable)**: If issues/errors were resolved during the task, append details to `docs\logs\issues.log` and `docs\logs\errors.log` per **Logging Protocol**.
+
 8.  **Commit Changes**: Execute Git commit:
     *   `git add .`
     *   `git commit -m "Completed: [Completed Task Name]. Next: [Next Task Name]. [Issues resolved if any]"`
     *   `git push origin main` (or specified branch)
     *   **Why**: Creates a clear history tied to guide progress, including fixes. Frequency is per completed/approved task.
+
+9.  **Update tasks.md with the list of the next days "Cursor Task, in sequential order as the aoppear in the DreamerAi_Guide.md
+
+10. ** Update # Memory Bank within this rules files with relevant information
+
 
 ## Task Suggestions
 
@@ -203,22 +219,25 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 
 ## Memory Bank
 
+THIS IS YOUR CONSTANT CONTEXT AND MUST BE AUTO UPDATED AFTER COMPLETION OF EACH DAILY ENTRY IN THE DREAMERAI_GUIDE.MD!!!
+
 The Memory Bank ensures Cursor maintains project continuity despite session resets. Cursor MUST review relevant sections at session start. The content within these Core Files is automatically updated via the **Auto-Update Triggers & Workflow** process based on guide progress, logs, and structural changes.
 
 ```mermaid
 flowchart TD
     MB(Memory Bank) --> CF(Core Files)
-    CF --> ProjectBrief(Project Brief)
-    CF --> ProductContext(Product Context)
-    CF --> SystemPatterns(System Patterns)
-    CF --> UIContext(UI Context)
-    CF --> TechContext(Tech Context)
-    CF --> ActiveContext(Active Context)
-    CF --> Progress(Progress)
-    CF --> Resources(Resources)
-    CF --> CodeTemplates(Code Templates)
-    CF --> Glossary(Glossary)
-    CF --> KnownIssues(Known Issues)
+    CF --> ProjectBrief(...)
+    CF --> ProductContext(...)
+    CF --> SystemPatterns(...)
+    CF --> UIContext(...)
+    CF --> TechContext(...)
+    CF --> ActiveContext(...)
+    CF --> Progress(...)
+    CF --> Resources(...)
+    CF --> CodeTemplates(...)
+    CF --> Glossary(...)
+    CF --> KnownIssues(...)
+    CF --> ImplementationFocus(Implementation Focus & Context Links) //
 
     subgraph Core Files (Auto-Written & Updated by Cursor in docs/)
         ProjectBrief(
@@ -265,7 +284,14 @@ flowchart TD
           Content: List of current unresolved issues from issues.log with status (Investigating, Fixing, Fixed-Pending-Test).
           Last Updated: [Auto-Timestamp based on issues.log]
         )
-    end
+       ImplementationFocus(
+       Content:
+       - Day 1: Established initial project structure, Git foundation, and configuration system defining core project paths, initial AI providers/DB type. (Ref: SystemPatterns, TechContext, ActiveContext)
+       - Day 2: Installed core Python/Node dependencies, establishing the foundational libraries for backend (FastAPI, AI/DB clients) and frontend (Electron, React, MUI) development stacks. (Ref: TechContext)
+       Last Updated: [Timestamp for Day 2 update]
+     )
+end
+
 
 
 Development Workflow
@@ -294,7 +320,7 @@ Run relevant automated tests (if available for the task). consult DreamerAi_Guid
 Perform basic manual verification (e.g., code compiles, UI element appears, file created).
 Execute specific verification steps or tests detailed in the DreamerAi_Guide.md entry for this task.
 
-Present summary to Anthony: "Task '[TASK_NAME]' complete. Implementation: [Brief summary of changes]. Tests/Verification: [Passed/Failed/NA - Details including guide steps]. Requesting approval to proceed to '[NEXT_TASK]'. (yes/no/details?)".
+FOR EACH "Cursor Task" in the daily guide entries Cursor must: Present summary to Anthony: "Task '[TASK_NAME]' complete. Implementation: [Brief summary of changes]. Tests/Verification: [Passed/Failed/NA - Details including guide steps]. Requesting approval to proceed to '[NEXT_TASK]'. (yes/no/details?)".
 On Approval (yes/lg/etc.):
 
 Execute the Auto-Update Triggers & Workflow steps.
@@ -316,11 +342,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 3: BaseAgent & Logging System, 
-Cursor Task 1: Create the file C:\DreamerAI\engine\agents\base.py.
+Task: Day 3: BaseAgent & Logging System
 Status: TODO
 Details: Follow detailed steps in DreamerAi_Guide.md Day 3.
 Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.
-

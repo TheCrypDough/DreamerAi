@@ -45,7 +45,20 @@ Done
 Cursor Task: Stage changes, commit, and push to GitHub.
 Done
 * Overall Status: DONE
-* Details: Follow detailed steps in DreamerAi_Guide.md Day 3.
-* Issues: Pydantic ValueError on undeclared field `agent_chat_dir` in BaseAgent.__init__, resolved by declaring field.
+* Details: Implement BaseAgent class (base.py) and DreamerLogger (logger.py). Verified via test blocks.
+* Issues: None.
 
-## [Add entries for Day 3-12+ from DreamerAi_Guide.md marked as PENDING]
+## Day 4: Electron Frontend Skeleton
+* Overall Status: TODO
+* Details: Create basic Electron main process, preload script, renderer process, and HTML entry point. Update package.json scripts. Test basic window launch. Follow detailed steps in DreamerAi_Guide.md Day 4.
+* Issues: None anticipated.
+*   Cursor Task: Create app/main.js (using Day 4 Guide code) - TODO
+*   Cursor Task: Create app/index.html (using Day 4 Guide code) - TODO
+*   Cursor Task: Create app/renderer.js (using Day 4 Guide code) - TODO
+*   Cursor Task: Create app/preload.js (using Day 4 Guide code) - TODO
+*   Cursor Task: Modify app/package.json (add main, start, lint scripts - using Day 4 Guide code) - TODO
+*   Cursor Task: Test Electron app with npm start - TODO
+*   Cursor Task: Stage Day 4 changes, commit, and push. - TODO
+*   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 4. - TODO
+
+## [Add entries for Day 5+ from DreamerAi_Guide.md marked as PENDING]
