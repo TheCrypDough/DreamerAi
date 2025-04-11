@@ -3,3 +3,8 @@
 [2024-05-24 18:40:05] - Error Occurred: Failed to create batch file 'C:\DreamerAI\create_dirs.bat' due to invalid path error (EINVAL). Task: Day 1 Initial Project Setup & Refined Configuration. Status: Retrying file creation.
 [2025-04-10 21:23:45] - Error Identified: FastAPI server failed to start via `python -m engine.core.server`. Error: `ERROR:    Error loading ASGI app. Could not import module "server".`. Task: Day 5: SQLite Database & Basic UI Bridge, Status: Investigating.
 [2025-04-10 21:23:45] - Error Resolved: FastAPI server failed to load module via `python -m`. Task: Day 5: SQLite Database & Basic UI Bridge, Fix: Started server successfully using `uvicorn engine.core.server:app --reload` directly from the project root directory.
+[2025-04-11 02:40:00] - Error Resolved: TypeError: DreamerLogger.__init__() got an unexpected keyword argument 'name', Task: Day 7 - Execute Nexus Test Block, Fix: Corrected nexus.py logger init.
+[2025-04-11 02:45:00] - Error Resolved: ValueError: "Nexus" object has no field "llm", Task: Day 7 - Execute Nexus Test Block, Fix: Added 'llm' field to Nexus class.
+[2025-04-11 02:52:00] - Error Resolved: ValidationError: 1 validation error for Nexus llm Field required, Task: Day 7 - Execute Nexus Test Block, Fix: Corrected Nexus.__init__ super() call.
+[2025-04-11 02:58:00] - Error Resolved: AttributeError: type object 'AgentState' has no attribute 'PROCESSING', Task: Day 7 - Execute Nexus Test Block, Fix: Corrected AgentState reference.
+[2025-04-11 03:05:00] - Error Resolved: TypeError: LLM.generate() got an unexpected keyword argument 'config', Task: Day 7 - Execute Nexus Test Block, Fix: Corrected LLM.generate() arguments.
