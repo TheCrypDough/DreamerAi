@@ -112,4 +112,16 @@ Done
 - Details: Execute the `if __name__ == "__main__"` test block in `main_chat.py` (`python -m engine.agents.main_chat` after activating venv). Verify output shows connection to RAG (ChromaDB load/query), loading of rules, attempt to call LLM (log should indicate preference for configured 'cloud_tier1' model), placeholder function logs, and a response (or AI unavailable error). Check logs. Follow detailed steps in DreamerAi_Guide.md Day 8.
 - **8.5**: Delete the temporary seed script (`seed_rag_jeff.py`). Stage changes, commit, and push. - **TODO**
 
+## Day 9: Agent Communication Bridge
+- **9.1**: Define Bridge Requirements & Plan. - **TODO**
+- **9.2**: Create `engine/core/bridge.py`. - **TODO**
+- **9.3**: Implement Basic Bridge Class/Functions. - **TODO**
+- **9.4**: Implement Agent Registration. - **TODO**
+- **9.5**: Implement Message Routing Logic. - **TODO**
+- **9.6**: Integrate Bridge with `BaseAgent` (Placeholders). - **TODO**
+- **9.7**: Add Initial Bridge Tests. - **TODO**
+- **9.8**: Update Documentation (`project_structure.md`, `DreamerAi_Guide.md`). - **TODO**
+
 ## [Add entries for Day 8+ from DreamerAi_Guide.md marked as PENDING]
+
+# Future Tasks / Backlog

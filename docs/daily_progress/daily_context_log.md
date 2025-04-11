@@ -24,7 +24,7 @@ Milestone Completed: Day 8.2 Seed Jeff RAG DB (ChromaDB). Next Task: 8.3 Impleme
 
 Milestone Completed: Day 8.3 Implement ChefJeff Class. Next Task: 8.4 Test Jeff Class. Feeling: Jeff class structure implemented, ready for testing. Date: 2025-04-11
 
-Milestone Completed: Day 8.4 Test ChefJeff Class. Next Task: 8.5 Delete seed_rag_jeff.py. Feeling: Relieved! Jeff test passed after significant debugging (Pydantic, signatures, Memory/LLM usage). Ready to clean up and move to Day 9. Date: 2025-04-11
+Milestone Completed: Day 8.4 Test ChefJeff Class. Next Task: 8.5 Delete seed_rag_jeff.py. Feeling: Relieved! Jeff test passed after significant debugging: corrected BaseAgent `user_dir` validation (Optional[str]), fixed Pydantic field definition order/initialization for ChefJeff (`rules`, `llm`, RAG fields), aligned `step`/`run` signatures with BaseAgent, corrected `Memory.get_history` usage (removed `last_n`, fixed call in test block print), fixed `Message` instantiation (`role` vs `sender`), and corrected `LLM.generate` call format (message list vs prompt string). Test verified RAG init, rule loading, LLM call via OpenRouter, memory updates. Ready to clean up and move to Day 9. Date: 2025-04-11
 
 ## Issues:
 - Day 1: Manual symlink creation required due to permissions. Git commands needed step-by-step execution initially.
