@@ -49,15 +49,16 @@ class ChefJeff(BaseAgent):
     """
     # Define fields directly in the class body for Pydantic validation
     rules: str = Field(default="", description="Loaded rules from rules_jeff.md")
-    rag_client: Optional[Any] = Field(None, description="ChromaDB client instance") # Allow Any for client type
-    rag_collection: Optional[Any] = Field(None, description="ChromaDB collection instance") # Allow Any for collection type
-    embedding_model: Optional[Any] = Field(None, description="SentenceTransformer model instance") # Allow Any for model type
+    rag_client: Optional[Any] = Field(None, description="ChromaDB client instance")
+    rag_collection: Optional[Any] = Field(None, description="ChromaDB collection instance")
+    embedding_model: Optional[Any] = Field(None, description="SentenceTransformer model instance")
     rag_persist_dir: Path = Field(default_factory=lambda: project_root / "data" / "rag_dbs" / "rag_jeff", description="Path to ChromaDB persistent directory")
     embedding_model_name: str = Field(default="all-MiniLM-L6-v2", description="Name of the sentence-transformer model")
+    llm: LLM = Field(..., description="LLM service instance")
 
-    def __init__(self, llm_instance: LLM, **data: Any): # Accept arbitrary kwargs
-        # Pass llm_instance explicitly, let BaseAgent handle other Pydantic fields via **data
-        super().__init__(name="Jeff", user_dir=data.get("user_dir"), distill=False, llm_instance=llm_instance, **data)
+    def __init__(self, llm_instance: LLM, **data: Any):
+        # Pass llm_instance directly to super() for Pydantic validation
+        super().__init__(name="Jeff", user_dir=data.get("user_dir"), distill=False, llm=llm_instance, **data)
         # Load rules and initialize RAG after BaseAgent init is complete
         self._load_rules()
         self._initialize_rag()
@@ -128,45 +129,63 @@ class ChefJeff(BaseAgent):
             logger.error(f"Error retrieving RAG context: {e}\n{traceback.format_exc()}")
             return "Error retrieving context from knowledge base."
 
-    async def step(self, user_message: Message) -> Message:
+    # Signature must match BaseAgent.step
+    async def step(self, input_data: Optional[Any] = None) -> Any:
         """Processes a single user message step."""
+        if not isinstance(input_data, Message):
+             # Handle cases where input_data might not be a Message (e.g., initial run)
+             # For now, we assume step is called with a Message after the initial run.
+             # If called directly with string/other, need error handling or conversion.
+             if isinstance(input_data, str):
+                 user_message = Message(role="user", content=input_data)
+             else:
+                 # Or raise an error, or return an error state message?
+                 error_content = f"Invalid input type for step: {type(input_data)}"
+                 self.logger.error(error_content)
+                 self.state = AgentState.ERROR
+                 return Message(role="assistant", content=f"Error: {error_content}")
+        else:
+            user_message = input_data
+
         self.state = AgentState.RUNNING
         logger.info(f"Jeff processing message: '{user_message.content[:100]}...'")
-        self.memory.add_message(user_message)
+        # Only add if it's a user message not already in memory from run()
+        if not any(m.content == user_message.content and m.role == user_message.role for m in self.memory.messages):
+             self.memory.add_message(user_message)
+
         send_update_to_ui(f"Jeff is thinking about: {user_message.content[:50]}...") # Placeholder UI update
 
         # 1. Retrieve RAG Context
         rag_context = await self._retrieve_rag_context(user_message.content)
 
-        # 2. Format Prompt
-        prompt_template = f"""
-User Query: {user_message.content}
-
-Relevant Information from Knowledge Base:
-{rag_context}
-
-Agent Rules:
-{self.rules}
-
-Conversation History:
-{self.memory.get_formatted_history(last_n=5)}
-
-Based on the rules, conversation history, and relevant information, provide a helpful and conversational response to the User Query.
-If the query seems like a task request (e.g., 'build an app', 'write code'), acknowledge it and mention that you will coordinate with the backend team (placeholder call: route_tasks_n8n).
-Response:
-"""
-        logger.debug(f"Formatted prompt for LLM (excluding history details): {prompt_template[:200]}...") # Log snippet
+        # 2. Prepare messages for LLM generate (list of dicts)
+        messages_for_llm = []
+        # Add system prompt incorporating rules and RAG context
+        system_prompt = f"Agent Rules:\n{self.rules}\n\nRelevant Information from Knowledge Base:\n{rag_context}\n\nRole: You are Chef Jeff, a helpful assistant."
+        messages_for_llm.append({"role": "system", "content": system_prompt})
+        # Add conversation history
+        messages_for_llm.extend(self.memory.get_history()) # BaseAgent memory stores dicts
+        # Add the current user message (it should already be the last one in history if added correctly)
+        # logger.debug(f"Messages prepared for LLM: {messages_for_llm}") # Can be verbose
 
         # 3. Generate Response using LLM
+        response_content = None # Initialize to None
         try:
-            logger.info(f"Calling LLM (provider for 'Jeff': {self.llm.get_provider_for_agent('Jeff')})")
+            # Log the agent name being used for provider lookup
+            logger.info(f"Calling LLM.generate for agent: '{self.name}'")
             response_content = await self.llm.generate(
-                prompt_template,
+                messages=messages_for_llm, # Pass the list of message dicts
                 agent_name=self.name # Ensures config-driven model selection
                 # Add other parameters like max_tokens, temperature if needed
             )
-            logger.info(f"LLM generated response snippet: {response_content[:100]}...")
-            assistant_message = Message(sender="Jeff", content=response_content)
+            if response_content:
+                 logger.info(f"LLM generated response snippet: {response_content[:100]}...")
+            else:
+                 logger.warning(f"LLM.generate returned None or empty response for agent '{self.name}'")
+                 response_content = "I received an empty response from the AI model." # Default content
+
+            # Use 'role' for Message model
+            assistant_message = Message(role="assistant", content=response_content)
 
             # Simulate task routing if needed (simple keyword check for demo)
             if "build" in user_message.content.lower() or "create" in user_message.content.lower() or "code" in user_message.content.lower():
@@ -174,23 +193,35 @@ Response:
 
         except Exception as e:
             logger.error(f"LLM generation failed for Jeff: {e}\n{traceback.format_exc()}")
-            assistant_message = Message(sender="Jeff", content=f"Apologies, I encountered an error trying to process that: {e}")
+            # Use 'role' for Message model
+            error_content = f"Apologies, I encountered an error trying to process that: {e}"
+            assistant_message = Message(role="assistant", content=error_content)
+            response_content = error_content # Ensure response_content has a value for logging below
 
         # 4. Add response to memory and update UI (placeholder)
         self.memory.add_message(assistant_message)
-        send_update_to_ui(f"Jeff responded: {assistant_message.content[:50]}...") # Placeholder UI update
+        # Ensure response_content is not None before slicing
+        log_snippet = response_content[:50] if response_content else "[No Content]"
+        send_update_to_ui(f"Jeff responded: {log_snippet}...") # Placeholder UI update
 
         self.state = AgentState.IDLE
-        return assistant_message
+        # Return type must match BaseAgent.step (Any)
+        return assistant_message # Message object is compatible with Any
 
-    async def run(self, initial_message_content: str):
+    # Signature must match BaseAgent.run
+    async def run(self, initial_input: Optional[Any] = None) -> Any:
         """Handles an initial message and enters a basic processing loop (for testing)."""
         logger.info(f"ChefJeff starting run with initial message.")
-        # Use 'role' not 'sender' for Message model
-        initial_message = Message(role="user", content=initial_message_content)
-        response = await self.step(initial_message)
-        logger.info(f"ChefJeff finished processing initial message. Final response: {response.content[:100]}...")
-        return response
+
+        # Handle initial_input according to BaseAgent's logic (which adds it to memory)
+        # The BaseAgent run loop will call self.step with the latest message content
+        # Therefore, we just need to call the superclass run method.
+
+        # Ensure BaseAgent logic runs correctly for initial input handling and loop
+        final_result = await super().run(initial_input=initial_input)
+
+        logger.info(f"ChefJeff finished processing initial message. Final result: {str(final_result)[:100]}...")
+        return final_result
 
 
 # --- Test Execution Block ---
@@ -229,7 +260,7 @@ if __name__ == "__main__":
             print(f"Jeff: {final_response.content}")
 
             print("\n--- Jeff's Memory ---")
-            print(jeff.memory.get_formatted_history())
+            print(jeff.memory.get_history())
 
         except Exception as e:
             print(f"\nERROR during test execution: {e}")

@@ -47,4 +47,8 @@
 [2025-04-11 05:15:00] - Issue Identified: `ValidationError` on `Message` init: `role` field required. Task: Day 8.4 Test ChefJeff Class. Reason: `ChefJeff.run` used `sender="User"` instead of `role="user"`.
 [2025-04-11 05:18:00] - Issue Resolved: `NotFoundError` on ChromaDB get_collection. Task: Day 8.4. Fix: Changed to `get_or_create_collection` in `ChefJeff._initialize_rag`.
 [2025-04-11 05:18:00] - Issue Resolved: `ValidationError` on `Message` init. Task: Day 8.4. Fix: Changed `Message(sender="User"...)` to `Message(role="user"...)` in `ChefJeff.run`.
-[2025-04-11 05:22:00] - Issue Identified: `AttributeError: 'Memory' object has no attribute 'get_formatted_history'`. Task: Day 8.4 Test ChefJeff Class. Reason: Called incorrect method name in `ChefJeff.step` prompt formatting.
+[2025-04-11 05:22:00] - Issue Identified: `AttributeError: 'Memory' object has no attribute 'get_formatted_history'`. Task: Day 8.4 Test ChefJeff Class. Reason: Called incorrect method name in `ChefJeff.step` prompt formatting. Status: Resolved by reapplying edit.
+[2025-04-11 05:30:00] - Issue Identified: `TypeError: Memory.get_history() got an unexpected keyword argument 'last_n'`. Task: Day 8.4 Test ChefJeff Class. Reason: `Memory.get_history` doesn't accept `last_n` argument.
+[2025-04-11 05:31:00] - Issue Resolved: `TypeError` on `Memory.get_history` call. Task: Day 8.4. Fix: Removed `last_n=5` argument from the call in `ChefJeff.step` in `main_chat.py`.
+[2025-04-11 05:50:00] - Issue Identified: `AttributeError: 'Memory' object has no attribute 'get_formatted_history'`. Task: Day 8.4 Test ChefJeff Class (Test Block). Reason: Called incorrect method name in `print()` statement within the `if __name__ == "__main__":` block of `main_chat.py`.
+[2025-04-11 05:55:00] - Issue Resolved: `AttributeError` in test block print statement. Task: Day 8.4. Fix: Changed `jeff.memory.get_formatted_history()` to `jeff.memory.get_history()` in the test block of `main_chat.py`.
