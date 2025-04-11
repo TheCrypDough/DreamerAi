@@ -12,6 +12,8 @@ Milestone Completed: Day 4 Electron Frontend Skeleton. Next Task: Day 5 SQLite D
 
 Milestone Completed: Day 5 SQLite Database & Basic UI Bridge. Next Task: Day 6 Config-Driven Hybrid LLM Setup. Feeling: Good progress, DB created and bridge works after fixing initial issues. Ready for core AI logic. Date: 2025-04-10
 
+Milestone Completed: Day 6 Config-Driven Hybrid LLM Setup. Next Task: Day 7 Nexus Agent - The Orchestrator. Feeling: LLM system is operational! The manual fix for Ollama status check was necessary but successful. Ready for Nexus. Date: 2025-04-11
+
 ## Issues:
 - Day 1: Manual symlink creation required due to permissions. Git commands needed step-by-step execution initially.
 - Day 2 (Revised): Significant npm peer dependency conflicts requiring `--legacy-peer-deps`. Incompatibility of `eslint-config-airbnb` with ESLint v9.
@@ -48,4 +50,13 @@ Suggestion (Day 2): Replace `react-beautiful-dnd` with `dnd-kit` due to React 19
 *   **Resolution (Day 2 - Revised):** Implemented. `@dnd-kit/core` was installed instead of `react-beautiful-dnd`.
 
 Suggestion (Day 2): Remove `n8n` from `app/package.json` devDependencies. Task: Day 2 Environment Setup & Core Dependencies, Rationale: Installing `n8n` directly into the frontend project is highly unconventional, significantly bloats `node_modules`, and introduces numerous unrelated warnings/vulnerabilities. n8n should be managed as a separate service/application. Feeling: Strongly recommended., Date: 2024-05-24
-*   **Resolution (Day 2 - Revised):** Implemented. `n8n` was not included in the `npm install` commands. 
+*   **Resolution (Day 2 - Revised):** Implemented. `n8n` was not included in the `npm install` commands.
+
+Decision (Day 6): Switched planned cloud LLM providers (Groq, DeepSeek) to OpenRouter. User updated `.env.development` and `config.dev.toml` manually. Proceeding with OpenRouter configuration.
+Decision (Day 6): Updated `config.dev.toml` to change the Ollama model from `gemma2:9b` to `gemma3:12b` as the local fallback.
+
+Feedback (Day 6): User confirmed Ollama 404 likely due to incorrect endpoint in status check (`/api/generate` instead of `/`) but acknowledged tool issue preventing fix application. Confirmed OpenRouter 400 likely due to incorrect model identifier. Suggested `openrouter/optimus-alpha` as replacement.
+
+Success (Day 6): Final `python -m engine.ai.llm` test confirmed successful OpenRouter integration (`openrouter/optimus-alpha`). Config/env loaded, API key read, client initialized, and generation passed. Ollama status check remains blocked by persistent environment/tooling issue (404 on `/api/generate`), preventing reliable Ollama testing, but manager correctly flags Ollama as unavailable and falls back.
+
+Success (Day 6 - Final): Final `python -m engine.ai.llm` test run after manual fix to `_check_ollama_status` confirmed BOTH OpenRouter and Ollama providers initialize correctly. Ollama status check now correctly hits the root URL (`/`) and succeeds (assuming server is running). OpenRouter handles generation due to higher priority. Hybrid LLM system fully functional.

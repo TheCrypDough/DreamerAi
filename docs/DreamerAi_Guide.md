@@ -1295,8 +1295,7 @@ if (rootElement) {
     console.error("Target container 'root' not found in index.html.");
 }
 content_copy
-download
-Use code with caution.JavaScript
+
 Explanation:
 : Sets up the DreamerDB class to handle SQLite connection and initialization. Includes basic projects and chats tables. Explicitly notes the plan to migrate to PostgreSQL for scalability. Includes logging and basic error handling.
 : Initializes a FastAPI application. Includes CORS middleware configured loosely for development (allows requests from Electron). Defines a root / endpoint to check if the server is online. Includes the if __name__ == "__main__": block to run the server with Uvicorn on http://127.0.0.1:8000. Added placeholder comment for /set-github-token endpoint from old guide context.

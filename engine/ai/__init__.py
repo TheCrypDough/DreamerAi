@@ -1,0 +1,1 @@
+# Makes 'ai' directory a Python package 

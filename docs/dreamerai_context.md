@@ -40,3 +40,41 @@
 *   **Key Decisions:** Used SQLite for initial local dev (PostgreSQL planned for scale). Added `CORSMiddleware` to FastAPI. Instantiated DB on server startup.
 *   **Anthony's Feedback:** Confirmed successful backend connection message in frontend. Noted initial failure to create DB file and Electron security warning.
 *   **Blocking Issues:** Initial run failed to create `dreamer.db` because `DreamerDB` wasn't instantiated in `server.py` (resolved). Initial backend start via `python -m` failed due to module loading error (resolved by using `uvicorn` directly). CORS blocked initial frontend fetch (resolved by adding middleware).
+
+## Completed Task Summaries
+
+**Day 1: Initial Project Setup & Refined Configuration**
+* Summary: Created base C:\DreamerAI structure, initialized Git repo (TheCrypDough/DreamerAi), set up config files (`.env.development`, `config.dev.toml`), defined `.gitignore`, and created symlink `C:\DreamerAI\data\models` -> `C:\Users\thecr\.ollama\models` (manual step required).
+* Decisions: Using TOML for primary config, dotenv for secrets. Initial providers: Ollama (local), OpenRouter (cloud). DB: SQLite (dev).
+* Feedback: Proceed.
+* Issues: Symlink required manual admin privilege.
+
+**Day 2: Environment Setup & Core Dependencies**
+* Summary: Created Python venv. Installed Python dependencies (FastAPI, Uvicorn, Loguru, Ollama, requests, dotenv, etc.) via pip and generated `requirements.txt`. Initialized npm in `app/`, installed Node dependencies (Electron, React, MUI, @dnd-kit/core, etc.), installed ESLint dev dependency, initialized ESLint config. Updated `.gitignore`.
+* Decisions: Used `@dnd-kit/core` instead of `react-beautiful-dnd` due to React 19 incompatibility. Explicitly excluded `n8n` from frontend dependencies.
+* Feedback: Proceed after resolving initial dependency/linting issues.
+* Issues: Significant npm peer dependency conflicts resolved with `--legacy-peer-deps`. ESLint v9 incompatibility with AirBnB config required separate initialization.
+
+**Day 3: BaseAgent & Logging System**
+* Summary: Created `engine/agents/base.py` defining `BaseAgent` abstract class with state, memory, async run/step methods. Created `engine/core/logger.py` implementing `DreamerLogger` using Loguru for file-based logging (dev/error logs).
+* Decisions: Standardized agent structure, centralized logging.
+* Feedback: Approved.
+* Issues: Minor Pydantic validation issue resolved.
+
+**Day 4: Electron Frontend Skeleton**
+* Summary: Created basic Electron structure: `main.js` (main process), `preload.js`, `index.html`, `renderer.js` (React root). Updated `package.json` start script.
+* Decisions: Standard Electron setup.
+* Feedback: Approved.
+* Issues: None.
+
+**Day 5: SQLite Database & Basic UI Bridge**
+* Summary: Created `engine/core/db.py` with `DreamerDB` class for SQLite connection (`C:\DreamerAI\data\db\dreamer.db`) and initial `projects` table creation. Modified `engine/core/server.py` to run FastAPI/Uvicorn. Added root endpoint and tested connection from `renderer.js` using `fetch`.
+* Decisions: Using SQLite for initial dev persistence. FastAPI for backend API.
+* Feedback: Approved.
+* Issues: Initial module load error in `server.py` fixed. CORS blocked initial fetch, fixed by adding middleware. DB not created initially, fixed by ensuring instantiation.
+
+**Day 6: Config-Driven Hybrid LLM Setup**
+* Summary: Implemented `LLMManager` class (`engine/ai/llm.py`) to manage multiple LLM providers (Ollama, OpenAI-compatible/OpenRouter) based on `config.dev.toml`. Added logic for loading configs, API keys (from `.env.development` via `api_key_env`), initializing clients, checking provider status, and performing generation with priority/fallback. Configured Ollama (`gemma3:12b`) and OpenRouter (`openrouter/optimus-alpha`). Tested via `python -m engine.ai.llm`.
+* Decisions: Using OpenRouter as the primary cloud provider. Using `gemma3:12b` as the Ollama fallback. Manually fixed `_check_ollama_status` to use root URL (`/`) due to external execution issue.
+* Feedback: Approved after resolving Ollama status check issue via manual fix.
+* Issues: Initial `.env` parsing errors. OpenRouter 400 errors due to incorrect model name/config syntax. Persistent Ollama status check failure (404 on `/api/generate`) due to external environment/tooling issue, bypassed with manual code fix to check root `/` instead.

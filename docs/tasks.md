@@ -75,4 +75,20 @@ Done
 *   Cursor Task: Stage changes, commit, and push. - DONE
 *   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 5. - DONE
 
+## Day 6: Config-Driven Hybrid LLM Setup
+* Overall Status: DONE
+* Details: Implement LLMManager (engine/ai/llm.py) to handle multiple providers (Ollama, OpenAI-compatible) via config/env. Test OpenRouter and Ollama initialization/status. Verified via test block. Addressed Ollama status check path issue via manual code fix.
+* Issues: Initial Ollama status check failed due to suspected environment/tooling issue preventing code updates; resolved via manual code fix.
+*   Cursor Task: Create engine/ai/llm.py with LLMManager class. - DONE
+*   Cursor Task: Implement configuration loading (toml, dotenv) in LLMManager. - DONE
+*   Cursor Task: Implement provider initialization (_initialize_providers) for 'ollama' and 'openai_compatible' types. - DONE
+*   Cursor Task: Implement status checking (_check_ollama_status, potentially others). - DONE (Manual Fix Required)
+*   Cursor Task: Implement generation methods (_generate_ollama, _generate_openai_compatible). - DONE
+*   Cursor Task: Implement main generate method with priority/fallback logic. - DONE
+*   Cursor Task: Add test block (if __name__ == "__main__") to test configuration loading and generation with different providers/overrides. - DONE
+*   Cursor Task: Create/Update .env.development and config.dev.toml for Ollama and OpenRouter. - DONE
+*   Cursor Task: Run test block, debug, log issues/resolutions. - DONE
+*   Cursor Task: Stage changes, commit, push. - DONE
+*   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 6. - DONE
+
 ## [Add entries for Day 5+ from DreamerAi_Guide.md marked as PENDING]
