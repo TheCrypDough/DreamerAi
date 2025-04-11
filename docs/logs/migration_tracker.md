@@ -50,4 +50,6 @@
 | N/A | N/A | C:\DreamerAI\docs\templates\rules_template.md | Rules Template | CREATE | 2025-04-11 |
 | N/A | N/A | C:\DreamerAI\engine\agents\rules_jeff.md | Rules file for Jeff agent | CREATE | 2025-04-11 |
 | N/A | N/A | C:\DreamerAI\scripts\seed_rag_jeff.py | Temporary RAG seeding script for Jeff | CREATE | 2025-04-11 |
+| N/A | N/A | C:\DreamerAI\scripts\seed_rag_jeff.py | Temporary RAG seeding script for Jeff | DELETE | 2025-04-11 |
+| N/A | N/A | C:\DreamerAI\scripts\seed_rag_jeff.py | Temporary RAG seeding script for Jeff | CREATE | 2025-04-11 |
 | N/A | N/A | C:\DreamerAI\scripts\seed_rag_jeff.py | Temporary RAG seeding script for Jeff | DELETE | 2025-04-11 | 
