@@ -1,12 +1,15 @@
 {
   "name": "app",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "DreamerAI Frontend Application",
+  "main": "main.js",
   "scripts": {
+    "start": "electron .",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Anthony (TheCrypDough)",
   "license": "ISC",
   "devDependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -259,6 +262,5 @@
     "yargs": "^17.7.2",
     "yauzl": "^2.10.0",
     "yocto-queue": "^0.1.0"
-  },
-  "description": ""
+  }
 }
