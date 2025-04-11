@@ -105,7 +105,7 @@ Done
 
 ## Day 8: Building Chef Jeff (Main Chat Agent)
 - **8.1**: Create `C:\DreamerAI\engine\agents\rules_jeff.md`. Populate from `docs/templates/rules_template.md`, defining Jeff's Role and Scope as User Conduit, Conversationalist, Task Router. - **DONE**
-- **8.2**: Create and execute a temporary Python script `C:\DreamerAI\scripts\seed_rag_jeff.py` to initialize and seed `C:\DreamerAI\data\rag_dbs\rag_jeff.db` with 2-3 sample Q&A/info snippets using ragstack (as provided in previous Day 8 draft). - **TODO**
+- **8.2**: Create and execute a temporary Python script `C:\DreamerAI\scripts\seed_rag_jeff.py` to initialize and seed Jeff's RAG DB (resolved using ChromaDB). - **DONE**
 - **8.3**: Modify `C:\DreamerAI\engine\agents\main_chat.py`. Implement the `ChefJeff` class exactly as provided in the previous Day 8 draft's code block. Ensure the call to the LLM includes the agent name: `response_content = await self.llm.generate(prompt, agent_name=self.name)` - **TODO**
 - **8.4**: Execute the `if __name__ == "__main__":` test block in `main_chat.py` (`python -m engine.agents.main_chat` after activating venv). Verify output shows connection to RAG, loading of rules, attempt to call LLM (log should indicate preference for configured 'cloud_tier1' model), placeholder function logs, and a response (or AI unavailable error). Check logs. - **TODO**
 - **8.5**: Delete the temporary seed script (`seed_rag_jeff.py`). Stage changes, commit, and push. - **TODO**

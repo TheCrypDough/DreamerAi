@@ -16,7 +16,9 @@ Milestone Completed: Day 6 Config-Driven Hybrid LLM Setup. Next Task: Day 7 Nexu
 
 Success (Day 6 - Final): Final `python -m engine.ai.llm` test run after manual fix to `_check_ollama_status` confirmed BOTH OpenRouter and Ollama providers initialize correctly. Ollama status check now correctly hits the root URL (`/`) and succeeds (assuming server is running). OpenRouter handles generation due to higher priority. Hybrid LLM system fully functional.
 
-Milestone Completed: Day 7: Nexus Agent - The Orchestrator. Next Task: Day 8: Implement Agent Registration in Nexus. Feeling: Satisfied after debugging. Date: 2025-04-11
+Milestone Completed: Day 7: Nexus Agent - The Orchestrator. Next Task: Day 8 Build Chef Jeff (Main Chat Agent). Feeling: Satisfied after debugging Nexus init/LLM call issues. Ready for Jeff. Date: 2025-04-11
+
+Milestone Completed: Day 8.1 Create/Refine rules_jeff.md. Next Task: 8.2 Seed Jeff RAG DB. Feeling: Confident Jeff's rules are well-defined now using Agent_Details.md. Date: 2025-04-11
 
 ## Issues:
 - Day 1: Manual symlink creation required due to permissions. Git commands needed step-by-step execution initially.
