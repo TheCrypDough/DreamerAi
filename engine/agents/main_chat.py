@@ -5,6 +5,7 @@ import asyncio
 import sys
 from pathlib import Path
 import traceback
+from typing import Optional, Any
 
 # Add project root to handle imports
 project_root = Path(__file__).parent.parent.parent.resolve()
@@ -18,6 +19,7 @@ try:
     import chromadb
     from chromadb.config import Settings
     from sentence_transformers import SentenceTransformer
+    from pydantic import Field
 except ImportError as e:
     print(f"Error importing necessary modules: {e}")
     # Attempt to provide more context if possible
@@ -45,14 +47,18 @@ class ChefJeff(BaseAgent):
     understanding requests, providing information, using RAG, and
     coordinating with other agents (via placeholders initially).
     """
-    def __init__(self, llm_instance: LLM):
-        super().__init__(name="Jeff", user_dir=None, distill=False, llm_instance=llm_instance)
-        self.rules: str = ""
-        self.rag_client = None
-        self.rag_collection = None
-        self.embedding_model = None
-        self.rag_persist_dir = project_root / "data" / "rag_dbs" / "rag_jeff"
-        self.embedding_model_name = "all-MiniLM-L6-v2"
+    # Define fields directly in the class body for Pydantic validation
+    rules: str = Field(default="", description="Loaded rules from rules_jeff.md")
+    rag_client: Optional[Any] = Field(None, description="ChromaDB client instance") # Allow Any for client type
+    rag_collection: Optional[Any] = Field(None, description="ChromaDB collection instance") # Allow Any for collection type
+    embedding_model: Optional[Any] = Field(None, description="SentenceTransformer model instance") # Allow Any for model type
+    rag_persist_dir: Path = Field(default_factory=lambda: project_root / "data" / "rag_dbs" / "rag_jeff", description="Path to ChromaDB persistent directory")
+    embedding_model_name: str = Field(default="all-MiniLM-L6-v2", description="Name of the sentence-transformer model")
+
+    def __init__(self, llm_instance: LLM, **data: Any): # Accept arbitrary kwargs
+        # Pass llm_instance explicitly, let BaseAgent handle other Pydantic fields via **data
+        super().__init__(name="Jeff", user_dir=data.get("user_dir"), distill=False, llm_instance=llm_instance, **data)
+        # Load rules and initialize RAG after BaseAgent init is complete
         self._load_rules()
         self._initialize_rag()
         logger.info(f"ChefJeff agent initialized. Rules loaded. RAG Initialized (Persist Dir: {self.rag_persist_dir}).")
@@ -78,10 +84,10 @@ class ChefJeff(BaseAgent):
             self.rag_client = chromadb.Client(Settings(
                 persist_directory=str(self.rag_persist_dir)
             ))
-            # Get the specific collection seeded earlier
+            # Use get_or_create_collection for robustness
             collection_name = "jeff_context"
-            self.rag_collection = self.rag_client.get_collection(name=collection_name)
-            logger.info(f"Successfully connected to ChromaDB collection: {collection_name}")
+            self.rag_collection = self.rag_client.get_or_create_collection(name=collection_name)
+            logger.info(f"Successfully connected to/created ChromaDB collection: {collection_name}")
 
             logger.info(f"Loading sentence-transformers model: {self.embedding_model_name}")
             self.embedding_model = SentenceTransformer(self.embedding_model_name)
@@ -180,7 +186,8 @@ Response:
     async def run(self, initial_message_content: str):
         """Handles an initial message and enters a basic processing loop (for testing)."""
         logger.info(f"ChefJeff starting run with initial message.")
-        initial_message = Message(sender="User", content=initial_message_content)
+        # Use 'role' not 'sender' for Message model
+        initial_message = Message(role="user", content=initial_message_content)
         response = await self.step(initial_message)
         logger.info(f"ChefJeff finished processing initial message. Final response: {response.content[:100]}...")
         return response
@@ -208,6 +215,7 @@ if __name__ == "__main__":
             logger.info("LLM service initialized.")
 
             logger.info("Instantiating ChefJeff...")
+            # Pass only the required llm_instance; Pydantic handles defaults for other fields
             jeff = ChefJeff(llm_instance=llm_service)
             logger.info("ChefJeff instantiated.")
 

@@ -62,12 +62,12 @@ class AgentState:
 class BaseAgent(BaseModel, ABC):
     """Abstract Base Class for all DreamerAI agents."""
     name: str = Field(..., description="Unique name of the agent")
-    user_dir: str = Field(..., description="Path to the user's workspace directory for this project")
+    user_dir: Optional[str] = Field(None, description="Path to the user's workspace directory for this project (Optional)")
     state: str = Field(default=AgentState.IDLE, description="Current state of the agent")
     memory: Memory = Field(default_factory=Memory, description="Agent's conversation/task memory")
     max_steps: int = Field(default=10, description="Maximum execution steps for the run loop")
     logger: Any = Field(default=agent_logger, description="Agent-specific logger instance")
-    agent_chat_dir: str = Field(default="", description="Path to the agent's specific chat log directory")
+    agent_chat_dir: Optional[str] = Field(None, description="Path to the agent's specific chat log directory (Calculated if user_dir provided)")
 
     # Allow arbitrary types for flexibility with future integrations (like LLM clients)
     class Config:
@@ -77,11 +77,17 @@ class BaseAgent(BaseModel, ABC):
         """Initializes the BaseAgent."""
         super().__init__(**data)
         # Calculate and set the agent_chat_dir AFTER super().__init__ has validated base fields
-        self.agent_chat_dir = os.path.join(self.user_dir, "Chats", self.name)
-        os.makedirs(self.agent_chat_dir, exist_ok=True)
+        # Only create agent chat dir if user_dir is provided
+        if self.user_dir:
+             self.agent_chat_dir = os.path.join(self.user_dir, "Chats", self.name)
+             os.makedirs(self.agent_chat_dir, exist_ok=True)
+             self.logger.info(f"Agent '{self.name}' initialized for user dir: {self.user_dir}")
+        else:
+             self.agent_chat_dir = None # Explicitly set to None if no user_dir
+             self.logger.info(f"Agent '{self.name}' initialized without a specific user directory.")
+
         # Patch the logger instance bound to this agent instance with its name
         self.logger = self.logger.patch(lambda record: record.update(name=self.name))
-        self.logger.info(f"Agent '{self.name}' initialized for user dir: {self.user_dir}")
 
     @abstractmethod
     async def step(self, input_data: Optional[Any] = None) -> Any:
