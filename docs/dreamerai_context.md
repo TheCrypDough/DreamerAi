@@ -48,23 +48,15 @@
 *   **Feedback:** Approved after resolving Ollama status check issue via manual fix.
 *   **Issues:** Initial `.env` parsing errors. OpenRouter 400 errors due to incorrect model name/config syntax. Persistent Ollama status check failure (404 on `/api/generate`) due to external environment/tooling issue, bypassed with manual code fix to check root `/` instead.
 
-## Day 7: Nexus Agent - The Orchestrator
+## Day 7: Agent Framework Overview & Week 1 Check (Completed [YYYY-MM-DD HH:MM:SS])
 
-*   **Task Name**: Day 7: Nexus Agent - The Orchestrator
-*   **Summary of Work**: Created the initial Nexus agent class (`engine/ai/nexus.py`) inheriting from `BaseAgent`. Implemented basic initialization using the `LLM` class (from Day 6, corrected from `LLMManager`). Added a test block (`if __name__ == "__main__":`) to verify initialization and basic LLM interaction via the `LLM.generate` method.
-*   **Key Decisions Made**: 
-    *   Corrected `LLMManager` references to `LLM` to match the class definition in `engine/ai/llm.py`.
-    *   Corrected logger initialization in `nexus.py` to use the patched global instance instead of direct instantiation.
-    *   Corrected Pydantic field definition and initialization order in `Nexus.__init__`.
-    *   Corrected usage of `AgentState` (using `RUNNING` instead of non-existent `PROCESSING`).
-    *   Corrected arguments passed to `LLM.generate` (using `messages` list and individual parameters).
-*   **Anthony's Feedback/Vibe**: N/A (Assumed approval based on 'yes' to proceed).
-*   **Blocking Issues Encountered/Resolved**: 
-    *   Resolved `TypeError` on `DreamerLogger` init.
-    *   Resolved `ValueError` on Pydantic initialization (missing `llm` field).
-    *   Resolved `ValidationError` on Pydantic initialization (incorrect `super().__init__` call order).
-    *   Resolved `AttributeError` on invalid `AgentState.PROCESSING`.
-    *   Resolved `TypeError` on `LLM.generate` call arguments.
+*   **Summary of Work**: Introduced the 28-agent Dream Team concept. Created placeholder Python files (`__init__.py`, `planning.py`, `coding_manager.py`, `administrator.py`, `communications.py`, `promptimizer.py`) in `engine/agents/`. Updated and executed a basic check script (`tests/week1_check.py`) to verify DB connection and LLM instantiation.
+*   **Key Decisions Made**: Decided to structure core agents/hubs with placeholder files initially. Used a temporary script for basic integration checks.
+*   **Anthony's Feedback/Vibe**: Emphasized strict adherence to instructions and addressing prior mistakes before proceeding sequentially. Confirmed Ollama was running for tests. Instructed to log Day 7 completion before moving to Day 11.
+*   **Blocking Issues Encountered/Resolved**:
+    *   Check script's DB `add_project` call failed with a UNIQUE constraint error, indicating the test path already existed (likely from a previous run). This was noted as an expected issue if the script is run multiple times, not a failure of the DB connection itself.
+    *   Initial Git commands for staging/committing were unclear; resolved by running commands separately and using `git status` for verification.
+    *   The temporary check script (`tests/week1_check.py`) was deleted after successful execution and commit.
 
 ## Day 8: Building Chef Jeff (Main Chat Agent)
 
@@ -79,6 +71,12 @@
 *   **Key Decisions:** Deferred complex multi-agent workflow logic within `DreamerFlow` to later days, keeping the initial setup focused on structure. Used `main.py` for backend testing separate from the eventual FastAPI server context.
 *   **Anthony's Feedback/Vibe:** (Assumed approval) Back on track!
 *   **Blocking Issues:** Initial `main.py` test runs failed due to `TypeError` in `ChefJeff`'s `super().__init__` call (passing `user_dir` twice) and a `TypeError` in `DreamerFlow.execute` (passing `initial_user_input` instead of `initial_input` to `jeff_agent.run`). Both were resolved by correcting the respective function calls.
+
+## Day 10: UI Shell: Tabs, Beginner Mode & Backend Listener
+*   **Summary**: Created the core React application shell (`app/src/App.jsx`) using Material-UI components. Implemented navigation tabs ("Chat", "Plan/Build", etc.), a "Beginner Mode" switch using `useState`, and an HTTP server listener on port 3000 using `useEffect` and Node's `http` module to prepare for backend communication. Refactored `app/renderer.js` to mount the `App.jsx` component. Debugged an initial "Cannot find module" error by explicitly adding the `.jsx` extension to the require path in `renderer.js`.
+*   **Key Decisions**: Used MUI for UI structure. Implemented placeholder tabs reflecting the panelized vision. Set up the HTTP listener early for future backend updates.
+*   **Anthony's Feedback/Vibe**: Approved moving forward after debugging the rendering issue.
+*   **Blocking Issues**: Initially encountered a black screen due to "Cannot find module './src/App'" error in `renderer.js`. Resolved by changing `require('./src/App')` to `require('./src/App.jsx')`.
 
 ## Completed Task Summaries
 
@@ -118,11 +116,11 @@
 * Feedback: Approved after resolving Ollama status check issue via manual fix.
 * Issues: Initial `.env` parsing errors. OpenRouter 400 errors due to incorrect model name/config syntax. Persistent Ollama status check failure (404 on `/api/generate`) due to external environment/tooling issue, bypassed with manual code fix to check root `/` instead.
 
-**Day 7: Nexus Agent - The Orchestrator**
-* Summary: Created the initial Nexus agent class (`engine/ai/nexus.py`) inheriting from `BaseAgent`. Implemented basic initialization using the `LLM` class (from Day 6, corrected from `LLMManager`). Added a test block (`if __name__ == "__main__":`) to verify initialization and basic LLM interaction via the `LLM.generate` method.
-* Decisions: Corrected `LLMManager` references to `LLM` to match the class definition in `engine/ai/llm.py`. Corrected logger initialization in `nexus.py` to use the patched global instance instead of direct instantiation. Corrected Pydantic field definition and initialization order in `Nexus.__init__`. Corrected usage of `AgentState` (using `RUNNING` instead of non-existent `PROCESSING`). Corrected arguments passed to `LLM.generate` (using `messages` list and individual parameters).
-* Feedback: Approved.
-* Issues: Resolved `TypeError` on `DreamerLogger` init. Resolved `ValueError` on Pydantic initialization (missing `llm` field). Resolved `ValidationError` on Pydantic initialization (incorrect `super().__init__` call order). Resolved `AttributeError` on invalid `AgentState.PROCESSING`. Resolved `TypeError` on `LLM.generate` call arguments.
+**Day 7: Agent Framework Overview & Week 1 Check**
+* Summary: Introduced the 28-agent Dream Team concept. Created placeholder Python files (`__init__.py`, `planning.py`, `coding_manager.py`, `administrator.py`, `communications.py`, `promptimizer.py`) in `engine/agents/`. Updated and executed a basic check script (`tests/week1_check.py`) to verify DB connection and LLM instantiation.
+* Decisions: Decided to structure core agents/hubs with placeholder files initially. Used a temporary script for basic integration checks.
+* Feedback: Emphasized strict adherence to instructions and addressing prior mistakes before proceeding sequentially. Confirmed Ollama was running for tests. Instructed to log Day 7 completion before moving to Day 11.
+* Issues: Check script's DB `add_project` call failed with a UNIQUE constraint error, indicating the test path already existed (likely from a previous run). This was noted as an expected issue if the script is run multiple times, not a failure of the DB connection itself. Initial Git commands for staging/committing were unclear; resolved by running commands separately and using `git status` for verification. The temporary check script (`tests/week1_check.py`) was deleted after successful execution and commit.
 
 **Day 8: Building Chef Jeff (Main Chat Agent)**
 *   **Task 8.1: Create/Refine rules_jeff.md:** Completed. Created `engine/agents/rules_jeff.md` using the standard template (`docs/templates/rules_template.md`) and incorporated detailed context from `docs/Agent_Details.md`. This provides a comprehensive definition of Jeff's role, scope, memory, and operating principles as the primary user interaction conduit. Updated `tasks.md` with all Day 8 tasks. Resolved issue where `tasks.md` wasn't updated prior to commit.
