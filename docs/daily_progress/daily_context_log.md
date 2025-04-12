@@ -38,6 +38,8 @@ Milestone Completed: Day 8.5 Delete seed_rag_jeff.py & Day 8 Overall. Next Task:
 - Day 7: Nexus agent initialization errors: `TypeError` on logger, Pydantic `ValueError` (missing `llm`), `ValidationError` (incorrect `super().__init__` order), `AttributeError` (invalid `AgentState`), `TypeError` (LLM `generate` args).
 - Day 8: RAG seeding script (`seed_rag_jeff.py`) had `AttributeError: 'Client' object has no attribute 'persist'`. ChefJeff testing (`main_chat.py` test block) involved multiple errors: Pydantic `ValidationError` (`user_dir` type `str` vs `Optional[str]`), Pydantic `ValueError` (field assignment order for `rules`, `llm`, etc.), `BaseAgent` signature mismatches (`step`, `run`), `AttributeError` (`Memory.get_formatted_history`), `TypeError` (`Memory.get_history` kwargs), `AttributeError` (`ChefJeff` missing `llm`), Pydantic `ValidationError` (`Message` missing `role`), final `AttributeError` in test block print statement (`get_formatted_history`).
 
+Milestone Completed: Day 8 Build Chef Jeff (V1, ChromaDB). Next Task: Day 9 Agent Communication Bridge. Feeling: Jeff is fully functional, RAG/Rules/LLM all integrated, test block passes. Ready for agent-to-agent comms. Date: 2025-04-11
+Correction: Updated Jeff's rules (rules_jeff.md and Day 8 guide) to remove all references to ragstack and clarify ChromaDB/embedding model usage. All documentation and code are now consistent. Date: 2025-04-11
 ## Next Steps:
 - Day 1: Proceeded to Day 2.
 - Day 2: Proceeded to Day 3.

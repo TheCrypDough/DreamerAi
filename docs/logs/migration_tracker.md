@@ -1,3 +1,4 @@
+[2025-04-11 23:19:39] - MODIFY - Path: C:\DreamerAI\engine\agents\rules_jeff.md - Details: Removed all references to ragstack, clarified ChromaDB/embedding model usage in Jeff's rules.
 [2024-05-24 18:39:10] - CREATE - Path: C:\\DreamerAI\\app - Details: Created directory
 [2024-05-24 18:39:10] - CREATE - Path: C:\\DreamerAI\\data - Details: Created directory
 [2024-05-24 18:39:10] - CREATE - Path: C:\\DreamerAI\\docs - Details: Created directory
