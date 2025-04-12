@@ -256,11 +256,11 @@ flowchart TD
         )
         ActiveContext(
           Content: Current task from tasks.md, Decisions pending (e.g., DB scale), Dynamic build state (lite/full/elite TBD).
-          Last Updated: [2025-04-11 06:05:00] # Updated timestamp
+          Last Updated: [2025-04-11 06:15:00] # Updated timestamp
         )
         Progress(
           Content: Summary of recently completed tasks/milestones, major changes, current overall status (pulled from daily_context_log.md).
-          Last Updated: [2025-04-11 06:05:00] # Updated timestamp
+          Last Updated: [2025-04-11 06:15:00] # Updated timestamp
         )
         Resources(
           Content: Links to relevant external docs, key MCPs/tools, future upgrade plans (DreamerHub, Add-ons).
@@ -342,9 +342,15 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 8.5: Delete seed_rag_jeff.py
+Task: Day 9: DreamerFlow Orchestration Setup
+- **9.1**: Create the file C:\DreamerAI\engine\core\workflow.py. - **TODO**
+- **9.2**: Implement the DreamerFlow class within workflow.py... - **TODO**
+- **9.3**: Create the file C:\DreamerAI\main.py in the project root. - **TODO**
+- **9.4**: Implement the main execution logic in main.py... - **TODO**
+- **9.5**: Execute the main script... Verify output... Check logs. - **TODO**
+- **9.6**: Stage changes, commit, and push. - **TODO**
 Status: TODO
-Details: Delete the temporary seeding script `C:\DreamerAI\scripts\seed_rag_jeff.py` as it's no longer needed. Follow detailed steps in DreamerAi_Guide.md Day 8.
+Details: Setup DreamerFlow class and main entry point. Follow detailed steps in DreamerAi_Guide.md Day 9.
 Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.

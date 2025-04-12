@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "c:\\DreamerAI\\logs\\.fee27f8a1721dc670784b9d6269a5b322ab1b0fa-audit.json",
+    "files": [
+        {
+            "date": 1744411582616,
+            "name": "c:\\DreamerAI\\logs\\mcp-puppeteer-2025-04-11.log",
+            "hash": "3de1f67026d2bb0982be8da1568313b31456aa19389277bf7ce0397089f228b8"
+        }
+    ],
+    "hashType": "sha256"
+}

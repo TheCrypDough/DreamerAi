@@ -58,7 +58,8 @@ class ChefJeff(BaseAgent):
 
     def __init__(self, llm_instance: LLM, **data: Any):
         # Pass llm_instance directly to super() for Pydantic validation
-        super().__init__(name="Jeff", user_dir=data.get("user_dir"), distill=False, llm=llm_instance, **data)
+        # Remove explicit user_dir, rely on it being in **data
+        super().__init__(name="Jeff", distill=False, llm=llm_instance, **data)
         # Load rules and initialize RAG after BaseAgent init is complete
         self._load_rules()
         self._initialize_rag()

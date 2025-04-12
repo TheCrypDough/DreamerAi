@@ -104,24 +104,18 @@ Done
 *   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 7. - DONE
 
 ## Day 8: Building Chef Jeff (Main Chat Agent)
-- **8.1**: Create `C:\DreamerAI\engine\agents\rules_jeff.md`. Populate from `docs/templates/rules_template.md`, defining Jeff's Role and Scope as User Conduit, Conversationalist, Task Router. - **DONE**
-- **8.2**: Create and execute a temporary Python script `C:\DreamerAI\scripts\seed_rag_jeff.py` to initialize and seed Jeff's RAG DB (resolved using ChromaDB). - **DONE**
-- **8.3**: Modify `C:\DreamerAI\engine\agents\main_chat.py`. Implement the `ChefJeff` class with ChromaDB RAG retrieval. - **DONE**
-- **8.4**: Test ChefJeff Class
-- Status: DONE
-- Details: Execute the `if __name__ == "__main__"` test block in `main_chat.py` (`python -m engine.agents.main_chat` after activating venv). Verify output shows connection to RAG (ChromaDB load/query), loading of rules, attempt to call LLM (log should indicate preference for configured 'cloud_tier1' model), placeholder function logs, and a response (or AI unavailable error). Check logs. Follow detailed steps in DreamerAi_Guide.md Day 8.
-- **8.5**: Delete the temporary seed script (`seed_rag_jeff.py`). Stage changes, commit, and push. - **DONE**
+- Cursor task: Create `C:\DreamerAI\engine\agents\rules_jeff.md`. Populate from `docs/templates/rules_template.md`, defining Jeff's Role and Scope as User Conduit, Conversationalist, Task Router. - **DONE**
+- Cursor task: Create and execute a temporary Python script `C:\DreamerAI\scripts\seed_rag_jeff.py` to initialize and seed Jeff's RAG DB (resolved using ChromaDB). - **DONE**
+- Cursor task: Modify `C:\DreamerAI\engine\agents\main_chat.py`. Implement the `ChefJeff` class with ChromaDB RAG retrieval. - **DONE**
+- Cursor task: Test ChefJeff Class - **DONE**
+- Cursor task: Delete the temporary seed script (`seed_rag_jeff.py`). Stage changes, commit, and push. - **DONE**
 
-## Day 9: Agent Communication Bridge
-- **9.1**: Define Bridge Requirements & Plan. - **TODO**
-- **9.2**: Create `engine/core/bridge.py`. - **TODO**
-- **9.3**: Implement Basic Bridge Class/Functions. - **TODO**
-- **9.4**: Implement Agent Registration. - **TODO**
-- **9.5**: Implement Message Routing Logic. - **TODO**
-- **9.6**: Integrate Bridge with `BaseAgent` (Placeholders). - **TODO**
-- **9.7**: Add Initial Bridge Tests. - **TODO**
-- **9.8**: Update Documentation (`project_structure.md`, `DreamerAi_Guide.md`). - **TODO**
-
-## [Add entries for Day 8+ from DreamerAi_Guide.md marked as PENDING]
+## Day 9: DreamerFlow Orchestration Setup
+- Cursor Task: Create the file C:\DreamerAI\engine\core\workflow.py. - **TODO**
+- Cursor Task: Implement the DreamerFlow class within workflow.py using the code provided below. Include __init__ accepting agents: Dict[str, BaseAgent] and user_dir. Implement a basic async execute method that primarily calls the 'Jeff' agent's run method. - **TODO**
+- Cursor Task: Create the file C:\DreamerAI\main.py in the project root. - **TODO**
+- Cursor Task: Implement the main execution logic in main.py using the code provided below. Include imports, instantiation of Jeff (and placeholders for other agents eventually), creation of the agent dictionary, instantiation of DreamerFlow, and an asyncio.run call to test the flow.execute method. - **TODO**
+- Cursor Task: Execute the main script (python main.py from C:\DreamerAI after activating venv). Verify the output shows Jeff being called via the DreamerFlow and generating a response (or AI error message). Check logs. - **TODO**
+- Cursor Task: Stage changes, commit, and push. - **TODO**
 
 # Future Tasks / Backlog
