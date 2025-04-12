@@ -119,10 +119,18 @@ Done
 - Cursor Task: Stage changes, commit, and push. - **DONE**
 
 ## Day 10: UI Shell: Tabs, Beginner Mode & Backend Listener
-- Cursor Task: Create the directory C:\DreamerAI\app\src\. - **TODO**
-- Cursor Task: Create the file C:\DreamerAI\app\src\App.jsx. Populate it with the provided React code implementing the main App component using MUI (ThemeProvider, CssBaseline, Tabs, Tab, Box, Switch, FormControlLabel) and the useEffect hook with the http server listener on port 3000. Use placeholder tab names: "Chat", "Plan/Build", "Dream Theatre", "Project Manager", "Settings". - **TODO**
-- Cursor Task: Replace the content of C:\DreamerAI\app\renderer.js with the provided code, ensuring it now imports App from ./src/App.jsx and uses ReactDOM.createRoot().render() to mount it. - **TODO**
-- Cursor Task: Run npm start from C:\DreamerAI\app\. Verify the Electron window displays the MUI tabs and the Beginner Mode switch. Check the DevTools console to ensure the HTTP server started successfully ("UI Backend Listener started on port 3000") and there are no React errors. Toggle the switch and change tabs to ensure basic state updates work. - **TODO**
+- Cursor Task: Create the directory C:\DreamerAI\app\src\. - **DONE**
+- Cursor Task: Create the file C:\DreamerAI\app\src\App.jsx. Populate it with the provided React code implementing the main App component using MUI (ThemeProvider, CssBaseline, Tabs, Tab, Box, Switch, FormControlLabel) and the useEffect hook with the http server listener on port 3000. Use placeholder tab names: "Chat", "Plan/Build", "Dream Theatre", "Project Manager", "Settings". - **DONE**
+- Cursor Task: Replace the content of C:\DreamerAI\app\renderer.js with the provided code, ensuring it now imports App from ./src/App.jsx and uses ReactDOM.createRoot().render() to mount it. - **DONE**
+- Cursor Task: Run npm start from C:\DreamerAI\app\. Verify the Electron window displays the MUI tabs and the Beginner Mode switch. Check the DevTools console to ensure the HTTP server started successfully ("UI Backend Listener started on port 3000") and there are no React errors. Toggle the switch and change tabs to ensure basic state updates work. - **DONE (after debug)**
 - Cursor Task: Stage changes (renderer.js, src/App.jsx), commit, and push. - **DONE**
+
+## Day 11: Planning Agent V1 - "Arch" & Integration
+- Cursor Task: Create `C:\DreamerAI\engine\agents\rules_arch.md` using `docs\templates\rules_template.md`, defining Arch's Role and Scope (Planning, Task Breakdown, Tool Selection, Flow Definition). - **TODO**
+- Cursor Task: Create `C:\DreamerAI\engine\agents\planning_agent.py`. Implement the `Arch` class, inheriting from `BaseAgent`. Include basic `__init__` (loading rules, LLM), and a placeholder `step` method. - **TODO**
+- Cursor Task: Modify `C:\DreamerAI\main.py`. Instantiate `Arch` and add it to the `agents` dictionary. - **TODO**
+- Cursor Task: Modify `C:\DreamerAI\engine\core\workflow.py`. Update `DreamerFlow.execute` to initially route the `initial_input` to `Arch.run` instead of `Jeff.run`. - **TODO**
+- Cursor Task: Run `python main.py`. Verify the flow now calls `Arch` first (check logs for Arch's placeholder execution). - **TODO**
+- Cursor Task: Stage changes, commit, and push. - **TODO**
 
 # Future Tasks / Backlog
