@@ -8,8 +8,9 @@ class DreamerLogger:
         self.log_dir = Path(log_dir)
         self.log_dir.mkdir(parents=True, exist_ok=True) # Ensure log directory exists
 
-        log_file_path = self.log_dir / "dreamerai_dev_{time:YYYY-MM-DD}.log"
-        error_log_path = self.log_dir / "errors_{time:YYYY-MM-DD}.log"
+        # Use static filenames to append to single files
+        log_file_path = self.log_dir / "dreamerai_dev.log"
+        error_log_path = self.log_dir / "errors.log"
         rules_log_path = self.log_dir / "rules_check.log" # Keep this specific name for rules checks
 
         # Remove default logger to prevent duplicate console output

@@ -111,11 +111,18 @@ Done
 - Cursor task: Delete the temporary seed script (`seed_rag_jeff.py`). Stage changes, commit, and push. - **DONE**
 
 ## Day 9: DreamerFlow Orchestration Setup
-- Cursor Task: Create the file C:\DreamerAI\engine\core\workflow.py. - **TODO**
-- Cursor Task: Implement the DreamerFlow class within workflow.py using the code provided below. Include __init__ accepting agents: Dict[str, BaseAgent] and user_dir. Implement a basic async execute method that primarily calls the 'Jeff' agent's run method. - **TODO**
-- Cursor Task: Create the file C:\DreamerAI\main.py in the project root. - **TODO**
-- Cursor Task: Implement the main execution logic in main.py using the code provided below. Include imports, instantiation of Jeff (and placeholders for other agents eventually), creation of the agent dictionary, instantiation of DreamerFlow, and an asyncio.run call to test the flow.execute method. - **TODO**
-- Cursor Task: Execute the main script (python main.py from C:\DreamerAI after activating venv). Verify the output shows Jeff being called via the DreamerFlow and generating a response (or AI error message). Check logs. - **TODO**
-- Cursor Task: Stage changes, commit, and push. - **TODO**
+- Cursor Task: Create the file C:\DreamerAI\engine\core\workflow.py. - **DONE**
+- Cursor Task: Implement the DreamerFlow class within workflow.py using the code provided below. Include __init__ accepting agents: Dict[str, BaseAgent] and user_dir. Implement a basic async execute method that primarily calls the 'Jeff' agent's run method. - **DONE**
+- Cursor Task: Create the file C:\DreamerAI\main.py in the project root. - **DONE**
+- Cursor Task: Implement the main execution logic in main.py using the code provided below. Include imports, instantiation of Jeff (and placeholders for other agents eventually), creation of the agent dictionary, instantiation of DreamerFlow, and an asyncio.run call to test the flow.execute method. - **DONE**
+- Cursor Task: Execute the main script (python main.py from C:\DreamerAI after activating venv). Verify the output shows Jeff being called via the DreamerFlow and generating a response (or AI error message). Check logs. - **DONE**
+- Cursor Task: Stage changes, commit, and push. - **DONE**
+
+## Day 10: UI Shell: Tabs, Beginner Mode & Backend Listener
+- Cursor Task: Create the directory C:\DreamerAI\app\src\. - **TODO**
+- Cursor Task: Create the file C:\DreamerAI\app\src\App.jsx. Populate it with the provided React code implementing the main App component using MUI (ThemeProvider, CssBaseline, Tabs, Tab, Box, Switch, FormControlLabel) and the useEffect hook with the http server listener on port 3000. Use placeholder tab names: "Chat", "Plan/Build", "Dream Theatre", "Project Manager", "Settings". - **TODO**
+- Cursor Task: Replace the content of C:\DreamerAI\app\renderer.js with the provided code, ensuring it now imports App from ./src/App.jsx and uses ReactDOM.createRoot().render() to mount it. - **TODO**
+- Cursor Task: Run npm start from C:\DreamerAI\app\. Verify the Electron window displays the MUI tabs and the Beginner Mode switch. Check the DevTools console to ensure the HTTP server started successfully ("UI Backend Listener started on port 3000") and there are no React errors. Toggle the switch and change tabs to ensure basic state updates work. - **TODO**
+- Cursor Task: Stage changes (renderer.js, src/App.jsx), commit, and push. - **DONE**
 
 # Future Tasks / Backlog
