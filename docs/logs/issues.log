@@ -8,3 +8,9 @@ This log tracks non-critical issues, bugs, suggestions, and areas for improvemen
 *(Log entries start here)*
 
 [2025-04-15 01:25:00] - Issue Resolved: Python dependencies required manual installation, Task: Day 2 Environment & Dependencies, Fix: User downgraded Python from 3.13 to 3.11, installed Rust build tools, and ran `pip install -r requirements.txt` successfully.
+[2025-04-15 02:25:00] - Issue Identified: Pydantic V2 initialization complexity, Task: Day 3 - Implement BaseAgent, Status: Investigating, Details: Multiple attempts needed (init vs model_post_init vs computed_field) to handle non-field attribute `agent_chat_dir` correctly with linters.
+[2025-04-15 02:25:01] - Issue Resolved: Pydantic V2 initialization complexity, Task: Day 3 - Implement BaseAgent, Fix: Used `Field(init=False)` for `agent_chat_dir` and assigned value in `model_post_init`.
+[2025-04-15 02:25:02] - Issue Identified: `git add` failed for `rules_check.log`, Task: Day 3 - Stage/Commit/Push, Status: Investigating, Details: File ignored by `.gitignore` despite negation attempts.
+[2025-04-15 02:25:03] - Issue Resolved: `git add` failed for `rules_check.log`, Task: Day 3 - Stage/Commit/Push, Fix: Used `git add -f` to force staging.
+[2025-04-15 02:25:04] - Issue Identified: `git commit` unreliable via tool, Task: Day 3 - Stage/Commit/Push, Status: Mitigated, Details: Commit command failed with piping, succeeded without but gave noisy output/exit code 1.
+[2025-04-15 02:25:05] - Issue Resolved: `git commit` unreliable via tool, Task: Day 3 - Stage/Commit/Push, Fix: Confirmed commit succeeded via successful `git push`.
