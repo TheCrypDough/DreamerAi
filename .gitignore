@@ -85,3 +85,8 @@ docs/logs/*.log
 *.bak 
 *.swp 
 ~* 
+
+# Node
+node_modules/
+app/node_modules/
+.eslintcache

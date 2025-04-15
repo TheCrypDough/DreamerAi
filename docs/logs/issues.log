@@ -6,3 +6,5 @@ This log tracks non-critical issues, bugs, suggestions, and areas for improvemen
 
 ---
 *(Log entries start here)*
+
+[2025-04-15 01:25:00] - Issue Resolved: Python dependencies required manual installation, Task: Day 2 Environment & Dependencies, Fix: User downgraded Python from 3.13 to 3.11, installed Rust build tools, and ran `pip install -r requirements.txt` successfully.

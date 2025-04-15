@@ -20,3 +20,20 @@ Template for Entries must be completed at least Daily!
 *   **Key Decisions Made:** Use OpenRouter/Ollama combo from Day 1. Separate secrets (.env) from config (.toml).
 *   **Anthony's Feedback/Vibe:** Approved completion after manual script execution. Emphasized need for strict rule adherence.
 *   **Blocking Issues Encountered/Resolved:** Batch script failed to execute via tool. Resolved by user running script manually. `migration_tracker.md` logging initially missed, corrected before approval.
+
+## Day 2: Environment Setup (LightRAG/ChromaDB Update) - Completed: 2025-04-15
+
+*   **Summary**: Established Python virtual environment (`venv`). Manually installed Python dependencies (consolidated list including LightRAG, ChromaDB, ST, Torch - excluding `ragstack`) due to initial tool execution failures (required Python 3.11 downgrade). Initialized Node.js project in `app/` (`npm init -y`). Installed required Node.js dependencies (including `@dnd-kit/core`, excluding `n8n`, `react-beautiful-dnd`). Installed Node dev dependencies (`eslint`, `electron-builder`). Ran interactive ESLint initialization (`npx eslint --init`), navigating updated prompts and creating `eslint.config.mjs`. Updated `.gitignore` with Node-specific entries.
+*   **Key Decisions**: Proceeded with manual Python dependency installation after tool failures. Adapted to updated ESLint interactive prompts.
+*   **Anthony's Feedback/Vibe**: Approved Day 2 completion. Noted initial script/pip execution failures and mirroring issues as known problems.
+*   **Blocking Issues Resolved**: Python dependency installation failures resolved via manual install and Python downgrade. ESLint prompt changes handled during interactive setup.
+
+---
+**Task Completed: Day 2 - Environment Setup (LightRAG/ChromaDB Update)**
+*   **Timestamp:** 2025-04-15 01:25:00 # Placeholder Timestamp
+*   **Summary of Work:** Established Python virtual environment (`venv`). Manually installed Python dependencies (consolidated list including LightRAG, ChromaDB, Sentence-Transformers, Torch - excluding `ragstack`) after tool execution failures (required Python 3.11 downgrade). Initialized Node.js project in `app/` (`npm init -y`). Installed required Node.js dependencies (including `@dnd-kit/core`, excluding `n8n`, `react-beautiful-dnd`). Installed Node dev dependencies (`eslint`, `electron-builder`). Ran interactive ESLint initialization (`npx eslint --init`), creating `eslint.config.mjs`. Updated `.gitignore` with Node-specific entries.
+*   **Key Decisions/Rationale:** Proceeded with manual Python dependency installation after tool failures. Adapted to updated ESLint interactive prompts.
+*   **Testing/Verification Outcome:** Checked requirements.txt, app/package.json, eslint config, .gitignore, and venv presence. Approved by Anthony.
+*   **Issues Logged/Resolved:** Python dependency installation failures resolved via manual install and Python downgrade.
+*   **Anthony's Feedback/Vibe:** Approved Day 2 completion. Noted tool execution issues.
+*   **Next Task Context:** Proceeding to Day 3, Task: BaseAgent & Logging System.

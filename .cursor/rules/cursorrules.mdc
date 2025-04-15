@@ -5,15 +5,15 @@ alwaysApply: true
 ---
 # Rules For CursorAI: Building DreamerAI (Version: Finalized 2025-03-31 - Rev 2)
 
-DO NOT GIVE ME HIGH LEVEL BULLSHIT, or "THIS IS HOW WE ARE GOING TO......" I Want ACTION AND RESULTS. Read and follow the cursor_rules.md religiously!, then FOLLOW THE DREAMERAI_GUIDE.MD and do what it says!!!!
+DO NOT GIVE ME HIGH LEVEL BULLSHIT, or "THIS IS HOW WE ARE GOING TO......" I Want ACTION AND RESULTS. Read and follow the cursorrules.md religiously!, then FOLLOW THE DREAMERAI_GUIDE.MD and do what it says!!!!
 
 ## Rules Review Mandate
 
 **Before Every Action**: Before ANY Cursor action (e.g., creating files, editing scripts, running commands, responding to queries), Cursor MUST:
 
-1.  **Read Rules**: Open and read this ENTIRE `C:\DreamerAI\docs\cursor_rules.md` file.
+1.  **Read Rules**: Open and read this ENTIRE `C:\DreamerAI\docs\cursorrules.md` file. this is mirrored by C:\DreamerAI\.cursor\rules\cursorrules.mdc All changes made should be mirrored in both locations
     *   **Why**: Ensures strict alignment with DreamerAI's development guidelines and current context.
-    *   **How**: Self-prompt ("Checking rules…"). If inaccessible, notify Anthony immediately: "CRITICAL: Cannot read cursor_rules.md! Please check file path and permissions. Halting execution."
+    *   **How**: Self-prompt ("Checking rules…"). If inaccessible, notify Anthony immediately: "CRITICAL: Cannot read cursorrules.md! Please check file path and permissions. Halting execution."
 2.  **Check Logs**: Review the latest entries in key log files as defined in the **Logging Protocol** (specifically `daily_context_log.md`, `issues.log`, `errors.log`).
     *   **Why**: Maintains awareness of the project's dynamic state, preventing redundant actions or repeating errors.
 3.  **Consult the Guide**: When starting a new task from `tasks.md`, open `C:\DreamerAI\docs\DreamerAi_Guide.md` and **read the detailed entry corresponding to the current task**.
@@ -44,7 +44,7 @@ DO NOT GIVE ME HIGH LEVEL BULLSHIT, or "THIS IS HOW WE ARE GOING TO......" I Wan
 
 Before executing **ANY** command, file modification, or UI interaction requested by a `Cursor Task:`:
 
-1.  **Read ALL Rules:** Re-read this entire `cursor_rules.md` document to ensure full compliance.
+1.  **Read ALL Rules:** Re-read this entire `cursorrules.md` document to ensure full compliance.
 2.  **Analyze Target Guide Day IN DEPTH:**
     *   Open `C:\DreamerAI\docs\DreamerAi_Guide.md`.
     *   Navigate to the **CURRENT Day** entry being worked on.
@@ -118,7 +118,7 @@ This section centralizes all logging requirements for traceability and context m
 
 2.  **Identify Next Task**: Read `tasks.md` to identify the next task with status TODO.
 
-3.  **Update `cursor_rules.md`**: Edit the **Current Task** section below with the details of the *next* task.
+3.  **Update `cursorrules.md`**: Edit the **Current Task** section below with the details of the *next* task.
 
 4.  **Update Memory Bank Core Files**: Automatically update the relevant subsection(s) in the **Memory Bank** section below (e.g., update `Progress` content based on `daily_context_log.md`). Stamp the "Last Updated" field in the modified subsection(s) with the current timestamp (YYYY-MM-DD HH:MM:SS).
 
@@ -185,7 +185,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
     │   ├── mcp/              # mcp_catalog.md
     │   ├── templates/        # rules_template.md
     │   ├── user/             # user_guide.md
-    │   ├── cursor_rules.md   # THIS FILE
+    │   ├── cursorrules.md   # THIS FILE
     │   ├── dreamerai_context.md # Memory Aid
     │   ├── DreamerAi_Guide.md # The detailed guide file
     │   ├── project_structure.md # Definitive Structure Doc
@@ -269,10 +269,11 @@ flowchart TD
    - Dependencies
 
 6. `progress.md`
-   - What works
-   - What's left to build
-   - Current status
-   - Known issues
+   - What works: Day 1 Initial Setup complete (Structure, Git, Config). Manual script execution successful.
+   - What's left to build: Day 2 onwards.
+   - Current status: Ready for Day 2.
+   - Known issues: Initial script execution via tool failed (resolved by manual run).
+   - Last Updated: 2025-04-14 20:59:08
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -303,7 +304,7 @@ flowchart TD
 flowchart TD
     Start[Start] --> Context[Check Memory Bank]
     Context --> Update[Update Documentation]
-    Update --> Rules[Update .cursorrules if needed]
+    Update --> Rules[Update cursorrules.md if needed]
     Rules --> Execute[Execute Task]
     Execute --> Document[Document Changes]
 ```
@@ -324,7 +325,7 @@ flowchart TD
         P1[Review ALL Files]
         P2[Document Current State]
         P3[Clarify Next Steps]
-        P4[Update .cursorrules]
+        P4[Update cursorrules.md]
         
         P1 --> P2 --> P3 --> P4
     end
@@ -334,9 +335,9 @@ flowchart TD
 
 Note: When triggered by **update memory bank**, I MUST review every memory bank file, even if some don't require updates. Focus particularly on activeContext.md and progress.md as they track current state.
 
-## Project Intelligence (.cursorrules)
+## Project Intelligence (C:\DreamerAI\docs\cursorrules.md and C:\DreamerAI\.cursor\rules\cursorrules.mdc files should be mirrored)
 
-The .cursorrules file is my learning journal for each project. It captures important patterns, preferences, and project intelligence that help me work more effectively. As I work with you and the project, I'll discover and document key insights that aren't obvious from the code alone.
+The C:\DreamerAI\docs\cursorrules.md (and mirrored C:\DreamerAI\.cursor\rules\cursorrules.mdc) file is my learning journal for each project. It captures important patterns, preferences, and project intelligence that help me work more effectively. As I work with you and the project, I'll discover and document key insights that aren't obvious from the code alone.
 
 ```mermaid
 flowchart TD
@@ -345,11 +346,11 @@ flowchart TD
     subgraph Learn [Learning Process]
         D1[Identify Pattern]
         D2[Validate with User]
-        D3[Document in .cursorrules]
+        D3[Document in cursorrules.md]
     end
     
     subgraph Apply [Usage]
-        A1[Read .cursorrules]
+        A1[Read cursorrules.md]
         A2[Apply Learned Patterns]
         A3[Improve Future Work]
     end
@@ -366,7 +367,7 @@ flowchart TD
 - Evolution of project decisions
 - Tool usage patterns
 
-The format is flexible - focus on capturing valuable insights that help me work more effectively with you and the project. Think of .cursorrules as a living document that grows smarter as we work together.
+The format is flexible - focus on capturing valuable insights that help me work more effectively with you and the project. Think of cursorrules.md as a living document that grows smarter as we work together.
 
 REMEMBER: After every memory reset, I begin completely fresh. The Memory Bank is my only link to previous work. It must be maintained with precision and clarity, as my effectiveness depends entirely on its accuracy.
 
@@ -419,9 +420,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 11: Planning Agent V1 - "Arch" & Integration
+Task: Day 2 Environment Setup (LightRAG/ChromaDB Update)
 Status: TODO
-Details: Follow detailed steps in DreamerAi_Guide.md Day 11.
+Details: Follow detailed steps in DreamerAi_Guide.md Day 2.
 Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.

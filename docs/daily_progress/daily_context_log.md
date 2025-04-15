@@ -11,3 +11,7 @@ This log tracks daily achievements, key decisions, integration status, Anthony's
 *(Log entries start here)*
 
 Milestone Completed: Day 1 Initial Project Setup & Refined Configuration. Next Task: Day 2 Environment Setup (LightRAG/ChromaDB Update). Feeling: User approved, emphasized rule adherence. Date: 2025-04-14
+
+Note: Python was downgraded from 3.13.3 to 3.12.10 to resolve `tiktoken` installation issues (missing Rust compiler error persisted despite Rust installation on 3.13.3). Task: Day 2 - Install Python Dependencies. Date: 2025-04-15
+
+Milestone Completed: Day 2 Environment Setup (RAG/DND Corrected). Next Task: Day 3 BaseAgent & Logging System (Log Dir Update). Feeling: Back on track after rule violation. Date: 2025-04-15 # Placeholder Date

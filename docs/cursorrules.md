@@ -264,11 +264,11 @@ flowchart TD
    - Dependencies
 
 6. `progress.md`
-   - What works: Day 1 Initial Setup complete (Structure, Git, Config). Manual script execution successful.
-   - What's left to build: Day 2 onwards.
-   - Current status: Ready for Day 2.
-   - Known issues: Initial script execution via tool failed (resolved by manual run).
-   - Last Updated: 2025-04-14 20:59:08
+   - What works: Day 1 Setup. Day 2 Env Setup (venv, Python deps incl RAG/torch, Node deps incl @dnd-kit, ESLint).
+   - What's left to build: Day 3 onwards.
+   - Current status: Ready for Day 3.
+   - Known issues: Initial Day 1/Day 2 script/pip execution via tool failed (resolved manually/Python downgrade). Mirroring rules edits via tool unreliable.
+   - Last Updated: 2025-04-15 01:25:00
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -415,9 +415,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 2 Environment Setup (LightRAG/ChromaDB Update)
+Task: Day 3 BaseAgent & Logging System (Log Dir Update)
 Status: TODO
-Details: Follow detailed steps in DreamerAi_Guide.md Day 2.
+Details: Follow detailed steps in DreamerAi_Guide.md Day 3.
 Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.
