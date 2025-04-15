@@ -12,3 +12,11 @@ Template for Entries must be completed at least Daily!
 --
 
 (Start Entries Here)
+
+## Day 1: Initial Project Setup & Refined Configuration (OpenRouter/Ollama Ready!)
+
+*   **Task Name:** Day 1 Initial Project Setup & Refined Configuration
+*   **Summary of Work:** Created base project structure in C:\DreamerAI. Initialized Git repository and linked to TheCrypDough/DreamerAi. Created `.gitignore`. Created `data/config/.env.development` (with placeholder `OPENROUTER_API_KEY`) and `data/config/config.dev.toml` specifying OpenRouter (meta-llama/llama-3-70b-instruct) as cloud_tier1 and Ollama (gemma3:12b) as local fallback. `mklink` command in script failed due to no Admin rights, but pre-existing symlink confirmed by user. Initial commit pushed to GitHub.
+*   **Key Decisions Made:** Use OpenRouter/Ollama combo from Day 1. Separate secrets (.env) from config (.toml).
+*   **Anthony's Feedback/Vibe:** Approved completion after manual script execution. Emphasized need for strict rule adherence.
+*   **Blocking Issues Encountered/Resolved:** Batch script failed to execute via tool. Resolved by user running script manually. `migration_tracker.md` logging initially missed, corrected before approval.
