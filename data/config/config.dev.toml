@@ -1,29 +1,43 @@
-# DreamerAI Development Configuration
-[ai]
-# Default preference order: Try OpenRouter first, then local Ollama.
-default_model_preference = ["openrouter_cloud", "ollama"]
-# Specific provider assigned to Jeff (using OpenRouter)
-jeff_model_provider = "openrouter_cloud"
-
-# Provider Definitions
-[ai.providers.ollama]
-type = "ollama"
-base_url = "http://localhost:11434/api/generate"
-model_name = "gemma3:12b" # Using Gemma 3 12B as local fallback
-
-[ai.providers.openrouter_cloud]
-type = "openai_compatible"
-api_key_env = "OPENROUTER_API_KEY" # Name of env var holding the key
-base_url = "https://openrouter.ai/api/v1"
-model_name = "openrouter/optimus-alpha" # User suggested OpenRouter model
-
-[database]
-type = "sqlite"
-path = "C:/DreamerAI/data/db/dreamer.db"
-
-[paths]
-user_dir_base = "C:/DreamerAI/Users"
-project_dir_base = "C:/DreamerAI/projects"
-
-# Provider priorities (lower number = higher priority)
-[ai.provider_priority]
+# DreamerAI Development Configuration 
+[ai] 
+# Default preference order for LLM fallback 
+default_model_preference = ["cloud_tier1", "ollama"] 
+# Specific provider assigned to Jeff (expects robust non-distilled model) 
+jeff_model_provider = "cloud_tier1" 
+# Teacher model for distillation (Day 65) - uses local strong model V1 
+distillation_teacher_provider = "ollama" 
+ 
+# Provider Definitions 
+[ai.providers.ollama] 
+type = "ollama" 
+base_url = "http://localhost:11434/api/generate" 
+model_name = "gemma3:12b" # Default/Fallback local model UPDATED 
+ 
+[ai.providers.cloud_tier1] 
+type = "openai_compatible" 
+api_key_env = "OPENROUTER_API_KEY" # Reads key from .env 
+base_url = "https://openrouter.ai/api/v1" # OpenRouter Base URL 
+model_name = "meta-llama/llama-3-70b-instruct" # OpenRouter Default Model V1 (Needs confirmation) 
+# Optional: Define cloud_tier2 (e.g., backup provider via OpenRouter or direct) later if needed 
+ 
+[database] 
+# V1 uses SQLite for core dev data, PostgreSQL migration planned (D98+) 
+type = "sqlite" 
+path = "C:/DreamerAI/data/db/dreamer.db" # Use forward slashes for cross-platform compatibility 
+# pg_database_url_env = "DATABASE_URL" # For future PG connection 
+ 
+[paths] 
+user_dir_base = "C:/DreamerAI/Users" 
+template_dir = "C:/DreamerAI/templates" 
+log_dir = "C:/DreamerAI/docs/logs" 
+ 
+[n8n] 
+# Placeholder - URL/Token set Day 33 
+task_webhook_url = "http://localhost:5678/webhook/placeholder-set-day-33" 
+# auth_token = "YOUR_N8N_WEBHOOK_SECRET_TOKEN" 
+ 
+[integrations] 
+[integrations.github] 
+# Set Day 25 
+client_id_env = "GITHUB_CLIENT_ID" 
+client_secret_env = "GITHUB_CLIENT_SECRET" 

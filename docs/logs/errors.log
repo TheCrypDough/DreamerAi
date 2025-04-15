@@ -1,83 +1,12 @@
-# Ensure a newline at the end if the file might be empty or just created
-[2024-04-09 18:21:15] - Error Occurred: Day 1 setup script execution interrupted. Task: Day 1 Initial Project Setup & Refined Configuration. Status: Halted.
-[2024-04-09 18:40:05] - Error Occurred: Failed to create batch file 'C:\DreamerAI\create_dirs.bat' due to invalid path error (EINVAL). Task: Day 1 Initial Project Setup & Refined Configuration. Status: Retrying file creation.
-[2025-04-10 21:23:45] - Error Identified: FastAPI server failed to start via `python -m engine.core.server`. Error: `ERROR:    Error loading ASGI app. Could not import module "server"`. Task: Day 5: SQLite Database & Basic UI Bridge, Status: Investigating.
-[2025-04-10 21:23:45] - Error Resolved: FastAPI server failed to load module via `python -m`. Task: Day 5: SQLite Database & Basic UI Bridge, Fix: Started server successfully using `uvicorn engine.core.server:app --reload` directly from the project root directory.
-[2025-04-11 02:40:00] - Error Resolved: TypeError: DreamerLogger.__init__() got an unexpected keyword argument 'name', Task: Day 7 - Execute Nexus Test Block, Fix: Corrected nexus.py logger init.
-[2025-04-11 02:45:00] - Error Resolved: ValueError: "Nexus" object has no field "llm", Task: Day 7 - Execute Nexus Test Block, Fix: Added 'llm' field to Nexus class.
-[2025-04-11 02:52:00] - Error Resolved: ValidationError: 1 validation error for Nexus llm Field required, Task: Day 7 - Execute Nexus Test Block, Fix: Corrected Nexus.__init__ super() call.
-[2025-04-11 02:58:00] - Error Resolved: AttributeError: type object 'AgentState' has no attribute 'PROCESSING', Task: Day 7 - Execute Nexus Test Block, Fix: Corrected AgentState reference.
-[2025-04-11 03:05:00] - Error Resolved: TypeError: LLM.generate() got an unexpected keyword argument 'config', Task: Day 7 - Execute Nexus Test Block, Fix: Corrected LLM.generate() arguments.
-
 # DreamerAI Critical Errors Log
 
-[2025-04-11 04:34:00] - Error Identified: `AttributeError: 'Client' object has no attribute 'persist'`. Task: Day 8.2 Seed Jeff RAG DB. Script: `scripts/seed_rag_jeff.py`. Reason: ChromaDB API change.
-[2025-04-11 04:35:00] - Error Resolved: `AttributeError: 'Client' object has no attribute 'persist'`. Task: Day 8.2. Fix: Removed `client.persist()` call.
+This log tracks critical errors encountered during execution that typically halt a process or cause significant failures (e.g., command failures, script crashes, unhandled exceptions).
 
-[2025-04-11 05:05:00] - Error Identified: `pydantic_core._pydantic_core.ValidationError: 1 validation error for ChefJeff user_dir Input should be a valid string`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block). Reason: `BaseAgent.user_dir` type hint was `str`, not `Optional[str]`.
-[2025-04-11 05:06:00] - Error Resolved: `ValidationError` on `ChefJeff` init (`user_dir`). Task: Day 8.4. Fix: Modified `BaseAgent` to use `Optional[str]` for `user_dir`.
+**Format:** `[YYYY-MM-DD HH:MM:SS] - Error Encountered/Resolved: [Error Type/Message Summary] - Task: [Guide Day X Task Name] - Status: [Investigating/Resolved] - Fix: [Brief Fix Summary, if Resolved]`
 
-[2025-04-11 05:10:00] - Error Identified: `ValueError: "ChefJeff" object has no field "rules"`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block). Reason: `rules` assigned in `__init__` after `super()`.
-[2025-04-11 05:12:00] - Error Resolved: `ValueError` on `ChefJeff` init (field assignment). Task: Day 8.4. Fix: Defined `rules` and other fields as class attributes using `pydantic.Field`.
+---
+*(Log entries start here)*
 
-[2025-04-11 05:15:00] - Error Identified: `chromadb.errors.NotFoundError: Collection [jeff_context] does not exists`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block). Reason: Used `get_collection` instead of `get_or_create_collection`.
-[2025-04-11 05:18:00] - Error Resolved: `NotFoundError` on ChromaDB get_collection. Task: Day 8.4. Fix: Changed to `get_or_create_collection`.
+# DreamerAI Errors Log
 
-[2025-04-11 05:15:00] - Error Identified: `pydantic_core._pydantic_core.ValidationError: 1 validation error for Message role Field required`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - initial message). Reason: Used `sender="User"` instead of `role="user"`.
-[2025-04-11 05:18:00] - Error Resolved: `ValidationError` on `Message` init. Task: Day 8.4. Fix: Changed to `role="user"`.
-
-[2025-04-11 05:22:00] - Error Identified: `AttributeError: 'Memory' object has no attribute 'get_formatted_history'`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - step method). Reason: Incorrect method name used.
-[2025-04-11 05:28:00] - Error Resolved: `AttributeError: 'Memory' object has no attribute 'get_formatted_history'`. Task: Day 8.4. Fix: Changed call to `get_history()` in `step` method (via reapply).
-
-[2025-04-11 05:30:00] - Error Identified: `TypeError: Memory.get_history() got an unexpected keyword argument 'last_n'`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - step method). Reason: `get_history` does not accept `last_n`.
-[2025-04-11 05:31:00] - Error Resolved: `TypeError` on `Memory.get_history` call. Task: Day 8.4. Fix: Removed `last_n=5` argument.
-
-[2025-04-11 05:41:47] - Error Identified: `AttributeError: 'ChefJeff' object has no attribute 'llm'`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - step method). Reason: Incorrect assignment/validation order of `llm` instance in `__init__`.
-[2025-04-11 05:41:47] - Error Identified: `pydantic_core._pydantic_core.ValidationError: 1 validation error for Message role Field required`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - except block). Reason: Used `sender="Jeff"` instead of `role="assistant"`.
-[2025-04-11 05:46:00] - Error Resolved: `AttributeError: 'ChefJeff' object has no attribute 'llm'` & `ValidationError` on error Message init. Task: Day 8.4. Fix: Passed `llm=llm_instance` in `super().__init__` call and corrected error `Message` instantiation to use `role="assistant"`.
-
-[2025-04-11 05:50:00] - Error Identified: `AttributeError: 'Memory' object has no attribute 'get_formatted_history'`. Task: Day 8.4 Test ChefJeff Class. Script: `engine/agents/main_chat.py` (test block - final print). Reason: Incorrect method name used.
-[2025-04-11 05:55:00] - Error Resolved: `AttributeError` in test block print statement. Task: Day 8.4. Fix: Changed `jeff.memory.get_formatted_history()` to `jeff.memory.get_history()`.
-
-[2025-04-10 21:54:31] - Error: All configured providers failed to generate a response: ['ollama', 'cloud_tier1', 'cloud_tier2']. Task: LLM_Integration_Test
-[2025-04-10 21:54:31] - Error: Test 1 Failed (Default). Task: LLM_Integration_Test
-[2025-04-10 21:54:31] - Error: All configured providers failed to generate a response: ['cloud_tier1', 'ollama', 'cloud_tier2']. Task: LLM_Integration_Test
-[2025-04-10 21:54:31] - Error: Test 2 Failed (Jeff Override - maybe override not configured or provider failed?). Task: LLM_Integration_Test
-[2025-04-10 21:54:31] - Error: All configured providers failed to generate a response: ['ollama', 'cloud_tier1', 'cloud_tier2']. Task: LLM_Integration_Test
-[2025-04-10 21:54:31] - Error: Test 3 Failed (Ziggy Default). Task: LLM_Integration_Test
-[2025-04-10 21:55:43] - Error: OpenAI API status error for 'cloud_tier1' model llama3-70b-8192: Status=401, Response=<Response [401 Unauthorized]>. Task: LLM_Integration_Test
-[2025-04-10 21:55:44] - Error: OpenAI API status error for 'cloud_tier2' model deepseek-chat: Status=401, Response=<Response [401 Unauthorized]>. Task: LLM_Integration_Test
-[2025-04-10 21:55:44] - Error: All configured providers failed to generate a response: ['ollama', 'cloud_tier1', 'cloud_tier2']. Task: LLM_Integration_Test
-[2025-04-10 21:55:44] - Error: Test 1 Failed (Default). Task: LLM_Integration_Test
-[2025-04-10 21:55:45] - Error: OpenAI API status error for 'cloud_tier1' model llama3-70b-8192: Status=401, Response=<Response [401 Unauthorized]>. Task: LLM_Integration_Test
-[2025-04-10 21:55:45] - Error: OpenAI API status error for 'cloud_tier2' model deepseek-chat: Status=401, Response=<Response [401 Unauthorized]>. Task: LLM_Integration_Test
-[2025-04-10 21:55:45] - Error: All configured providers failed to generate a response: ['cloud_tier1', 'ollama', 'cloud_tier2']. Task: LLM_Integration_Test
-[2025-04-10 21:55:45] - Error: Test 2 Failed (Jeff Override - maybe override not configured or provider failed?). Task: LLM_Integration_Test
-[2025-04-10 21:55:45] - Error: OpenAI API status error for 'cloud_tier1' model llama3-70b-8192: Status=401, Response=<Response [401 Unauthorized]>. Task: LLM_Integration_Test
-[2025-04-10 21:55:45] - Error: OpenAI API status error for 'cloud_tier2' model deepseek-chat: Status=401, Response=<Response [401 Unauthorized]>. Task: LLM_Integration_Test
-[2025-04-10 21:55:45] - Error: All configured providers failed to generate a response: ['ollama', 'cloud_tier1', 'cloud_tier2']. Task: LLM_Integration_Test
-[2025-04-10 21:55:45] - Error: Test 3 Failed (Ziggy Default). Task: LLM_Integration_Test
-[2025-04-10 23:06:09] - Error: OpenAI compatible client 'openrouter_cloud' not initialized or found.. Task: LLM_Integration_Test
-[2025-04-10 23:06:09] - Error: All configured providers failed to generate a response: ['openrouter_cloud', 'ollama']. Task: LLM_Integration_Test
-[2025-04-10 23:06:09] - Error: Test 1 Failed (Default). Task: LLM_Integration_Test
-[2025-04-10 23:06:09] - Error: OpenAI compatible client 'openrouter_cloud' not initialized or found.. Task: LLM_Integration_Test
-[2025-04-10 23:06:09] - Error: All configured providers failed to generate a response: ['openrouter_cloud', 'ollama']. Task: LLM_Integration_Test
-[2025-04-10 23:06:09] - Error: Test 2 Failed (Jeff Override - maybe override not configured or provider failed?). Task: LLM_Integration_Test
-[2025-04-10 23:06:09] - Error: OpenAI compatible client 'openrouter_cloud' not initialized or found.. Task: LLM_Integration_Test
-[2025-04-10 23:06:09] - Error: All configured providers failed to generate a response: ['openrouter_cloud', 'ollama']. Task: LLM_Integration_Test
-[2025-04-10 23:06:09] - Error: Test 3 Failed (Ziggy Default). Task: LLM_Integration_Test
-[2025-04-11 02:39:23] - Error: Error during LLM generation in Nexus step: LLM.generate() got an unexpected keyword argument 'config'. Task: Nexus_Agent_Test
-[2025-04-11 04:37:04] - Error: Failed to initialize ChromaDB or load embedding model: Collection [jeff_context] does not exists. Task: Jeff_Agent_Initialization
-[2025-04-11 04:41:47] - Error: LLM generation failed for Jeff: 'ChefJeff' object has no attribute 'llm'. Task: Jeff_Agent_Step
-[2025-04-12 00:05:30] - Error: Failed to initialize agents: engine.agents.base.BaseAgent.__init__() got multiple values for keyword argument 'user_dir'. Task: DreamerFlow_Initialization
-[2025-04-12 00:05:30] - Error: engine.agents.base.BaseAgent.__init__() got multiple values for keyword argument 'user_dir'. Task: DreamerFlow_Initialization
-[2025-04-12 00:06:01] - Error: An unexpected error occurred during DreamerFlow execution: ChefJeff.run() got an unexpected keyword argument 'initial_user_input'. Did you mean 'initial_input'?. Task: DreamerFlow_Execution
-[2025-04-12 00:06:01] - Error: ChefJeff.run() got an unexpected keyword argument 'initial_user_input'. Did you mean 'initial_input'?. Task: DreamerFlow_Execution
-[2025-04-12 00:06:01] - Error: engine.agents.base.BaseAgent.__init__() got multiple values for keyword argument 'user_dir'. Task: DreamerFlow_Execution
-[2025-04-12 00:06:01] - Error: ChefJeff.run() got an unexpected keyword argument 'initial_user_input'. Did you mean 'initial_input'?. Task: DreamerFlow_Execution
-[2025-04-12 00:06:01] - Error: engine.agents.base.BaseAgent.__init__() got multiple values for keyword argument 'user_dir'. Task: DreamerFlow_Execution
-[2025-04-12 00:06:01] - Error: ChefJeff.run() got an unexpected keyword argument 'initial_user_input'. Did you mean 'initial_input'?. Task: DreamerFlow_Execution
-[2025-04-12 00:06:01] - Error: engine.agents.base.BaseAgent.__init__() got multiple values for keyword argument 'user_dir'. Task: DreamerFlow_Execution
-[2025-04-12 00:06:01] - Error: ChefJeff.run() got an unexpected keyword argument 'initial_user_input'. Did you mean 'initial_input'?. Task: DreamerFlow_Execution
-[2025-04-12 00:06:01] - Error: engine.agents.base.BaseAgent.__init__() got multiple values for keyword argument 'user_dir'. Task: DreamerFlow_Execution
-
+[2025-04-14 20:36:55] - Error Identified: Batch script execution failed or produced incomplete/corrupt output via terminal tool. Task: Day 1 - Execute Batch Script. Status: Investigating.

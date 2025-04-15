@@ -3,6 +3,7 @@ Agent Detailed Job Descriptions
 
 
 Detailed Job Description Files for Every Agent
+
 Promptimizer
 Overview
 The Promptimizer is the foundational entry point of the DreamerAi ecosystem, acting as a sophisticated preprocessor that transforms raw user inputs into optimized prompts for downstream agents. By enhancing natural language (NL) inputs and managing attached context, it ensures that the system operates efficiently while preserving every nuance of user intent. The Promptimizer balances technical precision with user transparency, making it an indispensable bridge between human creativity and AI-driven execution.

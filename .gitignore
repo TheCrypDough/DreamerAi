@@ -1,33 +1,87 @@
-# Ignore Python virtual environment
-venv/
-__pycache__/
-*.pyc
-
-# Ignore Node modules
-node_modules/
-
-# Ignore Log files
-# Specifically ignore rotated dev/error logs, allow tracked logs in docs/logs/
-dreamerai_dev_*.log
-errors_*.log
-# Explicitly DO NOT ignore the important tracking logs:
-!docs/logs/issues.log
-!docs/logs/errors.log
-!docs/logs/rules_check.log
-!docs/logs/migration_tracker.md # Ensure this isn't caught by other rules
-
-# Ignore OS-specific files
-.DS_Store
-Thumbs.db
-
-# Ignore sensitive config
-.env*
-!.env.example
-
-# Ignore build artifacts
-dist/
-build/
-*.exe
-
-# Ignore ESLint cache
-.eslintcache 
+# Byte-compiled / optimized / DLL files 
+__pycache__/ 
+*.py[cod] 
+*$py.class 
+ 
+# C extensions 
+*.so 
+ 
+# Distribution / packaging 
+/dist/ 
+/build/ 
+*.egg-info/ 
+*.egg 
+ 
+# PyInstaller 
+*.spec 
+ 
+# Installer logs 
+*.install.log 
+ 
+# Unit test / coverage reports 
+htmlcov/ 
+.tox/ 
+.nox/ 
+.coverage 
+.cache 
+nosetests.xml 
+coverage.xml 
+*.cover 
+*.py,cover 
+.hypothesis/ 
+.pytest_cache/ 
+ 
+# Jupyter Notebook 
+.ipynb_checkpoints 
+ 
+# Virtual Environment 
+venv/ 
+ENV/ 
+env/ 
+VENV/ 
+venv.bak/ 
+ENV.bak/ 
+ 
+# SQLite Databases (keep schema in code) 
+*.db 
+*.db-journal 
+*.sqlite 
+*.sqlite3 
+ 
+# Sensitive Config Files 
+.env* 
+!.env.example 
+config.*.toml 
+!config.example.toml 
+# Firebase Admin SDK Key 
+dreamerai-firebase-adminsdk*.json 
+ 
+# OS Generated files 
+Thumbs.db 
+.DS_Store 
+ 
+# Node modules 
+node_modules/ 
+app/node_modules/ 
+.npm 
+npm-debug.log* 
+pnpm-debug.log* 
+yarn-debug.log* 
+yarn-error.log* 
+ 
+# Log files 
+*.log 
+logs/ 
+docs/logs/*.log 
+!docs/logs/rules_check.log 
+!docs/logs/issues.log 
+!docs/logs/migration_tracker.md 
+*.log.[0-9] 
+ 
+# Electron 
+.electron/ 
+# Temp files, backups 
+*.tmp 
+*.bak 
+*.swp 
+~* 

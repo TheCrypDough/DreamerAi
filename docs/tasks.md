@@ -1,136 +1,35 @@
-# DreamerAI Task List (EVERT "Cursor Task" within the daily DreamerAi_Guide.md entries MUST be logged)
+# DreamerAI Task List (EVERY "Cursor Task" within the daily DreamerAi_Guide.md entries MUST be performed IN ORDER as they appear and must be logged here)
 
-## Day 1: Initial Project Setup & Refined Configuration
-* Status: DONE
-* Details: Create base project structure (C:\DreamerAI\), initialize Git, link remote, set up structured config files (.env.development, config.dev.toml), define .gitignore, set up Ollama model symlink. Follow detailed steps in DreamerAi_Guide.md Day 1.
+## Day [XX]: [Concise Day Title from Guide]
+*   **Cursor Task:** [Exact Task Description 1 from Guide Day XX]
+    *   Status: [TODO | IN PROGRESS | DONE | FAILED]
+*   **Cursor Task:** [Exact Task Description 2 from Guide Day XX]
+    *   Status: [TODO | IN PROGRESS | DONE | FAILED]
+*   **Cursor Task:** [Exact Task Description 3 from Guide Day XX]
+    *   Status: [TODO | IN PROGRESS | DONE | FAILED]
+*   ... (Add all `Cursor Task:` items for the day in order) ...
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
+    *   Status: [TODO | DONE]
+*   **Overall Day Status:** [TODO | IN PROGRESS | DONE | FAILED - Needs Manual Fix]
+*   **Summary:** [Brief 1-sentence summary of the Day's goal from Guide Description]
+*   **Issues Encountered:** [List any Issue IDs or brief descriptions logged in issues.log/errors.log during this day's implementation, or "None"]
 
-## Day 2: Environment Setup & Core Dependencies
-Cursor Task: Create and activate Python venv in C:\DreamerAI\.
-Done
-Cursor Task: Install specified Python dependencies using pip (FastAPI, Uvicorn standard, requests, dotenv, pydantic, loguru, tenacity, pyyaml, numpy, aiofiles, colorama, black, ollama, ragstack, transformers, datasets, redis, GitPython, python-jose[cryptography], cryptography, bleach, cachetools, websockets, scikit-learn, pandas, httpx, psycopg[binary,pool], dependency-injector, pip-audit). Generate requirements.txt via pip freeze.
-Done
-Cursor Task: Navigate to C:\DreamerAI\app\.
-Done
-Cursor Task: Initialize npm (npm init -y).
-Done
-Cursor Task: Install specified Node.js library dependencies using npm install (electron, react, react-dom, @mui/material, @emotion/react, @emotion/styled, @dnd-kit/core, react-grid-layout, i18next, react-i18next, posthog-js, electron-oauth2, keytar, firebase, ws, framer-motion, joi, @mui/lab, @mui/icons-material, intro.js). Ensure n8n is NOT listed.
-Done
-Cursor Task: Install Node.js dev dependencies (npm install --save-dev eslint).
-Done
-Cursor Task: Initialize ESLint (npx eslint --init, follow React/JS prompts).
-Done
-Cursor Task: Navigate back to C:\DreamerAI\.
-Done
-Cursor Task: Ensure .gitignore includes node_modules/, .eslintcache, /venv/.
-Done
-Cursor Task: Stage ALL new/modified files (excluding venv), commit (Day 2: Env Setup & Core Dependencies (Consolidated)), push.
-Done
-Cursor Task: Execute Auto-Update Triggers & Workflow.
-Done
-* Overall Status: Done
-* Details: Create Python venv, install Python/Node deps, setup linters. Follow detailed steps in DreamerAi_Guide.md Day 2.
-* Issues: (any issues during the daily implementation)
+---
 
-## Day 3: BaseAgent & Logging System
-Cursor Task: Create the file C:\DreamerAI\engine\agents\base.py.
-Done
-Cursor Task: Implement the Message, Memory, AgentState, and BaseAgent classes within base.py using the provided code, including __init__ with name and user_dir, basic memory management, state tracking, async run method, abstract step method, and basic internal logging via loguru.
-Done
-Cursor Task: Create the file C:\DreamerAI\engine\core\logger.py.
-Done
-Cursor Task: Implement the DreamerLogger class within logger.py using loguru to configure file logging sinks (e.g., dreamerai_dev.log, errors.log) with rotation and formatting. Ensure logs are written to C:\DreamerAI\docs\logs\.
-Done
-Cursor Task: Add basic test execution block (if __name__ == "__main__":) in base.py to allow simple testing of the BaseAgent structure (e.g., creating a dummy TestAgent).
-Done
-Cursor Task: Stage changes, commit, and push to GitHub.
-Done
-* Overall Status: DONE
-* Details: Implement BaseAgent class (base.py) and DreamerLogger (logger.py). Verified via test blocks.
-* Issues: None.
+## Day 1: Initial Project Setup & Refined Configuration (OpenRouter/Ollama Ready!), Planting the Flag!
+*   **Cursor Task:** Execute the provided batch script block below in an Administrator Terminal. This will: Create main C:\DreamerAI\ directory and subdirectories based on project_structure.md. Create the model symlink. Initialize Git, configure local user, add GitHub remote. Create structured .env.development (with OPENROUTER_API_KEY placeholder) and config.dev.toml (configured for OpenRouter & Ollama gemma3:12b). Create .gitignore. Stage and commit initial setup. Push initial commit to GitHub remote (origin main).
+    *   Status: FAILED
+*   **Cursor Task:** Remind Anthony to replace "YOUR_OPENROUTER_API_KEY_HERE" in C:\DreamerAI\data\config\.env.development with his actual OpenRouter key.
+    *   Status: TODO
+*   **Cursor Task:** Verify all directories and files were created correctly and the initial push to GitHub was successful by checking the file system and the GitHub repository webpage (TheCrypDough/DreamerAi).
+    *   Status: TODO
+*   **Cursor Task:** Present Summary for Approval: "Task 'Day 1: Initial Setup (OpenRouter/Ollama Config)' complete. Implementation: Created dir structure, Git repo, symlink. Configured .env/.toml for OpenRouter (Llama 3 70B default) + Ollama (gemma3:12b fallback). Created .gitignore. Initial commit pushed. Reminded Anthony to add OpenRouter API key. Tests/Verification: Directory structure created, config files present, symlink created, GitHub repo received initial commit - Verified OK. Requesting approval to proceed to 'Day 2: Environment Setup (LightRAG/ChromaDB Update)'. (yes/no/details?)"
+    *   Status: TODO
+*   **Cursor Task:** (Upon Approval) Execute Auto-Update Triggers & Workflow (update tasks.md to Day 2, update cursor_rules.md current task, update Memory Bank, logs, commit etc.).
+    *   Status: TODO
+*   **Overall Day Status:** TODO
+*   **Summary:** Setting up the core project directory structure, initializing Git, linking to GitHub, creating initial .gitignore, and establishing configuration files (.env.development, config.dev.toml) for OpenRouter and Ollama.
+*   **Issues Encountered:** Error running batch script (see errors.log)
 
-## Day 4: Electron Frontend Skeleton
-* Overall Status: DONE
-* Details: Create basic Electron main process, preload script, renderer process, and HTML entry point. Update package.json scripts. Test basic window launch. Follow detailed steps in DreamerAi_Guide.md Day 4.
-* Issues: None anticipated.
-*   Cursor Task: Create app/main.js (using Day 4 Guide code) - DONE
-*   Cursor Task: Create app/index.html (using Day 4 Guide code) - DONE
-*   Cursor Task: Create app/renderer.js (using Day 4 Guide code) - DONE
-*   Cursor Task: Create app/preload.js (using Day 4 Guide code) - DONE
-*   Cursor Task: Modify app/package.json (add main, start, lint scripts - using Day 4 Guide code) - DONE
-*   Cursor Task: Test Electron app with npm start - DONE
-*   Cursor Task: Stage Day 4 changes, commit, and push. - DONE
-*   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 4. - DONE
-
-## Day 5: SQLite Database & Basic UI Bridge
-* Overall Status: DONE
-* Details: Implement initial SQLite DB setup (engine/core/db.py) for local dev persistence (projects table). Setup basic FastAPI/Uvicorn server (engine/core/server.py) as the backend-frontend bridge. Test bridge with a fetch call from renderer. Follow detailed steps in DreamerAi_Guide.md Day 5.
-* Issues: None anticipated.
-*   Cursor Task: Create the file C:\DreamerAI\engine\core\db.py. - DONE
-*   Cursor Task: Implement the DreamerDB class in db.py using sqlite3 to connect to C:\DreamerAI\data\db\dreamer.db and create the initial projects table. Include basic methods like add_project, get_project, and close. Add logging using logger_instance. Explicitly comment that this is for dev and PostgreSQL is planned for scale. - DONE
-*   Cursor Task: Modify C:\DreamerAI\engine\core\server.py. Import FastAPI and uvicorn. Instantiate the FastAPI app. Add a simple root endpoint (@app.get("/")) that returns {"message": "DreamerAI Backend Online"}. Add the if __name__ == "__main__": block to run the server using uvicorn.run. - DONE
-*   Cursor Task: Modify C:\DreamerAI\app\renderer.js. Add a useEffect hook that runs once on component mount. Inside the hook, use fetch to make a GET request to the backend's root URL (http://localhost:8000/). Log the response to the console to verify the bridge connection. - DONE
-*   Cursor Task: Run the backend server: Open a new terminal in C:\DreamerAI, activate venv (.\venv\Scripts\activate), and run using `uvicorn engine.core.server:app --reload`. Leave this terminal running. - DONE
-*   Cursor Task: Run the frontend app: Open another terminal in C:\DreamerAI\app and run `npm start`. - DONE
-*   Cursor Task: Verify the frontend window opens and check the Electron DevTools console (Ctrl+Shift+I) for the logged message from the successful backend fetch. Verify dreamer.db is created in data/db/. Stop both the frontend app and the backend server (Ctrl+C in terminals). - DONE
-*   Cursor Task: Stage changes, commit, and push. - DONE
-*   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 5. - DONE
-
-## Day 6: Config-Driven Hybrid LLM Setup
-* Overall Status: DONE
-* Details: Implement LLMManager (engine/ai/llm.py) to handle multiple providers (Ollama, OpenAI-compatible) via config/env. Test OpenRouter and Ollama initialization/status. Verified via test block. Addressed Ollama status check path issue via manual code fix.
-* Issues: Initial Ollama status check failed due to suspected environment/tooling issue preventing code updates; resolved via manual code fix.
-*   Cursor Task: Create engine/ai/llm.py with LLMManager class. - DONE
-*   Cursor Task: Implement configuration loading (toml, dotenv) in LLMManager. - DONE
-*   Cursor Task: Implement provider initialization (_initialize_providers) for 'ollama' and 'openai_compatible' types. - DONE
-*   Cursor Task: Implement status checking (_check_ollama_status, potentially others). - DONE (Manual Fix Required)
-*   Cursor Task: Implement generation methods (_generate_ollama, _generate_openai_compatible). - DONE
-*   Cursor Task: Implement main generate method with priority/fallback logic. - DONE
-*   Cursor Task: Add test block (if __name__ == "__main__") to test configuration loading and generation with different providers/overrides. - DONE
-*   Cursor Task: Create/Update .env.development and config.dev.toml for Ollama and OpenRouter. - DONE
-*   Cursor Task: Run test block, debug, log issues/resolutions. - DONE
-*   Cursor Task: Stage changes, commit, push. - DONE
-*   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 6. - DONE
-
-## Day 7: Nexus Agent - The Orchestrator
-* Overall Status: DONE
-* Details: Create the Nexus agent (engine/ai/nexus.py) responsible for managing the overall AI workflow and delegating tasks to other specialized agents. Implement basic initialization using the LLM class. Add a test block. Fixed multiple errors during testing (logger init, LLM class name, Pydantic field/init, AgentState, generate() args).
-* Issues: Initial implementation had several errors requiring debugging during test execution.
-*   Cursor Task: Ensure the directory C:\DreamerAI\engine\ai\ exists. Create an empty __init__.py file inside it if it doesn't exist. - DONE
-*   Cursor Task: Create the file C:\DreamerAI\engine\ai\nexus.py. - DONE
-*   Cursor Task: Populate C:\DreamerAI\engine\ai\nexus.py with the complete Python code provided in the guide (including imports, Nexus class, and if __name__ == "__main__" test block). - DONE
-*   Cursor Task: Activate the virtual environment (C:\DreamerAI\venv\Scripts\activate). - DONE
-*   Cursor Task: Execute the test block by running python -m engine.ai.nexus from the C:\DreamerAI directory. Observe the output logs to verify initialization and the successful generation attempt using the LLM. - DONE
-*   Cursor Task: Stage the new files (engine/ai/nexus.py), commit, and push to GitHub. - DONE
-*   Cursor Task: Execute Auto-Update Triggers & Workflow for Day 7. - DONE
-
-## Day 8: Building Chef Jeff (Main Chat Agent)
-- Cursor task: Create `C:\DreamerAI\engine\agents\rules_jeff.md`. Populate from `docs/templates/rules_template.md`, defining Jeff's Role and Scope as User Conduit, Conversationalist, Task Router. - **DONE**
-- Cursor task: Create and execute a temporary Python script `C:\DreamerAI\scripts\seed_rag_jeff.py` to initialize and seed Jeff's RAG DB (resolved using ChromaDB). - **DONE**
-- Cursor task: Modify `C:\DreamerAI\engine\agents\main_chat.py`. Implement the `ChefJeff` class with ChromaDB RAG retrieval. - **DONE**
-- Cursor task: Test ChefJeff Class - **DONE**
-- Cursor task: Delete the temporary seed script (`seed_rag_jeff.py`). Stage changes, commit, and push. - **DONE**
-
-## Day 9: DreamerFlow Orchestration Setup
-- Cursor Task: Create the file C:\DreamerAI\engine\core\workflow.py. - **DONE**
-- Cursor Task: Implement the DreamerFlow class within workflow.py using the code provided below. Include __init__ accepting agents: Dict[str, BaseAgent] and user_dir. Implement a basic async execute method that primarily calls the 'Jeff' agent's run method. - **DONE**
-- Cursor Task: Create the file C:\DreamerAI\main.py in the project root. - **DONE**
-- Cursor Task: Implement the main execution logic in main.py using the code provided below. Include imports, instantiation of Jeff (and placeholders for other agents eventually), creation of the agent dictionary, instantiation of DreamerFlow, and an asyncio.run call to test the flow.execute method. - **DONE**
-- Cursor Task: Execute the main script (python main.py from C:\DreamerAI after activating venv). Verify the output shows Jeff being called via the DreamerFlow and generating a response (or AI error message). Check logs. - **DONE**
-- Cursor Task: Stage changes, commit, and push. - **DONE**
-
-## Day 10: UI Shell: Tabs, Beginner Mode & Backend Listener
-- Cursor Task: Create the directory C:\DreamerAI\app\src\. - **DONE**
-- Cursor Task: Create the file C:\DreamerAI\app\src\App.jsx. Populate it with the provided React code implementing the main App component using MUI (ThemeProvider, CssBaseline, Tabs, Tab, Box, Switch, FormControlLabel) and the useEffect hook with the http server listener on port 3000. Use placeholder tab names: "Chat", "Plan/Build", "Dream Theatre", "Project Manager", "Settings". - **DONE**
-- Cursor Task: Replace the content of C:\DreamerAI\app\renderer.js with the provided code, ensuring it now imports App from ./src/App.jsx and uses ReactDOM.createRoot().render() to mount it. - **DONE**
-- Cursor Task: Run npm start from C:\DreamerAI\app\. Verify the Electron window displays the MUI tabs and the Beginner Mode switch. Check the DevTools console to ensure the HTTP server started successfully ("UI Backend Listener started on port 3000") and there are no React errors. Toggle the switch and change tabs to ensure basic state updates work. - **DONE (after debug)**
-- Cursor Task: Stage changes (renderer.js, src/App.jsx), commit, and push. - **DONE**
-
-## Day 11: Planning Agent V1 - "Arch" & Integration
-- Cursor Task: Create `C:\DreamerAI\engine\agents\rules_arch.md` using `docs\templates\rules_template.md`, defining Arch's Role and Scope (Planning, Task Breakdown, Tool Selection, Flow Definition). - **TODO**
-- Cursor Task: Create `C:\DreamerAI\engine\agents\planning_agent.py`. Implement the `Arch` class, inheriting from `BaseAgent`. Include basic `__init__` (loading rules, LLM), and a placeholder `step` method. - **TODO**
-- Cursor Task: Modify `C:\DreamerAI\main.py`. Instantiate `Arch` and add it to the `agents` dictionary. - **TODO**
-- Cursor Task: Modify `C:\DreamerAI\engine\core\workflow.py`. Update `DreamerFlow.execute` to initially route the `initial_input` to `Arch.run` instead of `Jeff.run`. - **TODO**
-- Cursor Task: Run `python main.py`. Verify the flow now calls `Arch` first (check logs for Arch's placeholder execution). - **TODO**
-- Cursor Task: Stage changes, commit, and push. - **TODO**
-
-# Future Tasks / Backlog
+---
+*(Next Day's Entry Starts Here)*

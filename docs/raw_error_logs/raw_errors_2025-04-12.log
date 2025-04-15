@@ -1,8 +1,0 @@
-2025-04-12 02:50:29 | ERROR    | engine.ai.llm:_generate_openai_compatible:219 - OpenAI API status error for 'openrouter_cloud' model openrouter/optimus-alpha: Status=400, Response=<Response [400 Bad Request]>
-
-2025-04-12 02:50:31 | ERROR    | engine.ai.llm:_generate_ollama:186 - Ollama API request failed for model gemma3:12b: 404 Client Error: Not Found for url: http://localhost:11434/api/generate/api/chat
-
-2025-04-12 02:50:31 | ERROR    | engine.ai.llm:generate:290 - All configured providers failed to generate a response: ['openrouter_cloud', 'ollama']
-
-2025-04-12 03:08:08 | ERROR    | engine.core.db:add_project:101 - Failed to add project 'SanityCheck'. Integrity error (maybe path exists?): UNIQUE constraint failed: projects.project_path
-
