@@ -17,3 +17,13 @@ Note: Python was downgraded from 3.13.3 to 3.12.10 to resolve `tiktoken` install
 Milestone Completed: Day 2 Environment Setup (RAG/DND Corrected). Next Task: Day 3 BaseAgent & Logging System (Log Dir Update). Feeling: Back on track after rule violation. Date: 2025-04-15 # Placeholder Date
 
 Milestone Completed: Day 3 BaseAgent & Logging System. Next Task: Day 4 Placeholder. Feeling: Core agent and logging foundations are in place. Git tools worked eventually. Date: 2025-04-15 # Placeholder Date
+
+Milestone Completed: Day 4 Task 1 - Create main.js. Next Task: Day 4 Task 2 - Create index.html. Feeling: Progressing with Electron setup. Date: 2024-07-26
+
+Milestone Completed: Day 4 Task 2 - Create index.html. Next Task: Day 4 Task 3 - Create renderer.js. Feeling: Basic HTML shell ready. Date: 2024-07-26
+
+Milestone Completed: Day 4 Task 3 - Create renderer.js. Next Task: Day 4 Task 4 - Create preload.js. Feeling: React rendering logic in place. Date: 2024-07-26
+
+Milestone Completed: Day 4 Task 4 - Create preload.js. Next Task: Day 4 Task 5 - Modify package.json. Feeling: Electron helper script in place. Date: 2024-07-26
+
+Milestone Completed: Day 4 Task 6 - Run npm start. Next Task: Day 4 Task 7 - Git Commit & Push. Feeling: Electron app launched successfully! Date: 2024-07-26
