@@ -31,3 +31,5 @@ Milestone Completed: Day 4 Task 6 - Run npm start. Next Task: Day 4 Task 7 - Git
 Milestone Completed: Day 4 Electron Frontend Skeleton. Next Task: Day 5 SQLite Database & UI Bridge. Feeling: Solid progress on the frontend shell. Pausing for the day. Date: 2024-07-26
 
 Milestone Completed: Day 5 SQLite Database & Basic UI Bridge. Next Task: Day 6 Hybrid LLM Setup. Feeling: Progress! DB is storing locally, and frontend/backend are talking. Ready for AI layer. Date: [Timestamp Placeholder - YYYY-MM-DD]
+
+Note: Completed Day 6 Tasks 1 & 2 (Created engine/ai/__init__.py and engine/ai/llm.py with guide code). Linter issues identified in llm.py require investigation/resolution before testing. Task: Day 6 - Populate engine/ai/llm.py. Date: [Timestamp Placeholder - YYYY-MM-DD]

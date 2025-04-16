@@ -69,3 +69,8 @@ This log automatically records all file system structure changes (creations, ren
 [Timestamp Placeholder] - MODIFY - Path: C:\DreamerAI\engine\core\db.py - Details: Implemented DreamerDB class from Day 5 guide.
 [Timestamp Placeholder] - CREATE - Path: C:\DreamerAI\engine\core\server.py - Details: Created file with FastAPI setup from Day 5 guide (Guide specified Modify, file didn't exist).
 [Timestamp Placeholder] - MODIFY - Path: C:\DreamerAI\app\renderer.js - Details: Added useEffect hook for backend fetch.
+[Timestamp Placeholder] - CREATE - Path: C:\DreamerAI\engine\ai\__init__.py - Details: Created file to make 'ai' a package.
+[Timestamp Placeholder] - CREATE - Path: C:\DreamerAI\engine\ai\llm.py - Details: Created file with Day 6 LLM class code (incl. caching, config loading).
+[Timestamp Placeholder] - MODIFY - Path: C:\DreamerAI\data\config\config.dev.toml - Details: Updated cloud_tier1 model_name to google/gemini-2.5-pro-exp-03-25:free per revised Day 1 guide.
+[Timestamp Placeholder] - MODIFY - Path: C:\DreamerAI\engine\ai\llm.py - Details: Overwritten with Day 6 Rev 5 guide code (Gemini Exp + Cache + Fixes).
+[Timestamp Placeholder] - MODIFY - Path: C:\DreamerAI\data\config\config.dev.toml - Details: Added enabled = true to ollama and cloud_tier1 providers.

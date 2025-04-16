@@ -12,12 +12,14 @@ distillation_teacher_provider = "ollama"
 type = "ollama" 
 base_url = "http://localhost:11434/api/generate" 
 model_name = "gemma3:12b" # Default/Fallback local model UPDATED 
+enabled = true # Added to enable provider
  
 [ai.providers.cloud_tier1] 
 type = "openai_compatible" 
 api_key_env = "OPENROUTER_API_KEY" # Reads key from .env 
 base_url = "https://openrouter.ai/api/v1" # OpenRouter Base URL 
-model_name = "meta-llama/llama-3-70b-instruct" # OpenRouter Default Model V1 (Needs confirmation) 
+model_name = "google/gemini-2.5-pro-exp-03-25:free" # *** UPDATED per Day 1 Rev 4 *** 
+enabled = true # Added to enable provider
 # Optional: Define cloud_tier2 (e.g., backup provider via OpenRouter or direct) later if needed 
  
 [database] 
@@ -40,4 +42,4 @@ task_webhook_url = "http://localhost:5678/webhook/placeholder-set-day-33"
 [integrations.github] 
 # Set Day 25 
 client_id_env = "GITHUB_CLIENT_ID" 
-client_secret_env = "GITHUB_CLIENT_SECRET" 
+client_secret_env = "GITHUB_CLIENT_SECRET"

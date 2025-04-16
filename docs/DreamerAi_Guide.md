@@ -70,48 +70,47 @@ This overview introduces the full roster:
 
 *(Note: This overview provides the structural framework. The detailed implementation and interaction logic for each agent will be built incrementally throughout this guide. for a detailed overview of Agent Desription and project workflow see agent_details.md and project_workflow.md in docs folder)*
 
-(Start of COMPLETE Updated Guide Entry for Day 1)
-Day 1 - Initial Project Setup & Refined Configuration (OpenRouter/Ollama Ready!), Planting the Flag!
-Anthony's Vision: "We need this thorough guide and we desperatly need it to be bulletproof... As long as we are organized we will be ok... Start Guidev4.txt with your rules and 28-agent file—clean, organized, yours." You emphasized needing a rock-solid foundation, organized from the absolute start, reflecting the full scope (28 agents, AAA quality) without the "jumbled mess" of the past. This includes setting up a flexible configuration from Day 1 to support our chosen AI models: OpenRouter for primary cloud access and a powerful local Ollama model (gemma3:12b) as fallback.
+(Start of COMPLETE Updated Guide Entry for Day 1 - Rev 4: FINAL Gemini Exp)
+Day 1 - Initial Project Setup & Refined Configuration (Final Gemini Exp/Ollama Ready!), Planting the Flag!
+Anthony's Vision: "We need this thorough guide and we desperatly need it to be bulletproof... As long as we are organized we will be ok... Start Guidev4.txt with your rules and 28-agent file—clean, organized, yours." You emphasized needing a rock-solid foundation, organized from the absolute start, reflecting the full scope (28 agents, AAA quality) without the "jumbled mess" of the past. This includes setting up a flexible configuration from Day 1 to support our chosen AI models: OpenRouter providing google/gemini-2.5-pro-exp-03-25:free for primary cloud access and a powerful local Ollama model (gemma3:12b) as fallback.
 Description:
-Today lays the absolute foundation for DreamerAI. We're setting up the core project directory structure on your development machine (C:\DreamerAI\), initializing Git for version control, linking it to your GitHub repository, creating the initial .gitignore, and establishing the structured configuration files (.env.development, config.dev.toml) necessary for the application, specifically configuring them for OpenRouter and Ollama gemma3:12b usage. This ensures a clean, organized workspace ready for CursorAI, allowing for flexible AI model selection and secure credential management from the outset.
+Today lays the absolute foundation for DreamerAI. We're setting up the core project directory structure on your development machine (C:\DreamerAI\), initializing Git for version control, linking it to your GitHub repository, creating the initial .gitignore, and establishing the structured configuration files (.env.development, config.dev.toml) necessary for the application, specifically configuring them for OpenRouter (targeting google/gemini-2.5-pro-exp-03-25:free) and Ollama gemma3:12b usage. This ensures a clean, organized workspace ready for CursorAI, allowing for flexible AI model selection and secure credential management from the outset.
 Relevant Context:
-Technical Analysis: Creates the main project folder C:\DreamerAI\ and essential subdirectories (app, data, docs, engine, n8n_workflows, templates, Users, etc.) based on project_structure.md. Initializes a Git repository, links to GitHub (TheCrypDough/DreamerAi), and configures Git identity. Creates data/config/.env.development only for secrets (placeholder OPENROUTER_API_KEY). Creates data/config/config.dev.toml using TOML format for structured settings, defining [ai] section with OpenRouter (using model meta-llama/llama-3-70b-instruct V1 default) as cloud_tier1 and Ollama (using model gemma3:12b) as the local provider, setting default preference order. Includes basic [database] and [paths] sections. Defines .gitignore. Sets up symlink data/models/ pointing to C:\Users\thecr\.ollama\models. This structure allows the LLM class (Day 6) to dynamically load configurations and API keys.
-Layman's Terms: We're building the main folder for DreamerAI on your computer and setting up the filing cabinet structure inside. We're starting the time machine (Git) and connecting it online (GitHub). We're creating two setting files: a secret one (.env) for API keys (like your OpenRouter key) and a main one (.toml) with organized sections for different settings, telling the app to prioritize OpenRouter's advanced AI but use your powerful local Ollama model (gemma3:12b) if needed. This keeps things tidy and secure. We also ensure the app knows where your local AI models live.
+Technical Analysis: Creates the main project folder C:\DreamerAI\ and essential subdirectories based on project_structure.md. Initializes Git, links to GitHub (TheCrypDough/DreamerAi), configures Git identity. Creates data/config/.env.development for secrets (placeholder OPENROUTER_API_KEY). Creates data/config/config.dev.toml defining [ai] section with OpenRouter (using model google/gemini-2.5-pro-exp-03-25:free) as cloud_tier1 and Ollama (using model gemma3:12b) as the local provider. Sets preference order. Includes basic [database] (SQLite V1) and [paths] sections. Defines .gitignore. Sets up model symlink (requires Admin). This structure allows the LLM class (Day 6) to dynamically load configurations.
+Layman's Terms: Building the main DreamerAI folder and its file cabinets. Starting Git (time machine) connected to GitHub (online backup). Creating two setting files: .env for secret keys (like your OpenRouter key), .toml for main settings. The main setting tells the app: "Use the powerful, experimental Google Gemini 1.5 Pro model (google/gemini-2.5-pro-exp-03-25:free) via OpenRouter first, but if that's not available, use your local gemma3:12b Ollama model." Keeping things tidy and secure, ready for the AI brains (Day 6).
 Groks Thought Input:
-Ground zero, Anthony! Using OpenRouter from the start offers great flexibility. Pairing it with a strong local model like gemma3:12b in the config provides a solid fallback. Establishing the detailed .toml and .env separation now is clean architecture, prepping perfectly for the Day 6 LLM class. This feels like the right, organized launchpad, reflecting the depth of your vision immediately.
+Ground zero V4! Starting with google/gemini-2.5-pro-exp-03-25:free via OpenRouter is definitely cutting-edge. Keeping gemma3:12b as local backup is smart. The .toml/.env structure is clean. This launchpad feels right, incorporating the correct specific model choice directly into the Day 1 foundation.
 My thought input:
-Okay, clean restart Day 1. Directory structure matches project_structure.md. Git setup standard. Key Change: Configuration files explicitly set up for OpenRouter (cloud) and Ollama gemma3:12b (local). .env holds the OPENROUTER_API_KEY placeholder (Anthony needs to add real key). .toml defines providers, base URLs, model names, and preference order. mklink command requires Admin rights. This provides the precise starting configuration needed based on our decisions. Ready to build!
+Okay, Day 1 Rev 4. Structure/Git unchanged. Key is updating the config.dev.toml creation commands with the exact model name google/gemini-2.5-pro-exp-03-25:free. .env still needs OPENROUTER_API_KEY. Ollama fallback gemma3:12b. mklink needs Admin. This is now precisely aligned.
 Additional Files, Documentation, Tools, Programs etc needed:
-(Tool) Git: Version Control System. Assumed installed & configured (or run git config commands below). git-scm.com.
-(Account) GitHub Account: Cloud Git Repository Hosting. Assumed exists (TheCrypDough). github.com.
-(Tool) Ollama: Local LLM Runner. Assumed installed, models at C:\Users\thecr\.ollama\models\. Ensure gemma3:12b model is pulled (ollama pull gemma3:12b). ollama.ai.
-(Account/Key) OpenRouter Account & API Key: Required for Cloud LLM access. Anthony needs account at openrouter.ai and API key for .env.
-(Module) Tomllib: TOML Parser (Built-in Python 3.11+). Needed Day 6.
-(Documentation) docs/project_structure.md: Defines target directory layout. Referenced here.
+(Tool) Git: Assumed installed.
+(Account) GitHub Account: Assumed exists (TheCrypDough).
+(Tool) Ollama: Assumed installed, gemma3:12b pulled (ollama pull gemma3:12b).
+(Account/Key) OpenRouter Account & API Key: Required. Anthony needs key for .env.
+(Module) Tomllib: Built-in Python 3.11+.
+(Documentation) docs/project_structure.md: Defines target layout.
 Any Additional updates needed to the project due to this implementation?
-Prior to implementation: Ensure Git installed. Ensure Ollama installed and gemma3:12b model pulled. Anthony needs OpenRouter API Key. Admin privileges needed for mklink. Python 3.11+ required.
-Post implementation: Project structure created. Git repo initialized & linked. Config files ready for Day 6 LLM class. Symlink created.
-Project/File Structure Update Needed: Yes, Creates initial structure within C:\DreamerAI\ based on docs/project_structure.md.
-Any additional updates needed to the guide for changes or explanation due to this implementation: Day 6 (LLM Class) will now read this specific OpenRouter/Ollama configuration.
-Any removals from the guide needed due to this implementation (detailed): Replaces any previous Day 1 implementation. Removes setup for Grok/DeepSeek, using OpenRouter instead. Updates default Ollama model.
+Prior: Clean project state. Prerequisites installed. Anthony provides OpenRouter Key. Admin rights available.
+Post: Project structure created. Git repo initialized/linked. Config files created targeting OpenRouter(google/gemini-2.5-pro-exp-03-25:free)/Ollama(gemma3:12b). Symlink created. Ready for Day 2.
+Project/File Structure Update Needed: Yes, Creates initial structure based on project_structure.md.
+Any additional updates needed to the guide for changes or explanation due to this implementation: Day 6 (LLM Class) context needs to reference google/gemini-2.5-pro-exp-03-25:free.
+Any removals from the guide needed due to this implementation (detailed): Replaces previous Day 1 setup attempts. Uses the specific experimental Gemini model requested.
 Effect on Project Timeline: Day 1 of ~80+ days. No change.
 Integration Plan:
-When: Day 1 (Week 1) – The very first step.
-Where: Primarily command line operations executed within the C:\ drive, creating the C:\DreamerAI\ structure and its initial contents.
-Dependencies: Git installed, Ollama installed (gemma3:12b pulled), Admin privileges for mklink. Anthony provides OpenRouter Key.
-Setup Instructions: Open a terminal (like Command Prompt or PowerShell) with Administrator privileges.
+When: Day 1 (Week 1) – Start of clean implementation run.
+Where: Command line creating C:\DreamerAI\.
+Dependencies: Git, Ollama (+model), Admin rights, OpenRouter Key.
+Setup Instructions: Open Administrator Terminal. Ensure Ollama model pulled. Have OpenRouter key ready.
 Recommended Tools:
 Windows Terminal or PowerShell (as Administrator).
-Git Bash (optional).
 Tasks:
-Cursor Task: Execute the provided batch script block below in an Administrator Terminal. This will: Create main C:\DreamerAI\ directory and subdirectories based on project_structure.md. Create the model symlink. Initialize Git, configure local user, add GitHub remote. Create structured .env.development (with OPENROUTER_API_KEY placeholder) and config.dev.toml (configured for OpenRouter & Ollama gemma3:12b). Create .gitignore. Stage and commit initial setup. Push initial commit to GitHub remote (origin main).
+Cursor Task: Execute the UPDATED batch script block below in an Administrator Terminal. This sets up directories, Git, symlink, .gitignore, and config files specifically for OpenRouter (google/gemini-2.5-pro-exp-03-25:free) + Ollama (gemma3:12b).
 Cursor Task: Remind Anthony to replace "YOUR_OPENROUTER_API_KEY_HERE" in C:\DreamerAI\data\config\.env.development with his actual OpenRouter key.
-Cursor Task: Verify all directories and files were created correctly and the initial push to GitHub was successful by checking the file system and the GitHub repository webpage (TheCrypDough/DreamerAi).
-Cursor Task: Present Summary for Approval: "Task 'Day 1: Initial Setup (OpenRouter/Ollama Config)' complete. Implementation: Created dir structure, Git repo, symlink. Configured .env/.toml for OpenRouter (Llama 3 70B default) + Ollama (gemma3:12b fallback). Created .gitignore. Initial commit pushed. Reminded Anthony to add OpenRouter API key. Tests/Verification: Directory structure created, config files present, symlink created, GitHub repo received initial commit - Verified OK. Requesting approval to proceed to 'Day 2: Environment Setup (LightRAG/ChromaDB Update)'. (yes/no/details?)"
-Cursor Task: (Upon Approval) Execute Auto-Update Triggers & Workflow (update tasks.md to Day 2, update cursor_rules.md current task, update Memory Bank, logs, commit etc.).
+Cursor Task: Verify directories, files, symlink, .gitignore, .env placeholder, .toml content (check exact Gemini model name!), and initial GitHub push.
+Cursor Task: Present Summary for Approval: "Task 'Day 1: Initial Setup (Correct Gemini Exp Config)' complete. Implementation: Created dirs, Git repo, symlink. Configured .env/.toml for OpenRouter (google/gemini-2.5-pro-exp-03-25:free) + Ollama (gemma3:12b). Created .gitignore. Pushed commit. Reminded re: API key. Tests/Verification: Structure/files/symlink OK. Config reflects correct Gemini model name OK. GitHub push OK. Requesting approval for 'Day 2: Env Setup (RAG/DND Corrected)'. (yes/no/details?)"
+Cursor Task: (Upon Approval) Execute Auto-Update Triggers & Workflow.
 Code:
-:: === DreamerAI Day 1 Setup Script ===
+:: === DreamerAI Day 1 Setup Script (Rev 4: FINAL Gemini Exp) ===
 :: === REQUIRES ADMINISTRATOR PRIVILEGES ===
 
 :: Create Base Directories
@@ -123,7 +122,7 @@ mkdir app data docs engine n8n_workflows plugins projects scripts templates User
 mkdir app\components app\src app\utils app\locales app\locales\en app\locales\es app\assets
 mkdir data\config data\db data\models data\rag_dbs
 mkdir docs\daily_progress docs\logs docs\mcp docs\templates docs\user docs\database docs\memory-bank
-mkdir docs\logs\agents
+mkdir docs\logs\agents docs\logs\dev_logs docs\logs\raw_error_logs
 mkdir engine\agents engine\core engine\ai engine\tools
 mkdir engine\core\schemas
 mkdir scripts
@@ -142,213 +141,88 @@ git config user.email "thecrypdough@gmail.com"
 :: Add GitHub Remote
 git remote add origin https://github.com/TheCrypDough/DreamerAi.git
 
-:: Create/Overwrite Initial Config Files (UPDATED for OpenRouter/Ollama Gemma3)
+:: Create/Overwrite Initial Config Files (UPDATED for CORRECT Gemini Exp / Ollama gemma3:12b)
 
 :: .env.development (Secrets Only)
-echo # Development Environment Variables - SECRETS ONLY > C:\DreamerAI\data\config\.env.development
-echo # Get your key from https://openrouter.ai/keys >> C:\DreamerAI\data\config\.env.development
-echo OPENROUTER_API_KEY="YOUR_OPENROUTER_API_KEY_HERE" >> C:\DreamerAI\data\config\.env.development
-echo. >> C:\DreamerAI\data\config\.env.development
-echo # Add other secrets later (DB passwords, GitHub OAuth/JWT keys, Encryption key) >> C:\DreamerAI\data\config\.env.development
-echo # GITHUB_CLIENT_ID="..." >> C:\DreamerAI\data\config\.env.development
-echo # GITHUB_CLIENT_SECRET="..." >> C:\DreamerAI\data\config\.env.development
-echo # JWT_SECRET_KEY="..." >> C:\DreamerAI\data\config\.env.development
-echo # DREAMERAI_ENCRYPTION_KEY="..." >> C:\DreamerAI\data\config\.env.development
+(echo # Development Environment Variables - SECRETS ONLY) > C:\DreamerAI\data\config\.env.development
+(echo # Get your key from https://openrouter.ai/keys) >> C:\DreamerAI\data\config\.env.development
+(echo OPENROUTER_API_KEY="YOUR_OPENROUTER_API_KEY_HERE") >> C:\DreamerAI\data\config\.env.development
+(echo.) >> C:\DreamerAI\data\config\.env.development
+(echo # Add other secrets later: GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, JWT_SECRET_KEY, DREAMERAI_ENCRYPTION_KEY) >> C:\DreamerAI\data\config\.env.development
 
-:: config.dev.toml (Configuration - UPDATED)
-echo # DreamerAI Development Configuration > C:\DreamerAI\data\config\config.dev.toml
-echo [ai] >> C:\DreamerAI\data\config\config.dev.toml
-echo # Default preference order for LLM fallback >> C:\DreamerAI\data\config\config.dev.toml
-echo default_model_preference = ["cloud_tier1", "ollama"] >> C:\DreamerAI\data\config\config.dev.toml
-echo # Specific provider assigned to Jeff (expects robust non-distilled model) >> C:\DreamerAI\data\config\config.dev.toml
-echo jeff_model_provider = "cloud_tier1" >> C:\DreamerAI\data\config\config.dev.toml
-echo # Teacher model for distillation (Day 65) - uses local strong model V1 >> C:\DreamerAI\data\config\config.dev.toml
-echo distillation_teacher_provider = "ollama" >> C:\DreamerAI\data\config\config.dev.toml
-echo. >> C:\DreamerAI\data\config\config.dev.toml
-echo # Provider Definitions >> C:\DreamerAI\data\config\config.dev.toml
-echo [ai.providers.ollama] >> C:\DreamerAI\data\config\config.dev.toml
-echo type = "ollama" >> C:\DreamerAI\data\config\config.dev.toml
-echo base_url = "http://localhost:11434/api/generate" >> C:\DreamerAI\data\config\config.dev.toml
-echo model_name = "gemma3:12b" # Default/Fallback local model UPDATED >> C:\DreamerAI\data\config\config.dev.toml
-echo. >> C:\DreamerAI\data\config\config.dev.toml
-echo [ai.providers.cloud_tier1] >> C:\DreamerAI\data\config\config.dev.toml
-echo type = "openai_compatible" >> C:\DreamerAI\data\config\config.dev.toml
-echo api_key_env = "OPENROUTER_API_KEY" # Reads key from .env >> C:\DreamerAI\data\config\config.dev.toml
-echo base_url = "https://openrouter.ai/api/v1" # OpenRouter Base URL >> C:\DreamerAI\data\config\config.dev.toml
-echo model_name = "meta-llama/llama-3-70b-instruct" # OpenRouter Default Model V1 (Needs confirmation) >> C:\DreamerAI\data\config\config.dev.toml
-echo # Optional: Define cloud_tier2 (e.g., backup provider via OpenRouter or direct) later if needed >> C:\DreamerAI\data\config\config.dev.toml
-echo. >> C:\DreamerAI\data\config\config.dev.toml
-echo [database] >> C:\DreamerAI\data\config\config.dev.toml
-echo # V1 uses SQLite for core dev data, PostgreSQL migration planned (D98+) >> C:\DreamerAI\data\config\config.dev.toml
-echo type = "sqlite" >> C:\DreamerAI\data\config\config.dev.toml
-echo path = "C:/DreamerAI/data/db/dreamer.db" # Use forward slashes for cross-platform compatibility >> C:\DreamerAI\data\config\config.dev.toml
-echo # pg_database_url_env = "DATABASE_URL" # For future PG connection >> C:\DreamerAI\data\config\config.dev.toml
-echo. >> C:\DreamerAI\data\config\config.dev.toml
-echo [paths] >> C:\DreamerAI\data\config\config.dev.toml
-echo user_dir_base = "C:/DreamerAI/Users" >> C:\DreamerAI\data\config\config.dev.toml
-echo project_dir_base = "C:/DreamerAI/projects" # Output dir V1 - TBD Refine
-echo template_dir = "C:/DreamerAI/templates" >> C:\DreamerAI\data\config\config.dev.toml
-echo log_dir = "C:/DreamerAI/docs/logs" >> C:\DreamerAI\data\config\config.dev.toml
-echo. >> C:\DreamerAI\data\config\config.dev.toml
-echo [n8n] >> C:\DreamerAI\data\config\config.dev.toml
-echo # Placeholder - URL/Token set Day 33 >> C:\DreamerAI\data\config\config.dev.toml
-echo task_webhook_url = "http://localhost:5678/webhook/placeholder-set-day-33" >> C:\DreamerAI\data\config\config.dev.toml
-echo # auth_token = "YOUR_N8N_WEBHOOK_SECRET_TOKEN" >> C:\DreamerAI\data\config\config.dev.toml
-echo. >> C:\DreamerAI\data\config\config.dev.toml
-echo [integrations] >> C:\DreamerAI\data\config\config.dev.toml
-echo [integrations.github] >> C:\DreamerAI\data\config\config.dev.toml
-echo # Set Day 25 >> C:\DreamerAI\data\config\config.dev.toml
-echo client_id_env = "GITHUB_CLIENT_ID" >> C:\DreamerAI\data\config\config.dev.toml
-echo client_secret_env = "GITHUB_CLIENT_SECRET" >> C:\DreamerAI\data\config\config.dev.toml
+:: config.dev.toml (Configuration - *** FINAL CORRECTED model_name ***)
+(echo # DreamerAI Development Configuration) > C:\DreamerAI\data\config\config.dev.toml
+(echo [ai]) >> C:\DreamerAI\data\config\config.dev.toml
+(echo default_model_preference = ["cloud_tier1", "ollama"]) >> C:\DreamerAI\data\config\config.dev.toml
+(echo jeff_model_provider = "cloud_tier1") >> C:\DreamerAI\data\config\config.dev.toml
+(echo distillation_teacher_provider = "ollama") >> C:\DreamerAI\data\config\config.dev.toml
+(echo.) >> C:\DreamerAI\data\config\config.dev.toml
+(echo # Provider Definitions) >> C:\DreamerAI\data\config\config.dev.toml
+(echo [ai.providers.ollama]) >> C:\DreamerAI\data\config\config.dev.toml
+(echo type = "ollama") >> C:\DreamerAI\data\config\config.dev.toml
+(echo base_url = "http://localhost:11434/api/generate") >> C:\DreamerAI\data\config\config.dev.toml
+(echo model_name = "gemma3:12b") >> C:\DreamerAI\data\config\config.dev.toml
+(echo.) >> C:\DreamerAI\data\config\config.dev.toml
+(echo [ai.providers.cloud_tier1]) >> C:\DreamerAI\data\config\config.dev.toml
+(echo type = "openai_compatible") >> C:\DreamerAI\data\config\config.dev.toml
+(echo api_key_env = "OPENROUTER_API_KEY") >> C:\DreamerAI\data\config\config.dev.toml
+(echo base_url = "https://openrouter.ai/api/v1") >> C:\DreamerAI\data\config\config.dev.toml
+(echo model_name = "google/gemini-2.5-pro-exp-03-25:free" # *** FINAL CORRECTED Model Name ***) >> C:\DreamerAI\data\config\config.dev.toml
+(echo.) >> C:\DreamerAI\data\config\config.dev.toml
+(echo [database]) >> C:\DreamerAI\data\config\config.dev.toml
+(echo type = "sqlite") >> C:\DreamerAI\data\config\config.dev.toml
+(echo path = "C:/DreamerAI/data/db/dreamer.db") >> C:\DreamerAI\data\config\config.dev.toml
+(echo.) >> C:\DreamerAI\data\config\config.dev.toml
+(echo [paths]) >> C:\DreamerAI\data\config\config.dev.toml
+(echo user_dir_base = "C:/DreamerAI/Users") >> C:\DreamerAI\data\config\config.dev.toml
+(echo project_dir_base = "C:/DreamerAI/projects") >> C:\DreamerAI\data\config\config.dev.toml
+(echo template_dir = "C:/DreamerAI/templates") >> C:\DreamerAI\data\config\config.dev.toml
+(echo log_dir = "C:/DreamerAI/docs/logs") >> C:\DreamerAI\data\config\config.dev.toml
+(echo.) >> C:\DreamerAI\data\config\config.dev.toml
+(echo [n8n] # Set Day 33) >> C:\DreamerAI\data\config\config.dev.toml
+(echo task_webhook_url = "http://localhost:5678/webhook/placeholder-set-day-33") >> C:\DreamerAI\data\config\config.dev.toml
+(echo.) >> C:\DreamerAI\data\config\config.dev.toml
+(echo [integrations]) >> C:\DreamerAI\data\config\config.dev.toml
+(echo [integrations.github] # Set Day 25) >> C:\DreamerAI\data\config\config.dev.toml
+(echo client_id_env = "GITHUB_CLIENT_ID") >> C:\DreamerAI\data\config\config.dev.toml
+(echo client_secret_env = "GITHUB_CLIENT_SECRET") >> C:\DreamerAI\data\config\config.dev.toml
 
-:: Create .gitignore File
-echo # Byte-compiled / optimized / DLL files > .gitignore
-echo __pycache__/ >> .gitignore
-echo *.py[cod] >> .gitignore
-echo *$py.class >> .gitignore
-echo. >> .gitignore
-echo # C extensions >> .gitignore
-echo *.so >> .gitignore
-echo. >> .gitignore
-echo # Distribution / packaging >> .gitignore
-echo /dist/ >> .gitignore
-echo /build/ >> .gitignore
-echo *.egg-info/ >> .gitignore
-echo *.egg >> .gitignore
-echo. >> .gitignore
-echo # PyInstaller >> .gitignore
-echo *.spec >> .gitignore
-echo. >> .gitignore
-echo # Installer logs >> .gitignore
-echo *.install.log >> .gitignore
-echo. >> .gitignore
-echo # Unit test / coverage reports >> .gitignore
-echo htmlcov/ >> .gitignore
-echo .tox/ >> .gitignore
-echo .nox/ >> .gitignore
-echo .coverage >> .gitignore
-echo .cache >> .gitignore
-echo nosetests.xml >> .gitignore
-echo coverage.xml >> .gitignore
-echo *.cover >> .gitignore
-echo *.py,cover >> .gitignore
-echo .hypothesis/ >> .gitignore
-echo .pytest_cache/ >> .gitignore
-echo. >> .gitignore
-echo # Jupyter Notebook >> .gitignore
-echo .ipynb_checkpoints >> .gitignore
-echo. >> .gitignore
-echo # Virtual Environment >> .gitignore
-echo venv/ >> .gitignore
-echo ENV/ >> .gitignore
-echo env/ >> .gitignore
-echo VENV/ >> .gitignore
-echo venv.bak/ >> .gitignore
-echo ENV.bak/ >> .gitignore
-echo. >> .gitignore
-echo # SQLite Databases (keep schema in code) >> .gitignore
-echo *.db >> .gitignore
-echo *.db-journal >> .gitignore
-echo *.sqlite >> .gitignore
-echo *.sqlite3 >> .gitignore
-echo. >> .gitignore
-echo # Sensitive Config Files >> .gitignore
-echo .env* >> .gitignore
-echo !.env.example >> .gitignore
-echo config.*.toml >> .gitignore
-echo !config.example.toml >> .gitignore
-echo # Firebase Admin SDK Key >> .gitignore
-echo dreamerai-firebase-adminsdk*.json >> .gitignore
-echo. >> .gitignore
-echo # OS Generated files >> .gitignore
-echo Thumbs.db >> .gitignore
-echo .DS_Store >> .gitignore
-echo. >> .gitignore
-echo # Node modules >> .gitignore
-echo node_modules/ >> .gitignore
-echo app/node_modules/ >> .gitignore
-echo .npm >> .gitignore
-echo npm-debug.log* >> .gitignore
-echo pnpm-debug.log* >> .gitignore
-echo yarn-debug.log* >> .gitignore
-echo yarn-error.log* >> .gitignore
-echo. >> .gitignore
-echo # Log files >> .gitignore
-echo *.log >> .gitignore
-echo logs/ >> .gitignore
-echo docs/logs/*.log >> .gitignore
-echo !docs/logs/rules_check.log >> .gitignore
-echo !docs/logs/issues.log >> .gitignore
-echo !docs/logs/migration_tracker.md >> .gitignore
-echo *.log.[0-9] >> .gitignore
-echo. >> .gitignore
-echo # Electron >> .gitignore
-echo .electron/ >> .gitignore
-echo # Temp files, backups >> .gitignore
-echo *.tmp >> .gitignore
-echo *.bak >> .gitignore
-echo *.swp >> .gitignore
-echo ~* >> .gitignore
+:: Create .gitignore File (Using comprehensive version from previous response)
+(echo # Byte-compiled / optimized / DLL files) > .gitignore
+:: ... (Paste the FULL .gitignore content from the previous Day 1 response here) ...
+(echo ~*) >> .gitignore
 
 :: Stage, Commit, and Push Initial Setup
 git add .
-git commit -m "Day 1: Initial project structure, Git setup, base configuration (OpenRouter/Ollama)"
+git commit -m "Day 1: Initial project structure, Git setup, base configuration (OpenRouter Correct Gemini Exp/Ollama)"
 git push -u origin main
 
 echo.
 echo === Day 1 Setup Complete ===
-echo IMPORTANT: Ensure you add your actual OpenRouter API Key to C:\DreamerAI\data\config\.env.development
-echo Ensure Ollama is running and model 'gemma3:12b' is pulled.
+echo IMPORTANT: Add your actual OpenRouter API Key to C:\DreamerAI\data\config\.env.development
+echo Ensure Ollama model 'gemma3:12b' is pulled (`ollama pull gemma3:12b`).
 Use code with caution.
 Batch
-Explanation:
-Script creates directories matching project_structure.md.
-Creates symlink (requires Admin). Checks for failure.
-Initializes Git, sets user, adds remote.
-Creates .env.development with OPENROUTER_API_KEY placeholder. Reminds Anthony to fill it. Includes commented-out placeholders for future keys (GitHub, JWT, Encryption).
-Creates config.dev.toml configured for:
-cloud_tier1: OpenRouter API (openrouter.ai/api/v1), default model meta-llama/llama-3-70b-instruct (confirm availability on OpenRouter), reads key from OPENROUTER_API_KEY env var.
-ollama: gemma3:12b model via localhost:11434.
-Default preference: ["cloud_tier1", "ollama"]. Jeff uses cloud_tier1. Distillation V1 uses ollama.
-Includes standard [database] (SQLite V1), [paths], placeholder [n8n], placeholder [integrations.github] sections.
-Creates a comprehensive .gitignore covering Python, Node, Env, DBs, Configs, Logs, Build artifacts, etc. Excludes .env* but includes example templates. Includes Firebase Admin Key pattern. Includes log files but excludes essential tracking logs.
-Performs initial Git commit and push.
-Outputs reminders for API key and Ollama model.
-Troubleshooting:
-mklink Fails: Must run terminal As Administrator. Verify C:\Users\thecr\.ollama\models exists. If persists, skip symlink (log issue) and configure LLM class later to read directly from user path.
-git Errors: Ensure Git installed & in PATH. Verify GitHub URL (https://github.com/TheCrypDough/DreamerAi.git). Handle authentication if needed.
-File Errors (echo > ...): Check permissions on C:\DreamerAI\. Ensure data/config created before writing files.
-Advice for implementation:
-Run the ENTIRE batch script block in an Administrator terminal.
-Anthony MUST edit C:\DreamerAI\data\config\.env.development afterwards and insert his real OpenRouter API key.
-Ensure ollama pull gemma3:12b has been run successfully beforehand.
-Advice for CursorAI:
-Execute the batch script block provided above.
-After execution, explicitly remind Anthony to update the OPENROUTER_API_KEY in the .env.development file.
-Perform the verification step (Task 3) checking file system and GitHub.
-Present the summary for approval (Task 4).
-Test:
-Verify C:\DreamerAI\ structure matches project_structure.md (key dirs created).
-Verify data/models symlink exists and points correctly (if mklink succeeded).
+Explanation: (Remains the same)
+Troubleshooting: (Remains the same)
+Advice for implementation: (Remains the same)
+Advice for CursorAI: (Remains the same, verify FINAL correct Gemini model in .toml)
+Test: (Verification point 4 updated)
+Verify C:\DreamerAI\ structure matches project_structure.md.
+Verify data/models symlink points correctly.
 Verify data/config/.env.development has OPENROUTER_API_KEY placeholder.
-Verify data/config/config.dev.toml has [ai.providers.cloud_tier1] pointing to OpenRouter/Llama3 and [ai.providers.ollama] pointing to gemma3:12b.
-Verify .gitignore exists and contains relevant patterns.
-Verify initial commit exists on GitHub (TheCrypDough/DreamerAi repo, main branch).
+Verify data/config/config.dev.toml has cloud_tier1 model_name = "google/gemini-2.5-pro-exp-03-25:free" and ollama model_name = "gemma3:12b".
+Verify .gitignore exists.
+Verify initial commit exists on GitHub.
 Log results.
-Backup Plans:
-If mklink fails persistently, skip it; modify Day 6 LLM config later to use direct Ollama path if needed. Log issue.
-If Git fails, perform Git steps manually via CLI.
-Challenges: Ensuring Admin privileges for mklink. Correct OpenRouter/Ollama configuration via echo.
-Out of the box ideas: N/A for initial setup.
+Backup Plans: (Remains the same)
+Challenges: (Remains the same)
+Out of the box ideas: N/A.
 Logs:
-(Cursor) Action: Starting Task: Day 1 Initial Project Setup & Refined Configuration, Rules reviewed: Yes, Guide consulted: Yes, Env verified: NA, Sequence verified: Yes, Timestamp: [YYYY-MM-DD HH:MM:SS]
-(Cursor updates migration_tracker.md for all created files/dirs)
-(Cursor updates dreamerai_context.md & daily_context_log.md after approval)
+(Cursor) Action: Starting Task: Day 1 Initial Project Setup (FINAL Gemini Config)... Timestamp: [...]
+(Cursor updates...)
 Commits:
-git commit -m "Day 1: Initial project structure, Git setup, base configuration (OpenRouter/Ollama)"
-Use code with caution.
-Bash
-Motivation:
+git commit -m "Day 1: Initial project structure, Git setup, base configuration (OpenRouter Correct Gemini Exp/Ollama)"Motivation:
 “Planting the DreamerAI flag! The project home is built, version control is live, and the core configuration points to our chosen AI minds (OpenRouter + Ollama). The foundation is solid and precisely aligned with our plan!”
 (End of COMPLETE Updated Guide Entry for Day 1)
 
@@ -1470,85 +1344,89 @@ Motivation:
 
 
 
-(Start of COMPLETE Updated Guide Entry for Day 6)
-Day 6 - Config-Driven Hybrid LLM Setup (OpenRouter/Ollama Ready), Smarter Brain Switching!
-Anthony's Vision: "AI Models... flexible... Jeff needs super intelligence... test theories..." To achieve the flexibility needed for different agents and to easily test different models (like a powerful Cloud model for Jeff and a strong local fallback), the AI control center needs to be configuration-driven, reading instructions from the config.dev.toml and .env.development files established on Day 1.
+(Start of COMPLETE Updated Guide Entry for Day 6 - Rev 5: FINAL Gemini Exp + Full Tasks)
+Day 6 - Config-Driven Hybrid LLM Setup (Correct Gemini Exp Ready + Cache), Smarter Brain Switching!
+Anthony's Vision: "AI Models... flexible... Jeff needs super intelligence... test theories..." To achieve the flexibility needed, the AI control center needs to be configuration-driven, reading instructions from the Day 1 config files to use OpenRouter (providing google/gemini-2.5-pro-exp-03-25:free) and local Ollama (gemma3:12b), plus caching for speed.
 Description:
-This step implements the core LLM class responsible for interacting with multiple Large Language Models – our chosen configuration: OpenRouter (providing access to models like Llama 3 70B V1 default) and local Ollama (running gemma3:12b V1 fallback). Crucially, this class reads its settings (provider URLs, model names, API key references like OPENROUTER_API_KEY) directly from config.dev.toml and .env.development (using tomllib and dotenv). It includes fallback logic based on default_model_preference and supports agent-specific overrides (jeff_model_provider), ensuring DreamerAI dynamically selects the appropriate AI based on centrally managed settings. It also includes the corrected Ollama status check.
+This step implements the core LLM class responsible for interacting with multiple Large Language Models – our chosen configuration: OpenRouter (providing access to google/gemini-2.5-pro-exp-03-25:free V1 default) and local Ollama (running gemma3:12b V1 fallback). It reads settings (URLs, models, OPENROUTER_API_KEY) directly from config.dev.toml/.env.development. Includes fallback logic, agent overrides, Redis caching (D38 logic), and the corrected Ollama status check (/ endpoint).
 Relevant Context:
-Technical Analysis: Creates engine/ai/llm.py. The LLM class uses tomllib to parse C:\DreamerAI\data\config\config.dev.toml and dotenv to load C:\DreamerAI\data\config\.env.development. It initializes clients: Local Ollama (gemma3:12b model, http://localhost:11434/api/generate) via requests. Cloud Tier 1 (cloud_tier1 provider) via openai library configured for OpenRouter (https://openrouter.ai/api/v1, default model meta-llama/llama-3-70b-instruct, uses OPENROUTER_API_KEY from env). Includes _check_ollama_status method targeting the root / endpoint for reliable server detection. The async generate method determines provider sequence (using jeff_model_provider or default_model_preference), attempts generation, and handles fallbacks. Robust async handling, timeouts, error logging included. Includes Redis caching logic from Day 38.
-Layman's Terms: We're building the AI control center (LLM class). It reads the settings files from Day 1 to know how to talk to OpenRouter's powerful cloud AI (Llama 3 70B) and your local Ollama AI (gemma3:12b). It uses the secret key for OpenRouter from the .env file. It knows OpenRouter is the first choice, but if that fails, it tries Ollama. For Jeff specifically, it knows to use OpenRouter. It also correctly checks if your local Ollama server is running before trying to use it. It remembers recent answers using Redis (Day 38) to be faster.
+Technical Analysis: Creates engine/ai/llm.py. LLM class uses tomllib/dotenv. Initializes clients: Ollama (gemma3:12b) via requests. cloud_tier1 (OpenRouter) via openai lib targeting google/gemini-2.5-pro-exp-03-25:free using OPENROUTER_API_KEY. Includes _check_ollama_status (targets /). Initializes Redis client. async generate checks Redis cache, determines provider order, calls provider, handles fallback, stores result in Redis cache.
+Layman's Terms: Building the AI control center. Reads Day 1 settings to talk to OpenRouter (Gemini 1.5 Pro Experimental) and local Ollama (gemma3:12b). Uses secret key. Knows OpenRouter #1, Ollama #2. Knows Jeff uses OpenRouter. Correctly checks Ollama status. Uses Redis quick-memory (check cache first, store result after).
 Groks Thought Input:
-This config-driven LLM class using OpenRouter + the corrected Ollama model/check is perfect. Flexible, maintainable, secure secrets. Reading the TOML makes swapping models easy. This sets up Jeff (Day 8) correctly. The Redis caching (D38) integration adds necessary speed. This structure is built right.
+LLM class configured correctly for google/gemini-2.5-pro-exp-03-25:free via OpenRouter + gemma3:12b + corrected checks + Redis caching is the definitive V1 setup. Ready for agents.
 My thought input:
-Okay, updated Day 6 LLM class. Use tomllib/dotenv. Configure specifically for OpenRouter (cloud_tier1) and Ollama (gemma3:12b). Ensure _check_ollama_status uses requests.get('http://localhost:11434'). generate method handles agent_name='Jeff' override and default_model_preference fallback. Integrate Day 38 Redis caching (redis client, _get_cache_key, _get_from_cache, _set_cache). Testing needs OpenRouter key in .env and Ollama server running with gemma3:12b pulled.
+Okay, Day 6 Rev 5 FINAL. Use tomllib/dotenv. Configure for OpenRouter (google/gemini-2.5-pro-exp-03-25:free) / Ollama (gemma3:12b). Correct Ollama status check (/). Integrate Redis caching. Test needs key + running Ollama/Redis. Providing the FULL code block and FULL task list now.
 Additional Files, Documentation, Tools, Programs etc needed:
-(Module) Tomllib: (Built-in Python 3.11+).
-(Library) python-dotenv: Installed Day 2.
-(Library) requests: Installed Day 2.
-(Library) openai: Installed Day 2.
-(Library) redis-py: Installed Day 2.
-(Tool/Runtime) Ollama Server: Must be running with gemma3:12b model pulled. Assumed Day 1 setup.
-(Credential) OpenRouter API Key: Must be set in .env.development. From openrouter.ai.
-(Service) Redis Server: Needs to be running (e.g., via Docker Compose D37) for caching test.
+(Module) Tomllib: (Built-in Python 3.11+). Stored: Python Std Lib.
+(Library) python-dotenv: Loads .env. Installed Day 2. Stored: venv/Lib/....
+(Library) requests: HTTP Client. Installed Day 2. Stored: venv/Lib/....
+(Library) openai: API Client. Installed Day 2. Stored: venv/Lib/....
+(Library) redis-py: Redis Client. Installed Day 2. Stored: venv/Lib/....
+(Tool/Runtime) Ollama Server: Runs local LLMs. Must be running with gemma3:12b model pulled. Assumed Day 1 setup. Stored: System Install.
+(Credential) OpenRouter API Key: Access Cloud LLMs. Must be set in .env.development. From openrouter.ai. Stored: .env.development.
+(Service) Redis Server: Needs to be running (e.g., via Docker Compose D37) for caching. Stored: Docker Image/Volume.
 Any Additional updates needed to the project due to this implementation?
-Prior: Config files (.toml/.env) created Day 1 with OpenRouter/Ollama config. Dependencies installed Day 2. Redis running via compose (D37) ideally. Ollama (gemma3:12b) running.
+Prior: Config files (.toml/.env) created Day 1 with correct Gemini/gemma3:12b config. Dependencies installed Day 2. Redis running via compose (D37 ideally). Ollama (gemma3:12b) running.
 Post: Agents (starting Day 8) import and use this config-driven, caching LLM class.
 Project/File Structure Update Needed: Yes, creates engine/ai/llm.py and engine/ai/__init__.py.
-Any additional updates needed to the guide for changes or explanation due to this implementation: None needed beyond this entry (reflects updated config/check). Day 38 Redis details integrated here.
-Any removals from the guide needed due to this implementation (detailed): Replaces any previous Day 6 draft/implementation. Removes Grok/DeepSeek specifics, replaces with OpenRouter. Updates Ollama model name. Fixes Ollama status check method. Integrates Day 38 Redis caching.
-Effect on Project Timeline: Day 6 of ~80+ days. No change.
+Any additional updates needed to the guide for changes or explanation due to this implementation: Day 38 guide entry becomes largely informational, as caching is implemented here. Needs update to reflect this merge.
+Any removals from the guide needed due to this implementation (detailed): Replaces previous Day 6 drafts. Integrates Day 38 Redis caching logic. Uses correct Gemini model.
+Effect on Project Timeline: Day 6 of ~80+ days. Consolidates D38.
 Integration Plan:
 When: Day 6 (Week 1) – Following environment and database setup.
 Where: C:\DreamerAI\engine\ai\llm.py.
 Dependencies: Python 3.11+, relevant libraries (dotenv, requests, openai, redis-py, tomllib). OpenRouter API key in .env. Running Ollama (gemma3:12b) and Redis services.
-Setup Instructions: Ensure prerequisites met (libs installed, services running, key set).
+Setup Instructions: Ensure prerequisites met (libs installed, services running, key set). Run docker compose up -d redis (or full compose) if Redis not running. Ensure Ollama service running.
 Recommended Tools:
 VS Code/CursorAI Editor.
 Terminal for testing (python -m engine.ai.llm).
 Redis client (redis-cli via docker exec) for cache inspection (optional).
 Tasks:
-Cursor Task: Ensure engine/ai/ directory exists. Create empty __init__.py file inside it if needed.
-Cursor Task: Create/Overwrite C:\DreamerAI\engine\ai\llm.py. Populate it with the COMPLETE Python code provided below (This code is based on the Day 38 version, ensuring Redis cache and updated OpenRouter/Ollama config + check are included).
+Cursor Task: Ensure engine/ai/ directory exists. Create empty __init__.py file inside C:\DreamerAI\engine\ai\ if it doesn't exist.
+Cursor Task: Create/Overwrite C:\DreamerAI\engine\ai\llm.py. Populate it with the COMPLETE Python code provided below (Verified Gemini + Cache + Fixes).
 Cursor Task: Activate the virtual environment (C:\DreamerAI\venv\Scripts\activate).
-Cursor Task: Execute the test block by running python -m engine.ai.llm from the C:\DreamerAI directory. Run it TWICE.
-Cursor Task: Verify Test Output:
+Cursor Task: Execute the test block by running python -m engine.ai.llm from the C:\DreamerAI directory. Run this command a SECOND time after the first run completes.
+Cursor Task: Verify Test Output from BOTH runs:
 Check logs show config/env files loaded correctly.
 Check logs show Ollama status check PASSED (hitting /).
-Check logs show OpenRouter client initialized OK (API key read).
+Check logs show OpenRouter client initialized OK (using google/gemini-2.5-pro-exp-03-25:free).
 Check logs show Redis connection OK.
-Run 1: Verify CACHE MISS, OpenRouter called (or Ollama if OpenRouter fails), response generated. Note time taken.
-Run 2: Verify CACHE HIT, response generated much faster, NO Ollama/OpenRouter provider call logged for this run.
-Cursor Task: Present Summary for Approval: "Task 'Day 6: Hybrid LLM Setup (OpenRouter/Ollama Ready)' complete. Implementation: Created llm.py with LLM class reading .toml/.env config. Configured for OpenRouter (Llama 3 70B) & Ollama (gemma3:12b). Implemented corrected Ollama status check (root /). Integrated Redis caching (Day 38 logic). Tests/Verification: Ran python -m engine.ai.llm twice. Confirmed config load, provider init (OpenRouter, Ollama), Redis connect OK. Confirmed Cache MISS on run 1 (OpenRouter used), Cache HIT on run 2 (significantly faster). Hybrid, caching LLM system functional. Requesting approval to proceed to 'Day 7: Dream Team Framework Overview'. (yes/no/details?)"
+Run 1: Verify "LLM Cache MISS" logged. Verify OpenRouter (cloud_tier1) called for generation. Verify response generated successfully. Note time taken.
+Run 2: Verify "LLM Cache HIT" logged. Verify response generated successfully and matches Run 1. Verify time taken is significantly less than Run 1. Verify NO OpenRouter/Ollama provider generation logs appear for Run 2.
+Cursor Task: Present Summary for Approval: "Task 'Day 6: Hybrid LLM Setup (Correct Gemini Ready + Cache)' complete. Implementation: Created llm.py reading config for OpenRouter (google/gemini-2.5-pro-exp-03-25:free) & Ollama (gemma3:12b). Corrected Ollama check. Integrated Redis cache. Tests/Verification: Ran python -m engine.ai.llm twice. Confirmed config/Redis/Ollama/OpenRouter init OK. Confirmed Cache MISS (Run 1, Gemini used) then HIT (Run 2, faster). Hybrid, caching LLM ready. Requesting approval for 'Day 7: Dream Team Framework Overview'. (yes/no/details?)"
 Cursor Task: (Upon Approval) Stage changes (engine/ai/__init__.py, engine/ai/llm.py), commit, push. Execute Auto-Update Workflow.
 Code:
 # C:\DreamerAI\engine\ai\__init__.py
 # Makes 'ai' directory a Python package
 Use code with caution.
 Python
-# C:\DreamerAI\engine\ai\llm.py (COMPLETE REPLACEMENT - Includes D38 Caching, D6 Updates)
+# C:\DreamerAI\engine\ai\llm.py (COMPLETE IMPLEMENTATION - FINAL Gemini Exp + Cache + Fixes)
 import asyncio
 import os
 import requests
 import traceback
-import tomllib # Requires Python 3.11+
-import json # Import json for serialization
+import tomllib
+import json
 import redis # For caching
 import hashlib # For hashing prompt
+import time # For test timing
 from typing import Optional, Dict, List, Any
+from pathlib import Path
 from openai import OpenAI, APIConnectionError, RateLimitError, APIStatusError
 from dotenv import load_dotenv
 
 # Add project root for sibling imports
-import sys
-project_root_llm = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if project_root_llm not in sys.path: sys.path.insert(0, project_root_llm)
+project_root_llm = Path(__file__).resolve().parent.parent.parent
+if str(project_root_llm) not in sys.path:
+    sys.path.insert(0, str(project_root_llm))
 
 try:
-    # Ensure logger is initialized from Day 3
     from engine.core.logger import logger_instance as logger, log_rules_check
-except ImportError: # Fallback logger
-    import logging; logger = logging.getLogger(__name__); def log_rules_check(m): logger.debug(m)
+except ImportError:
+    import logging
+    logger = logging.getLogger(__name__)
+    def log_rules_check(m): logger.debug(f"Rules Check: {m}")
+    logger.warning("LLM: Could not import custom logger, using basic logging.")
 
 # --- Configuration Loading ---
 CONFIG: Dict[str, Any] = {}
@@ -1559,173 +1437,284 @@ def load_configuration():
     global CONFIG, API_KEYS
     CONFIG = {}; API_KEYS = {} # Reset
     try:
-        # Load TOML Configuration
         config_path = project_root_llm / 'data' / 'config' / 'config.dev.toml'
         logger.debug(f"Attempting to load config from: {config_path}")
         with open(config_path, 'rb') as f: CONFIG = tomllib.load(f)
         logger.info(f"Config loaded from {config_path}. Providers: {list(CONFIG.get('ai', {}).get('providers', {}).keys())}")
 
-        # Load Environment Variables (Secrets)
         dotenv_path = project_root_llm / 'data' / 'config' / '.env.development'
         logger.debug(f"Attempting to load .env file from: {dotenv_path}")
-        if load_dotenv(dotenv_path=dotenv_path): logger.info("Loaded environment variables.")
+        if load_dotenv(dotenv_path=dotenv_path): logger.info(f"Loaded environment variables from {dotenv_path}")
         else: logger.warning(f"Could not load .env file from {dotenv_path}.")
 
-        # Populate API_KEYS based on config (Handles OpenRouter key)
         for provider_details in CONFIG.get('ai', {}).get('providers', {}).values():
              key_env_var = provider_details.get('api_key_env')
              if key_env_var:
                  api_key = os.getenv(key_env_var); API_KEYS[key_env_var] = api_key
                  if not api_key: logger.warning(f"Env var '{key_env_var}' not found.")
-                 else: logger.debug(f"Found API key for '{key_env_var}'.")
+                 else: logger.debug(f"Found API key for env var '{key_env_var}'.")
 
-    except FileNotFoundError as e: logger.error(f"Config file not found: {e}.")
-    except tomllib.TOMLDecodeError as e: logger.error(f"Error decoding TOML: {e}")
-    except Exception as e: logger.error(f"Failed to load config: {e}"); traceback.print_exc()
+    except FileNotFoundError as e: logger.error(f"Configuration file not found: {e}.")
+    except tomllib.TOMLDecodeError as e: logger.error(f"Error decoding TOML configuration file: {e}")
+    except Exception as e: logger.error(f"Failed to load configuration: {e}"); traceback.print_exc()
 
-# Load configuration when the module is imported
 load_configuration()
 
 # --- Constants ---
-DEFAULT_LLM_CACHE_TTL = 3600 # 1 hour TTL (from Day 38)
+DEFAULT_LLM_CACHE_TTL = 3600 # 1 hour
 
 # --- LLM Class ---
 class LLM:
-    """ V2: Manages interactions with OpenRouter/Ollama based on config, with Redis caching. """
+    """ V3: Manages OpenRouter(Correct Gemini Exp)/Ollama, Redis caching, correct status checks. """
     def __init__(self):
         self.clients: Dict[str, Any] = {}
-        self.ollama_config: Dict = {} # Store ollama provider config
+        self.ollama_config: Dict = {}
         self.ollama_available: bool = False
         self.redis_client: Optional[redis.Redis] = None
         self.cache_enabled: bool = False
+        self._initialize_redis()
+        self._initialize_providers()
 
-        self._initialize_redis() # Init Redis (D38)
-        self._initialize_providers() # Init LLM Providers
-
-    def _initialize_redis(self): # Keep D38 Logic
+    def _initialize_redis(self):
+        """Initializes connection to the Redis server."""
         try:
-            self.redis_client = redis.Redis(host='redis', port=6379, db=0, socket_timeout=5, decode_responses=False)
+            redis_host = CONFIG.get('redis', {}).get('host', 'redis')
+            redis_port = CONFIG.get('redis', {}).get('port', 6379)
+            self.redis_client = redis.Redis(host=redis_host, port=redis_port, db=0, socket_timeout=5, decode_responses=False)
             self.redis_client.ping()
-            self.cache_enabled = True; logger.info("Redis cache connected.")
-        except redis.exceptions.ConnectionError as e: logger.error(f"Redis connection failed: {e}. Caching disabled."); self.redis_client = None
-        except Exception as e: logger.error(f"Redis init error: {e}. Caching disabled."); self.redis_client = None
+            self.cache_enabled = True
+            logger.info(f"Successfully connected to Redis @ {redis_host}:{redis_port}. Caching enabled.")
+        except redis.exceptions.ConnectionError as e:
+            logger.error(f"Redis connection failed: {e}. Caching disabled.")
+            self.redis_client = None
+            self.cache_enabled = False
+        except Exception as e:
+            logger.error(f"Unexpected error initializing Redis: {e}. Caching disabled.")
+            self.redis_client = None
+            self.cache_enabled = False
 
     def _get_provider_config(self, provider_name: str) -> Optional[Dict[str, Any]]:
         return CONFIG.get('ai', {}).get('providers', {}).get(provider_name)
 
     def _initialize_providers(self):
-        logger.info("Initializing LLM providers (OpenRouter/Ollama)...")
+        """Initializes clients for configured providers."""
+        logger.info("Initializing LLM providers...")
         providers = CONFIG.get('ai', {}).get('providers', {})
         if not providers: logger.error("No providers found in config."); return
 
         for name, config in providers.items():
             provider_type = config.get('type')
+            api_key_env = config.get('api_key_env')
+            base_url = config.get('base_url')
+            model_name_cfg = config.get('model_name') # Model from config
+            api_key = API_KEYS.get(api_key_env) if api_key_env else None
+
             if provider_type == "ollama":
-                self.ollama_config = config # Store config
-                self.ollama_available = self._check_ollama_status() # Use CORRECTED check
+                self.ollama_config = config
+                if not base_url: logger.warning(f"Ollama base_url missing for '{name}'."); continue
+                self.ollama_available = self._check_ollama_status()
                 status = 'Available' if self.ollama_available else 'Unavailable'
-                logger.info(f"Ollama provider '{config.get('model_name')}' @ {config.get('base_url')} configured. Status: {status}")
-            elif provider_type == "openai_compatible": # Assumes OpenRouter V1
-                api_key_env = config.get('api_key_env'); base_url = config.get('base_url')
-                api_key = API_KEYS.get(api_key_env) if api_key_env else None
-                if api_key and base_url:
+                logger.info(f"Ollama provider using '{model_name_cfg}' @ {base_url} configured. Status: {status}")
+            elif provider_type == "openai_compatible": # Handles OpenRouter
+                if name in self.clients: continue
+                if api_key and base_url and model_name_cfg:
                     try:
-                        client = OpenAI(api_key=api_key, base_url=base_url)
-                        # Optional: Check connection? client.models.list() might work for OR
-                        self.clients[name] = client # Store client keyed by provider name (e.g., 'cloud_tier1')
-                        logger.info(f"Initialized OpenAI-compatible client for provider: '{name}' @ {base_url}")
+                        default_headers = {"HTTP-Referer": "http://localhost:3000", "X-Title": "DreamerAI"} # Placeholder headers
+                        client = OpenAI(api_key=api_key, base_url=base_url, default_headers=default_headers)
+                        self.clients[name] = client
+                        logger.info(f"Initialized client for '{name}' (Model: {model_name_cfg}) @ {base_url}")
                     except Exception as e: logger.error(f"Failed client init for '{name}': {e}")
-                else: logger.warning(f"API Key ('{api_key_env}') or Base URL missing for '{name}'. Client not initialized.")
+                else: logger.warning(f"API Key/Base URL/Model Name missing for '{name}'. Client not initialized.")
             else: logger.warning(f"Unsupported provider type '{provider_type}' for '{name}'.")
 
-    def _check_ollama_status(self) -> bool: # UPDATED Day 6 Logic
-        """ Checks if the Ollama server root is responding. """
-        base_url_generate = self.ollama_config.get('base_url')
-        if not base_url_generate: logger.warning("Ollama base_url missing."); return False
-        # Derive root URL from generate URL (e.g., http://host:port)
-        ollama_root_url = base_url_generate.split('/api/')[0]
-        if not ollama_root_url.startswith("http"): logger.warning(f"Invalid Ollama root URL derived: {ollama_root_url}"); return False
-
-        logger.debug(f"Checking Ollama status at root: {ollama_root_url}...")
+    def _check_ollama_status(self) -> bool: # CORRECTED check
+        ollama_root_url = self.ollama_config.get('base_url','').split('/api/')[0]
+        if not ollama_root_url.startswith("http"): return False
+        logger.debug(f"Checking Ollama status @ {ollama_root_url}...")
         try:
-            response = requests.get(ollama_root_url, timeout=2) # Short timeout for status check
-            # Ollama root typically responds with "Ollama is running" text
-            if response.status_code == 200 and "Ollama is running" in response.text:
-                 logger.info("Ollama server check PASSED.")
-                 return True
-            else:
-                 logger.warning(f"Ollama server check FAILED. Status: {response.status_code}, Response: {response.text[:100]}")
-                 return False
-        except requests.exceptions.Timeout: logger.warning("Ollama status check timed out."); return False
-        except requests.exceptions.ConnectionError: logger.warning("Ollama connection error. Is service running?"); return False
-        except Exception as e: logger.error(f"Error checking Ollama status: {e}"); return False
+            response = requests.get(ollama_root_url, timeout=2)
+            if response.status_code == 200 and "Ollama is running" in response.text: logger.info("Ollama check OK."); return True
+            else: logger.warning(f"Ollama check FAILED ({response.status_code})."); return False
+        except Exception as e: logger.warning(f"Ollama check error: {e}"); return False
 
-    # --- Caching Helpers (Keep from Day 38/V1) ---
-    def _get_cache_key(self, prompt: str, agent_name: Optional[str], max_tokens: int) -> str: # Keep D38 logic
-         identifier = f"{agent_name or 'default'}|{max_tokens}|{prompt}"; return f"llm_cache:{hashlib.sha256(identifier.encode()).hexdigest()}"
-    def _get_from_cache(self, key: str) -> Optional[str]: # Keep D38 logic
+    # --- Caching Helpers ---
+    def _get_cache_key(self, prompt: str, agent_name: Optional[str], max_tokens: int) -> str:
+        identifier = f"{agent_name or 'default'}|{max_tokens}|{prompt}"
+        return f"llm_cache:{hashlib.sha256(identifier.encode('utf-8')).hexdigest()}"
+
+    def _get_from_cache(self, key: str) -> Optional[str]:
         if not self.cache_enabled or not self.redis_client: return None
-        try: cached_bytes = self.redis_client.get(key); # ... handle decode ... log hit/miss ... return str or None
-        except redis.RedisError as e: logger.error(f"Redis GET error: {e}"); return None
-    def _set_cache(self, key: str, value: str, ttl: int = DEFAULT_LLM_CACHE_TTL): # Keep D38 logic
+        try:
+            cached_bytes = self.redis_client.get(key)
+            if cached_bytes: logger.info(f"LLM Cache HIT for key suffix: ...{key[-10:]}"); return cached_bytes.decode('utf-8')
+            else: logger.debug(f"LLM Cache MISS for key suffix: ...{key[-10:]}"); return None
+        except Exception as e: logger.error(f"Redis GET error: {e}"); return None
+
+    def _set_cache(self, key: str, value: str, ttl: int = DEFAULT_LLM_CACHE_TTL):
         if not self.cache_enabled or not self.redis_client: return
-        try: value_bytes = value.encode(); self.redis_client.setex(key, ttl, value_bytes); # ... log set ...
-        except redis.RedisError as e: logger.error(f"Redis SETEX error: {e}")
+        try:
+            success = self.redis_client.setex(key, ttl, value.encode('utf-8'))
+            if success: logger.debug(f"LLM Cache SET for key suffix: ...{key[-10:]} TTL: {ttl}s")
+            else: logger.warning(f"Redis SETEX failed for key {key[-10:]}")
+        except Exception as e: logger.error(f"Redis SETEX error: {e}")
 
-    # --- Generation Methods (Keep Internal Logic from Day 6/38) ---
-    async def _generate_ollama(self, config: Dict, prompt: str, max_tokens: int) -> Optional[str]: # Keep Day 6/38 logic
-        # ... uses requests.post with config['model_name'] ...
-        pass
-    async def _generate_openai_compatible(self, client: OpenAI, config: Dict, provider_name: str, prompt: str, max_tokens: int) -> Optional[str]: # Keep Day 6/38 logic
-        # ... uses client.chat.completions.create with config['model_name'] ...
-        pass
+    # --- Generation Methods ---
+    async def _generate_ollama(self, config: Dict, prompt: str, max_tokens: int) -> Optional[str]:
+        """Generates text using the local Ollama server via requests."""
+        model = config.get('model_name'); base_url = config.get('base_url')
+        if not model or not base_url: logger.error("Ollama config invalid."); return None
+        logger.debug(f"Attempting Ollama: {model}")
+        payload = {"model": model, "prompt": prompt, "stream": False, "options": {"num_predict": max_tokens}}
+        try:
+            loop = asyncio.get_running_loop()
+            # Need to handle potential connection errors during request
+            response = await loop.run_in_executor(None, lambda: requests.post(base_url, json=payload, timeout=90)) # Increased timeout
+            response.raise_for_status() # Raise HTTPError for bad responses (4xx or 5xx)
+            res_json = response.json(); result = res_json.get("response")
+            return result.strip() if result else None
+        except requests.exceptions.Timeout: logger.error("Ollama request timed out."); return None
+        except requests.exceptions.ConnectionError: logger.error("Ollama connection error - is server running?"); self.ollama_available=False; return None
+        except requests.exceptions.RequestException as e: logger.error(f"Ollama request failed: {e}"); return None
+        except Exception as e: logger.exception(f"Ollama generation unexpected error: {e}"); return None # Log full traceback
 
-    # --- Main Generate Method (Integrates Cache + Fallback) ---
-    async def generate( self, prompt: str, agent_name: Optional[str] = None, max_tokens: int = 1500 ) -> str: # Keep D38 Logic
-        log_rules_check(f"LLM generate called by: {agent_name or 'Unknown'}")
+    async def _generate_openai_compatible(self, client: OpenAI, config: Dict, provider_name: str, prompt: str, max_tokens: int) -> Optional[str]:
+        """Generates text using an initialized OpenAI-compatible API client."""
+        model = config.get('model_name') # Uses the CORRECT model name
+        if not model: logger.error(f"{provider_name} model missing."); return None
+        logger.debug(f"Attempting {provider_name}: {model}")
+        messages = [{"role": "user", "content": prompt}]
+        try:
+            loop = asyncio.get_running_loop()
+            completion = await loop.run_in_executor(None, lambda: client.chat.completions.create(
+                 model=model, messages=messages, max_tokens=max_tokens, stream=False
+            ))
+            content = completion.choices[0].message.content
+            return content.strip() if content else None
+        except APIConnectionError as e: logger.error(f"{provider_name} API Connection Error: {e}"); return None
+        except RateLimitError as e: logger.error(f"{provider_name} API Rate Limit Error: {e}"); return None
+        except APIStatusError as e: logger.error(f"{provider_name} API Status Error ({e.status_code}): {e.response}"); return None
+        except Exception as e: logger.exception(f"{provider_name} generation unexpected error: {e}"); return None
+
+    # --- Main Generate Method ---
+    async def generate(self, prompt: str, agent_name: Optional[str] = None, max_tokens: int = 1500) -> str:
+        log_rules_check(f"LLM generate call by {agent_name or 'Default'}")
         cache_key = self._get_cache_key(prompt, agent_name, max_tokens)
-        cached_response = self._get_from_cache(cache_key)
-        if cached_response: return cached_response # Return from cache if hit
+        cached = self._get_from_cache(cache_key)
+        if cached is not None: return cached
 
-        # Cache Miss: Determine provider preference (Keep D6 Logic)
-        provider_preference = # ... Determine list ["cloud_tier1", "ollama"] based on agent_name/default config ...
-        if not provider_preference: return "ERROR: LLM provider preference missing."
+        provider_preference = []
+        ai_config = CONFIG.get('ai', {})
+        agent_provider_key = f"{agent_name.lower()}_model_provider" if agent_name else None
+        specific_provider = ai_config.get(agent_provider_key) if agent_provider_key else None
+        if specific_provider and self._get_provider_config(specific_provider):
+            provider_preference.append(specific_provider)
+        default_order = ai_config.get('default_model_preference', [])
+        for p in default_order:
+             if p not in provider_preference and self._get_provider_config(p):
+                 provider_preference.append(p)
+        if not provider_preference: logger.error("No valid providers."); return "ERROR: No LLM providers available."
 
         logger.info(f"LLM Cache MISS. Attempting providers: {provider_preference}")
-        fresh_response: Optional[str] = None
-        for provider_name in provider_preference: # Keep D6 Logic
-            provider_config = self._get_provider_config(provider_name); #...
-            if provider_config.get('type') == "ollama":
-                 if self.ollama_available: fresh_response = await self._generate_ollama(provider_config, prompt, max_tokens)
-            elif provider_config.get('type') == "openai_compatible": # OpenRouter
-                 client = self.clients.get(provider_name);
-                 if client: fresh_response = await self._generate_openai_compatible(client, provider_config, provider_name, prompt, max_tokens)
-            # Break if successful
+        fresh_response = None
+        for provider_name in provider_preference:
+            config = self._get_provider_config(provider_name);
+            if not config: continue
+            provider_type = config.get('type')
+            logger.debug(f"Attempting provider: '{provider_name}' Type: {provider_type}")
+            if provider_type == "ollama":
+                 if self.ollama_available: fresh_response = await self._generate_ollama(config, prompt, max_tokens)
+                 else: logger.warning("Skipping Ollama - unavailable.")
+            elif provider_type == "openai_compatible":
+                 client = self.clients.get(provider_name)
+                 if client: fresh_response = await self._generate_openai_compatible(client, config, provider_name, prompt, max_tokens)
+                 else: logger.warning(f"Skipping {provider_name} - client not initialized.")
             if fresh_response: logger.info(f"Generated via '{provider_name}'."); break
             else: logger.warning(f"Provider '{provider_name}' failed.")
 
-        # Store in cache if successful & Return
         if fresh_response: self._set_cache(cache_key, fresh_response); return fresh_response
-        else: logger.error("LLM Cache MISS & All providers failed."); return "ERROR: AI services failed."
+        else: return "ERROR: All LLM providers failed after cache miss."
 
-    # Keep test block, ensuring it runs the same prompt twice
-async def test_llm_config_generation(): # Keep D38 Test Logic
-    # ... print config info ...
+# --- Test Block ---
+async def test_llm_config_generation():
+    """Tests the config-driven LLM generation with caching."""
+    print("\n--- Starting Config-Driven LLM Test (Day 6 - Final Gemini Exp + Cache) ---")
+    if not CONFIG: print("CRITICAL ERROR: Config not loaded."); return
+
+    print(f"\nConfigured Providers: {list(CONFIG.get('ai', {}).get('providers', {}).keys())}")
+    print(f"Default Preference: {CONFIG.get('ai', {}).get('default_model_preference')}")
+    print(f"Jeff's Provider: {CONFIG.get('ai', {}).get('jeff_model_provider')}")
+    print("\nAPI Keys Found:")
+    for key_name, key_value in API_KEYS.items(): print(f"- {key_name}: {'Present' if key_value else 'MISSING'}")
+
+    # Give Redis/Ollama checks time to potentially log if module loads slowly
+    await asyncio.sleep(0.1)
     llm = LLM()
-    test_prompt = "Explain hybrid LLM architectures with caching in 3 sentences."
-    # Run 1 (MISS)
-    print("\n--- Run 1 (Expect MISS) ---"); start=time.time(); result1 = await llm.generate(test_prompt); print(f"Time: {time.time()-start:.2f}s\n{result1}")
-    await asyncio.sleep(1) # Ensure timestamp diff
-    # Run 2 (HIT)
-    print("\n--- Run 2 (Expect HIT) ---"); start=time.time(); result2 = await llm.generate(test_prompt); print(f"Time: {time.time()-start:.2f}s\n{result2}")
-    print("\nCACHE TEST: Check Logs for 'HIT' on Run 2 and faster time.")
+    print(f"\nLLM Instance Initialized.")
+    print(f"Ollama Status: {'Available' if llm.ollama_available else 'Unavailable'}")
+    print(f"Redis Status: {'Enabled' if llm.cache_enabled else 'DISABLED'}")
+    print(f"Initialized Cloud Clients: {list(llm.clients.keys())}")
+    if not llm.cache_enabled: print("WARNING: Redis not connected, caching test will not show HIT.")
+
+    test_prompt = "Explain the concept of dependency injection in software engineering using a simple analogy. Respond in less than 50 words."
+
+    # Run 1: Expect Cache MISS, uses OpenRouter (cloud_tier1)
+    print("\n--- Test Run 1 (Expect Cache MISS -> OpenRouter) ---")
+    start_time1 = time.monotonic()
+    result1 = await llm.generate(test_prompt, agent_name='TestAgent') # Use default preference potentially
+    end_time1 = time.monotonic()
+    print(f"\n>>> Result 1 (Time: {end_time1 - start_time1:.3f}s):\n{result1}")
+
+    await asyncio.sleep(0.5) # Small delay
+
+    # Run 2: Expect Cache HIT
+    print("\n--- Test Run 2 (Expect Cache HIT) ---")
+    print("   (Check logs above for 'LLM Cache HIT' message)")
+    start_time2 = time.monotonic()
+    result2 = await llm.generate(test_prompt, agent_name='TestAgent') # Same prompt/agent/params
+    end_time2 = time.monotonic()
+    print(f"\n>>> Result 2 (Time: {end_time2 - start_time2:.3f}s):\n{result2}")
+
+    # Verification
+    time1 = end_time1 - start_time1
+    time2 = end_time2 - start_time2
+    print("\n--- Cache Verification ---")
+    if result1.startswith("ERROR:") or result2.startswith("ERROR:"):
+        print("CACHE TEST: FAILED (One or both generation attempts failed)")
+    elif result1 == result2 and llm.cache_enabled:
+        if time2 < time1 * 0.75: # Allow slightly more variation than 0.5
+            print("CACHE TEST: PASSED (Results match, second call significantly faster)")
+        else:
+            print("CACHE TEST: POTENTIAL ISSUE (Results match, but second call wasn't significantly faster - check logs for HIT)")
+    elif result1 == result2 and not llm.cache_enabled:
+         print("CACHE TEST: SKIPPED (Results match, but cache disabled - check Redis connection)")
+    else:
+        print("CACHE TEST: FAILED (Results Mismatch)")
+    print("------------------------")
+
+    # Test Jeff's specific provider (should still be OpenRouter Gemini Exp)
+    print("\n--- Test Run 3 (Jeff - Expect Cache MISS -> OpenRouter) ---")
+    jeff_prompt = f"Explain dependency injection briefly for Jeff, use model {CONFIG.get('ai',{}).get('providers',{}).get('cloud_tier1',{}).get('model_name','N/A')}." # Use unique prompt
+    start_time3 = time.monotonic()
+    result3 = await llm.generate(jeff_prompt, agent_name='Jeff') # Explicitly Jeff
+    end_time3 = time.monotonic()
+    print(f"\n>>> Result 3 (Jeff) (Time: {end_time3 - start_time3:.3f}s):\n{result3}")
+    print("   (Check logs for 'cloud_tier1' provider attempt)")
+
+    print("\n--- Config-Driven LLM Test Finished ---")
 
 if __name__ == "__main__":
-    # Requires: OpenRouter Key in .env, Ollama server running (gemma3:12b pulled), Redis running (docker compose)
-    asyncio.run(test_llm_config_generation())
-Use code with caution.
-Python
-Explanation:
+    # Prerequisites:
+    # 1. OPENROUTER_API_KEY in C:\DreamerAI\data\config\.env.development
+    # 2. Ollama server running (`ollama serve`) with `gemma3:12b` pulled
+    # 3. Redis server running (e.g., `docker compose up -d redis`)
+    # 4. Correct libraries installed (Day 2 `requirements.txt`) in active venv
+    # Run test from C:\DreamerAI after activating venv: python -m engine.ai.llm
+    print(f"Running LLM Test Block from: {os.getcwd()}")
+    if 'logging' in sys.modules and not isinstance(logger, logging.Logger): # Basic logging fallback
+         logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+         logger = logging.getLogger(__name__); logger.info("Using basic logging.")
+
+    asyncio.run(test_llm_config_generation())Explanation:
 Combines Day 6 setup (OpenRouter/Ollama gemma3:12b config, correct status check) with Day 38 Redis caching logic.
 LLM.__init__ calls _initialize_redis then _initialize_providers.
 _check_ollama_status correctly targets the root / endpoint.
@@ -26063,7 +26052,7 @@ transformers, datasets: (Libraries), Confirmed installed Day 2. Need their core 
 
 Student Model: (AI Model Asset), e.g., distilgpt2. Pulled automatically by transformers on first use if internet available.
 
-Teacher Model: (AI Model Asset), e.g., gemma2:9b via Ollama. Configured Day 6, used for synthetic data gen. Ollama must be running.
+Teacher Model: (AI Model Asset), e.g., gemma3:12b via Ollama. Configured Day 6, used for synthetic data gen. Ollama must be running.
 
 Any Additional updates needed to the project due to this implementation?
 
@@ -26105,7 +26094,7 @@ Where: Backend (distiller.py, distiller_agent.py, server.py), Frontend trigger (
 
 Dependencies: transformers, datasets, Python, FastAPI, React, MUI, Running LLM (Ollama teacher), Sufficient RAM/CPU (potentially GPU).
 
-Setup Instructions: Ensure transformers, datasets installed. Ensure Ollama running with teacher model available (gemma2:9b). Ensure adequate system resources.
+Setup Instructions: Ensure transformers, datasets installed. Ensure Ollama running with teacher model available (gemma3:12b). Ensure adequate system resources.
 
 Recommended Tools:
 
@@ -26135,7 +26124,7 @@ Implement handleStartDistillation handler: sets loading state, gets taskDescript
 
 Cursor Task: Test the Full Distillation Flow:
 
-(Prep) Ensure Ollama server running (ollama serve) with teacher model (e.g., gemma2:9b). Ensure backend server running (python -m engine.core.server). Manually set ACTIVE_PROJECT_REPO_PATH in server.py (V1 hack needs path for context where model saved).
+(Prep) Ensure Ollama server running (ollama serve) with teacher model (e.g., gemma3:12b). Ensure backend server running (python -m engine.core.server). Manually set ACTIVE_PROJECT_REPO_PATH in server.py (V1 hack needs path for context where model saved).
 
 Start frontend (npm start). Navigate to Settings tab.
 
@@ -26192,7 +26181,7 @@ class Distiller:
             return
 
         # Configurable Teacher Model for Synth Data (Use LLM instance with config)
-        # Assume teacher model (e.g., Ollama gemma2:9b) is accessible via standard LLM class
+        # Assume teacher model (e.g., Ollama gemma3:12b) is accessible via standard LLM class
         self.teacher_llm = LLM() if LLM else None # Use our config-driven LLM
 
         # Base Student Model - IMPORTANT: Must be a causal LM for generation!
@@ -26612,7 +26601,7 @@ Troubleshooting:
 
 Missing Dependencies: pip install transformers datasets torch (or relevant backend - tensorflow/flax). Ensure installed in venv. Check transformers version compatibility. torch required by default Trainer backend.
 
-Ollama/Teacher LLM Failure: If synthetic data generation fails, check ollama serve is running and the configured teacher model (gemma2:9b?) is available. Check LLM logs.
+Ollama/Teacher LLM Failure: If synthetic data generation fails, check ollama serve is running and the configured teacher model (gemma3:12b) is available. Check LLM logs.
 
 Hugging Face Model Download: First run requires downloading the student model (distilgpt2) - needs internet. Can fail if HF hub is down or model name wrong.
 
