@@ -29,3 +29,5 @@ Milestone Completed: Day 4 Task 4 - Create preload.js. Next Task: Day 4 Task 5 -
 Milestone Completed: Day 4 Task 6 - Run npm start. Next Task: Day 4 Task 7 - Git Commit & Push. Feeling: Electron app launched successfully! Date: 2024-07-26
 
 Milestone Completed: Day 4 Electron Frontend Skeleton. Next Task: Day 5 SQLite Database & UI Bridge. Feeling: Solid progress on the frontend shell. Pausing for the day. Date: 2024-07-26
+
+Milestone Completed: Day 5 SQLite Database & Basic UI Bridge. Next Task: Day 6 Hybrid LLM Setup. Feeling: Progress! DB is storing locally, and frontend/backend are talking. Ready for AI layer. Date: [Timestamp Placeholder - YYYY-MM-DD]

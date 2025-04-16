@@ -117,3 +117,11 @@ Template for Entries must be completed at least Daily!
 *   **Issues Logged/Resolved:** Initial commit missed documentation files; resolved with a second commit.
 *   **Anthony's Feedback/Vibe:** Approved completion of Day 4.
 *   **Next Task Context:** Day 4 Complete. Pausing development for the day. Next: Day 5.
+
+**Day 5: SQLite Database & Basic UI Bridge**
+*   **Summary:** Implemented initial SQLite DB setup in `engine/core/db.py` (tables: `projects`, `chats`) noting PostgreSQL planned for scale. Created basic FastAPI/Uvicorn server (`engine/core/server.py`) on port 8000 with CORS enabled. Modified `app/renderer.js` to add a `useEffect` hook to fetch from the backend root `/` endpoint on mount.
+*   **Key Decisions:** Start with SQLite for dev speed, plan PostgreSQL migration. Establish backend/frontend bridge early.
+*   **Testing:** Verified backend connection success via console log. Initial DB creation failed on server start, required manual `python -m engine.core.db` run to create `dreamer.db`.
+*   **Issues:** Guide specified modifying `server.py`, but file didn't exist (created instead). Linter errors in `db.py` logger import (resolved). `run_terminal_cmd` interrupted server start, likely cause of initial DB creation failure.
+*   **Vibe:** Progress! Basic persistence and communication established.
+*   **Next Task:** Day 6 - Config-Driven Hybrid LLM Setup.

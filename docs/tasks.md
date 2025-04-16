@@ -111,11 +111,29 @@
 *(Next Day's Entry Starts Here)*
 
 ## Day 5: SQLite Database & Basic UI Bridge
-- [ ] Cursor Task: Create the file C:\DreamerAI\engine\core\db.py. - Status: TODO
-- [ ] Cursor Task: Implement the DreamerDB class in db.py using sqlite3 to connect to C:\DreamerAI\data\db\dreamer.db and create the initial projects table. Include basic methods like add_project, get_project, and close. Add logging using logger_instance. Explicitly comment that this is for dev and PostgreSQL is planned for scale. - Status: TODO
-- [ ] Cursor Task: Modify C:\DreamerAI\engine\core\server.py. Import FastAPI and uvicorn. Instantiate the FastAPI app. Add a simple root endpoint (@app.get("/")) that returns {"message": "DreamerAI Backend Online"}. Add the if __name__ == "__main__": block to run the server using uvicorn.run. - Status: TODO
-- [ ] Cursor Task: Modify C:\DreamerAI\app\renderer.js. Add a useEffect hook that runs once on component mount. Inside the hook, use fetch to make a GET request to the backend's root URL (http://localhost:8000/). Log the response to the console to verify the bridge connection. - Status: TODO
-- [ ] Cursor Task: Run the backend server: Open a new terminal in C:\DreamerAI, activate venv (.\venv\Scripts\activate), and run python -m engine.core.server. Leave this terminal running. - Status: TODO
-- [ ] Cursor Task: Run the frontend app: Open another terminal in C:\DreamerAI\app and run npm start. - Status: TODO
-- [ ] Cursor Task: Verify the frontend window opens and check the Electron DevTools console (Ctrl+Shift+I) for the logged message from the successful backend fetch. Verify dreamer.db is created in data/db/. Stop both the frontend app and the backend server (Ctrl+C in terminals). - Status: TODO
+- [X] Cursor Task: Create the file C:\DreamerAI\engine\core\db.py. - Status: DONE
+- [X] Cursor Task: Implement the DreamerDB class in db.py using sqlite3 to connect to C:\DreamerAI\data\db\dreamer.db and create the initial projects table. Include basic methods like add_project, get_project, and close. Add logging using logger_instance. Explicitly comment that this is for dev and PostgreSQL is planned for scale. - Status: DONE
+- [X] Cursor Task: Modify C:\DreamerAI\engine\core\server.py. Import FastAPI and uvicorn. Instantiate the FastAPI app. Add a simple root endpoint (@app.get("/")) that returns {"message": "DreamerAI Backend Online"}. Add the if __name__ == "__main__": block to run the server using uvicorn.run. - Status: DONE
+- [X] Cursor Task: Modify C:\DreamerAI\app\renderer.js. Add a useEffect hook that runs once on component mount. Inside the hook, use fetch to make a GET request to the backend's root URL (http://localhost:8000/). Log the response to the console to verify the bridge connection. - Status: DONE
+- [X] Cursor Task: Run the backend server: Open a new terminal in C:\DreamerAI, activate venv (.\venv\Scripts\activate), and run python -m engine.core.server. Leave this terminal running. - Status: DONE
+- [X] Cursor Task: Run the frontend app: Open another terminal in C:\DreamerAI\app and run npm start. - Status: DONE
+- [X] Cursor Task: Verify the frontend window opens and check the Electron DevTools console (Ctrl+Shift+I) for the logged message from the successful backend fetch. Verify dreamer.db is created in data/db/. Stop both the frontend app and the backend server (Ctrl+C in terminals). - Status: DONE (DB required manual script run)
+- [X] Cursor Task: Stage changes, commit, and push. - Status: DONE
+*   **Overall Day Status:** DONE
+*   **Summary:** Implemented initial SQLite DB (dev only, PostgreSQL planned), basic FastAPI server, and verified frontend-backend communication via fetch.
+*   **Issues Encountered:** server.py creation needed (guide said modify), db.py linter errors (resolved), dreamer.db not created initially by server (resolved by manual script run).
+
+---
+*(Next Day's Entry Starts Here)*
+
+## Day 6: Config-Driven Hybrid LLM Setup (OpenRouter/Ollama Ready), Smarter Brain Switching!
+- [ ] Cursor Task: Create the file C:\DreamerAI\engine\ai\llm.py. - Status: TODO
+- [ ] Cursor Task: Implement the LLM class in llm.py. Use tomllib and dotenv to read config/env. Configure openai client for OpenRouter (cloud_tier1, meta-llama/llama-3-70b-instruct, API key). Configure local Ollama client (gemma3:12b, http://localhost:11434). Implement _check_ollama_status using requests.get. Implement async generate handling jeff_model_provider override and default_model_preference, with fallback logic. Add Day 38 Redis caching (redis, _get_cache_key, _get_from_cache, _set_cache). Include logging and error handling. - Status: TODO
+- [ ] Cursor Task: Ensure OPENROUTER_API_KEY exists in C:\DreamerAI\data\config\.env.development. Remind Anthony if needed. - Status: TODO
+- [ ] Cursor Task: Ensure Ollama server is running locally and the gemma3:12b model is pulled (ollama pull gemma3:12b). Remind Anthony if needed. - Status: TODO
+- [ ] Cursor Task: Add basic test execution block (if __name__ == "__main__":) in llm.py to test connection and generation with both OpenRouter and Ollama providers (handle potential key/server errors gracefully). - Status: TODO
+- [ ] Cursor Task: Run the test block: python -m engine.ai.llm. Verify successful connection and generation output (or expected errors if key/server missing). - Status: TODO
 - [ ] Cursor Task: Stage changes, commit, and push. - Status: TODO
+*   **Overall Day Status:** TODO
+*   **Summary:** Implement the core LLM class for interacting with multiple models (OpenRouter, Ollama) driven by configuration files, including fallback logic and agent-specific overrides.
+*   **Issues Encountered:** None Anticipated Yet
