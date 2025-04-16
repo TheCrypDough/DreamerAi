@@ -146,13 +146,20 @@
 *   [X] Task 5: Auto-Update Workflow Execution. (DONE)
 
 ## Day 7: Introducing the Dream Team: Agent Framework Overview
-*   [ ] Cursor Task: Create empty Python placeholder files for the core agents/hubs: `C:\DreamerAI\engine\agents\main_chat.py` (Jeff), `C:\DreamerAI\engine\agents\planning.py` (Arch), `C:\DreamerAI\engine\agents\coding_manager.py` (Nexus), `C:\DreamerAI\engine\agents\administrator.py` (Lewis), `C:\DreamerAI\engine\agents\communications.py` (Hermie), `C:\DreamerAI\engine\agents\promptimizer.py` (Promptimizer). Add simple comments like `# Placeholder for [Agent Name] Agent` in each. Create/ensure `__init__.py` exists in `engine/agents/`. - Status: TODO
-*   [ ] Cursor Task: Create a temporary Python script (e.g., `C:\DreamerAI\tests\week1_check.py`) OR use `python -c` command for a basic functionality check: Import `DreamerDB` from `engine.core.db`. Try to instantiate it. Log success/failure. Close connection. Import `LLM` from `engine.ai.llm`. Try to instantiate it. Call `await llm.generate("test prompt")` (inside an `async` function run with `asyncio.run`). Log success/failure/output. - Status: TODO
-*   [ ] Cursor Task: Execute the check script/commands (after activating venv: `.\venv\Scripts\activate`). Verify DB connects and LLM attempts generation without critical errors. - Status: TODO
-*   [ ] Cursor Task: Stage changes (new placeholder files, `__init__.py`), commit, and push. Delete the temporary check script if created. - Status: TODO
-*   [ ] Cursor Task: Execute Auto-Update Triggers & Workflow. - Status: TODO
-*   **Overall Day Status:** TODO
+*   [X] Cursor Task: Create empty Python placeholder files for the core agents/hubs: `C:\DreamerAI\engine\agents\main_chat.py` (Jeff), `C:\DreamerAI\engine\agents\planning.py` (Arch), `C:\DreamerAI\engine\agents\coding_manager.py` (Nexus), `C:\DreamerAI\engine\agents\administrator.py` (Lewis), `C:\DreamerAI\engine\agents\communications.py` (Hermie), `C:\DreamerAI\engine\agents\promptimizer.py` (Promptimizer). Add simple comments like `# Placeholder for [Agent Name] Agent` in each. Create/ensure `__init__.py` exists in `engine/agents/`. - Status: DONE
+*   [X] Cursor Task: Create a temporary Python script (e.g., `C:\DreamerAI\tests\week1_check.py`) OR use `python -c` command for a basic functionality check: Import `DreamerDB` from `engine.core.db`. Try to instantiate it. Log success/failure. Close connection. Import `LLM` from `engine.ai.llm`. Try to instantiate it. Call `await llm.generate("test prompt")` (inside an `async` function run with `asyncio.run`). Log success/failure/output. - Status: DONE
+*   [X] Cursor Task: Execute the check script/commands (after activating venv: `.\venv\Scripts\activate`). Verify DB connects and LLM attempts generation without critical errors. - Status: DONE
+*   [X] Cursor Task: Stage changes (new placeholder files, `__init__.py`), commit, and push. Delete the temporary check script if created. - Status: DONE
+*   [ ] Cursor Task: Execute Auto-Update Triggers & Workflow. - Status: IN_PROGRESS
+*   **Overall Day Status:** TODO # Will be DONE after workflow
 *   **Summary:** Introduce the 28-agent Dream Team concept, create placeholder files for core agents/hubs, and perform a basic functional check of Week 1 components (DB, LLM).
+*   **Issues Encountered:** None Anticipated Yet
+
+## Day 8: Build Chef Jeff (Main Chat Agent) - Initial Implementation
+*   [ ] Cursor Task: [Placeholder for Day 8 Task 1 from Guide] - Status: TODO
+*   ... (Add other Day 8 tasks later)
+*   **Overall Day Status:** TODO
+*   **Summary:** [Placeholder Summary for Day 8 from Guide]
 *   **Issues Encountered:** None Anticipated Yet
 
 ---
