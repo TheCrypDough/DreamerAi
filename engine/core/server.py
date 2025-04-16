@@ -4,12 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware # To allow frontend requests
 import sys
 import os
 from typing import Optional # Added for github_token type hint
+from pathlib import Path
 
 # Add project root to path for sibling imports (engine, etc.)
 # Adjust based on actual execution context if needed
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
+project_root = Path(__file__).resolve().parent.parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
 
 try:
     from engine.core.logger import logger_instance as logger
@@ -44,7 +45,6 @@ app.add_middleware(
 # Example: Store GitHub token globally (Needs proper user session management later)
 github_token: Optional[str] = None
 
-
 # --- API Endpoints ---
 
 @app.get("/")
@@ -68,7 +68,6 @@ async def set_github_token(request: Request):
     except Exception as e:
         logger.error(f"Error setting GitHub token: {e}")
         raise HTTPException(status_code=500, detail="Failed to process token")
-
 
 # Add more endpoints here later for:
 # - /create-project, /create-subproject (Day 25)

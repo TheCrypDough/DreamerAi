@@ -33,3 +33,7 @@ Milestone Completed: Day 4 Electron Frontend Skeleton. Next Task: Day 5 SQLite D
 Milestone Completed: Day 5 SQLite Database & Basic UI Bridge. Next Task: Day 6 Hybrid LLM Setup. Feeling: Progress! DB is storing locally, and frontend/backend are talking. Ready for AI layer. Date: [Timestamp Placeholder - YYYY-MM-DD]
 
 Note: Completed Day 6 Tasks 1 & 2 (Created engine/ai/__init__.py and engine/ai/llm.py with guide code). Linter issues identified in llm.py require investigation/resolution before testing. Task: Day 6 - Populate engine/ai/llm.py. Date: [Timestamp Placeholder - YYYY-MM-DD]
+
+Milestone Completed: Day 6 - Task 4 (LLM Module Implementation & Test). Next Task: Day 7 - Agent Framework Overview. Feeling: Success! LLM module working with OpenRouter and Ollama after debugging config/env/asyncio issues. Ready for Day 7 framework setup. Date: 2024-07-27
+
+Note: Reverted incorrect Day 7 work (MainChatAgent implementation). Resetting to start Day 7 correctly per guide (Agent Framework Overview). Date: 2024-07-27

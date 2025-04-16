@@ -125,3 +125,10 @@ Template for Entries must be completed at least Daily!
 *   **Issues:** Guide specified modifying `server.py`, but file didn't exist (created instead). Linter errors in `db.py` logger import (resolved). `run_terminal_cmd` interrupted server start, likely cause of initial DB creation failure.
 *   **Vibe:** Progress! Basic persistence and communication established.
 *   **Next Task:** Day 6 - Config-Driven Hybrid LLM Setup.
+
+---
+**Task:** Day 6 - Task 4: Execute `llm.py` test block
+**Summary:** Completed implementation and testing of the core LLM module (`engine/ai/llm.py`). Successfully debugged and resolved issues related to config loading (nested structure, `tomllib`), API key environment variable loading (`load_dotenv`, `override=True`), and `asyncio` misuse. Verified successful connections and generation using both the configured OpenRouter provider (`cloud_tier1`) via API key and the local Ollama provider (`ollama`). Redis caching remains integrated but disabled pending Redis server setup (Day 38).
+**Key Decisions:** Added `override=True` to `load_dotenv`. Made `_check_ollama_status` synchronous to avoid nested `asyncio.run()` calls.
+**Anthony's Feedback/Vibe:** Approved completion, guided debugging process.
+**Blocking Issues:** Initial test failures due to config parsing, API key loading, and `asyncio` errors (all resolved).
