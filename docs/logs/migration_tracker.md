@@ -65,3 +65,7 @@ This log automatically records all file system structure changes (creations, ren
 [2025-04-15 00:25:29] - CREATE - Path: C:\DreamerAI\app\node_modules - Details: Created directory via npm install
 [2025-04-15 00:25:29] - CREATE - Path: C:\DreamerAI\app\package-lock.json - Details: Created file via npm install
 [2025-04-15 00:43:21] - CREATE - Path: C:\DreamerAI\app\eslint.config.mjs - Details: Created file via npx eslint --init
+[Timestamp Placeholder] - CREATE - Path: C:\DreamerAI\engine\core\db.py - Details: Created placeholder for Day 5.
+[Timestamp Placeholder] - MODIFY - Path: C:\DreamerAI\engine\core\db.py - Details: Implemented DreamerDB class from Day 5 guide.
+[Timestamp Placeholder] - CREATE - Path: C:\DreamerAI\engine\core\server.py - Details: Created file with FastAPI setup from Day 5 guide (Guide specified Modify, file didn't exist).
+[Timestamp Placeholder] - MODIFY - Path: C:\DreamerAI\app\renderer.js - Details: Added useEffect hook for backend fetch.

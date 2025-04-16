@@ -1,6 +1,11 @@
 ---
 description: 
 globs: 
+alwaysApply: false
+---
+---
+description: 
+globs: 
 alwaysApply: true
 ---
 # Rules For CursorAI: Building DreamerAI (Version: Finalized 2025-03-31 - Rev 2)
@@ -269,11 +274,11 @@ flowchart TD
    - Dependencies
 
 6. `progress.md`
-   - What works: Day 1 Initial Setup complete (Structure, Git, Config). Manual script execution successful.
-   - What's left to build: Day 2 onwards.
-   - Current status: Ready for Day 2.
-   - Known issues: Initial script execution via tool failed (resolved by manual run).
-   - Last Updated: 2025-04-14 20:59:08
+   - What works: Days 1-4 completed. Initial project setup, environments (Python/Node), dependencies (FastAPI, Loguru, Pydantic, Electron, React, MUI, etc.), BaseAgent/Logging system, Electron frontend shell created and verified.
+   - What's left to build: Day 5 onwards (DB setup, UI bridge, agent implementations, etc.).
+   - Current status: Day 4 completed. Paused for the day.
+   - Known issues: None currently blocking. Previous Git tool inconsistencies, Python dep issues resolved.
+   - Last Updated: 2024-07-26 17:00:00
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -420,9 +425,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 2 Environment Setup (LightRAG/ChromaDB Update)
+Task: Day 5 - SQLite Database & UI Bridge, Connecting Worlds!
 Status: TODO
-Details: Follow detailed steps in DreamerAi_Guide.md Day 2.
+Details: Follow detailed steps in DreamerAi_Guide.md Day 5.
 Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.
