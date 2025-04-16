@@ -212,7 +212,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: 2024-07-27 19:50:00 # Placeholder
+# Last Updated: 2024-07-27 20:10:00 # Placeholder
 
 ## Memory Bank Structure
 
@@ -249,27 +249,27 @@ flowchart TD
    - Recent changes
    - Next steps
    - Active decisions and considerations
-   - Reflects Day 8 completion, ready for Day 9 (DreamerFlow Orchestration).
+   - Reflects Day 9 completion, ready for Day 10 (UI Shell).
 
 4. `systemPatterns.md`
    - System architecture
    - Key technical decisions
    - Design patterns in use
    - Component relationships
-   - BaseAgent -> Specific Agent (Jeff) inheritance pattern established. RAG via ChromaDB seeded. Explicit LLM init in agent.
+   - DreamerFlow orchestrator pattern established.
 
 5. `techContext.md`
    - Technologies used
    - Development setup
    - Technical constraints
    - Dependencies
-   - ChromaDB, SentenceTransformers used for RAG seeding. Aiohttp for n8n calls (currently failing).
+   - asyncio used in main.py for flow execution.
 
 6. `progress.md`
-   - What works: Day 1-8 foundational elements + Jeff V1 basic logic (LLM gen, task ID). RAG DB seeded.
-   - What's left: Day 9+ (Flow Orchestration, other agents, UI panels, full integrations).
-   - Current status: Day 8 complete. Ready for Day 9.
-   - Known issues: Jeff V1 RAG query fails (BaseAgent V1 lacks method). n8n fails (connection). Event/Bridge calls disabled.
+   - What works: Day 1-9 foundational elements + basic DreamerFlow -> Jeff call via main.py.
+   - What's left: Day 10+ (UI Shell, more agents, complex orchestration).
+   - Current status: Day 9 complete. Ready for Day 10.
+   - Known issues: Jeff V1 RAG/n8n/events limitations persist. Redis cache disabled.
    - Last Updated: 2024-07-27 19:30:00 # Placeholder
 
 ### Additional Context

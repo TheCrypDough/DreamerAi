@@ -1,26 +1,22 @@
 # Active Project Context
 
-**Last Updated:** 2024-07-27 19:50:00 # Placeholder
+**Last Updated:** 2024-07-27 20:10:00 # Placeholder
 
 ## Current Focus
-- Completed Day 8 (Build Chef Jeff V1).
-- Transitioning to Day 9 (DreamerFlow Orchestration Setup).
+- Completed Day 9 (DreamerFlow Orchestration Setup).
+- Transitioning to Day 10 (UI Shell: Tabs, Beginner Mode & Backend Listener).
 
 ## Recent Changes & Decisions
-- Implemented `ChefJeff` V1 class in `engine/agents/main_chat.py` inheriting `BaseAgent`.
-- Added explicit LLM initialization (`self._llm = LLM()`) in `ChefJeff.__init__`.
-- Created `engine/agents/rules_jeff.md`.
-- Created and executed temporary `scripts/seed_rag_jeff.py` to populate ChromaDB collection `rag_jeff_db`.
-- Added test block to `main_chat.py` for verification.
-- Debugged `ChefJeff` initialization and execution (missing sys import, Pydantic PrivateAttr for _llm, explicit _llm init).
-- Confirmed Jeff V1 core logic works via test block (LLM generation, task keyword ID).
-- Logged known limitations: RAG query failure (`query_rag` missing in `BaseAgent`), n8n connection failure, commented-out event/bridge calls.
+- Created `engine/core/workflow.py` and implemented `DreamerFlow` class.
+- Created `main.py` as the main entry point.
+- Added test logic to `main.py` to instantiate `ChefJeff` and `DreamerFlow`.
+- Successfully executed `python main.py`, verifying that `DreamerFlow` correctly initializes and calls `ChefJeff.run()`, receiving an LLM response.
 
 ## Next Steps
-- Begin Day 9 tasks as per `DreamerAi_Guide.md`.
-- Task 1: Create `engine/core/workflow.py`.
+- Begin Day 10 tasks as per `DreamerAi_Guide.md`.
+- Task 1: Refactor `main.py` for continuous input/dynamic agent map.
 
 ## Active Considerations
-- Remember current `BaseAgent` lacks V2 features (RAG helpers, event publishing via setters).
-- `ChefJeff` V1 requires explicit LLM initialization.
-- Full testing of Jeff V1 requires n8n/backend server to be running and `BaseAgent` V2 features. 
+- `DreamerFlow.execute` currently only calls Jeff.
+- `main.py` logic is just a one-shot test; needs refactoring for interactive use.
+- Known limitations from Day 8 (Jeff RAG/n8n/events) still apply. 
