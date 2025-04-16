@@ -212,8 +212,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-
-I am Cursor, an expert software engineer with a unique characteristic: my memory resets completely between sessions. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
+# Last Updated: 2024-07-27 19:50:00 # Placeholder
 
 ## Memory Bank Structure
 
@@ -250,24 +249,27 @@ flowchart TD
    - Recent changes
    - Next steps
    - Active decisions and considerations
+   - Reflects Day 8 completion, ready for Day 9 (DreamerFlow Orchestration).
 
 4. `systemPatterns.md`
    - System architecture
    - Key technical decisions
    - Design patterns in use
    - Component relationships
+   - BaseAgent -> Specific Agent (Jeff) inheritance pattern established. RAG via ChromaDB seeded. Explicit LLM init in agent.
 
 5. `techContext.md`
    - Technologies used
    - Development setup
    - Technical constraints
    - Dependencies
+   - ChromaDB, SentenceTransformers used for RAG seeding. Aiohttp for n8n calls (currently failing).
 
 6. `progress.md`
-   - What works: Day 1-7 foundations (Setup, Env, BaseAgent, Logging, Electron, DB Core, LLM Module, Agent Placeholders). Core components (DB, LLM) verified.
-   - What's left to build: Day 8 onwards (Agent implementations, UI panels, features).
-   - Current status: Day 7 completed. Ready for Day 8.
-   - Known issues: Redis cache disabled (expected), minor requests stubs linter warning.
+   - What works: Day 1-8 foundational elements + Jeff V1 basic logic (LLM gen, task ID). RAG DB seeded.
+   - What's left: Day 9+ (Flow Orchestration, other agents, UI panels, full integrations).
+   - Current status: Day 8 complete. Ready for Day 9.
+   - Known issues: Jeff V1 RAG query fails (BaseAgent V1 lacks method). n8n fails (connection). Event/Bridge calls disabled.
    - Last Updated: 2024-07-27 19:30:00 # Placeholder
 
 ### Additional Context
@@ -415,9 +417,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 ## Current Task (Cursor Updates This Automatically After Approval)
-# Task: Day 9 - Task 1: Create the file C:\DreamerAI\engine\core\workflow.py.
+# Task: Day 10 - Task 1: Refactor `main.py` to include a loop for continuous user input and more flexible agent map initialization (import agents dynamically).
 # Status: TODO
-# Details: Follow detailed steps in DreamerAi_Guide.md Day 9, Task 1.
+# Details: Follow detailed steps in DreamerAi_Guide.md Day 10, Task 1.
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.
