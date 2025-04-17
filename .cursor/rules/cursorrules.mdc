@@ -222,7 +222,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: 2024-07-12 17:35:00 # Approximate timestamp of Day 12 completion commit
+# Last Updated: 2025-04-16 23:54:00 # Approximate timestamp of Day 13 completion
 
 ## Memory Bank Structure
 
@@ -259,7 +259,7 @@ flowchart TD
    - Recent changes
    - Next steps
    - Active decisions and considerations
-   - Reflects Day 12 completion (Lamar/Dudley V1 implemented). Ready for Day 13.
+   - Reflects Day 13 completion (UI Bridge working on Port 3131). Ready for Day 14.
 
 4. `systemPatterns.md`
    - System architecture
@@ -276,11 +276,11 @@ flowchart TD
    - asyncio used in main.py for flow execution.
 
 6. `progress.md`
-   - What works: Day 1-12 foundations. Basic Electron UI shell. Jeff V1 (RAG limited). Arch V1 (Blueprint gen). Lamar/Dudley V1 (Initial code gen from blueprint).
-   - What's left: Day 13+ (Agent integration, UI panels, workflow refinement).
-   - Current status: Day 12 complete. Ready for Day 13.
-   - Known issues: Jeff RAG/n8n/events limitations. Redis cache disabled. OpenRouter 404s (fallback OK).
-   - Last Updated: 2024-07-12 17:35:00 # Approximate timestamp of Day 12 completion commit
+   - What works: Day 1-13 foundations. UI shell. Jeff V1. Arch V1. Lamar/Dudley V1. UI Bridge (Port 3131) allowing backend->frontend messages.
+   - What's left: Day 14+ (Chat UI, Agent integration, workflow refinement).
+   - Current status: Day 13 complete. Ready for Day 14.
+   - Known issues: Jeff RAG limited. Redis cache disabled. OpenRouter intermittent TypeError (#20250416234500).
+   - Last Updated: 2025-04-16 23:54:00 # Approximate timestamp of Day 13 completion
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -427,9 +427,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 Current Task (Cursor Updates This Automatically After Approval)
-Task: Start Day 13: [Placeholder - Get Task Name from Guide]
+Task: Day 14 - Task 1: Create MainChatPanel.jsx
 Status: TODO
-Details: Follow detailed steps in DreamerAi_Guide.md Day 13 (or next available day).
+Details: Create C:\DreamerAI\app\components\MainChatPanel.jsx with the provided React component code.
 
 Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md

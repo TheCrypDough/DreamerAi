@@ -126,7 +126,7 @@
 ---
 *(Next Day's Entry Starts Here)*
 
-## Day 6: Config-Driven Hybrid LLM Setup (OpenRouter/Ollama Ready), Smarter Brain Switching!
+## Day 6: Config-Driven Hybrid LLM Setup (OpenRouter/Ollama Ready!), Smarter Brain Switching!
 - [X] Cursor Task: Create the file C:\DreamerAI\engine\ai\llm.py. - Status: DONE
 - [X] Cursor Task: Implement the LLM class in llm.py. Use tomllib and dotenv to read config/env. Configure openai client for OpenRouter (cloud_tier1, meta-llama/llama-3-70b-instruct, API key). Configure local Ollama client (gemma3:12b, http://localhost:11434). Implement _check_ollama_status using requests.get. Implement async generate handling jeff_model_provider override and default_model_preference, with fallback logic. Add Day 38 Redis caching (redis, _get_cache_key, _get_from_cache, _set_cache). Include logging and error handling. - Status: DONE
 - [X] Cursor Task: Ensure OPENROUTER_API_KEY exists in C:\DreamerAI\data\config\.env.development. Remind Anthony if needed. - Status: DONE
@@ -216,6 +216,31 @@
 *   **Overall Day Status:** DONE
 *   **Summary:** Implemented V1 coding agents (Lamar/Frontend, Dudley/Backend) and utils helper. Agents generate initial code from Arch's blueprint and save to project output dirs. Tested flow via main.py.
 *   **Issues Encountered:** Minor linter errors in dummy classes fixed. Expected Redis/OpenRouter failures during main.py test. Git commit/push commands required retries due to tool issues.
+
+## Day 13 - UI Bridge Implementation, Connecting the Two Worlds!
+*   **Cursor Task:** Activate venv (.\venv\Scripts\activate). Install aiohttp: pip install aiohttp.
+    *   Status: DONE
+*   **Cursor Task:** Update C:\DreamerAI\requirements.txt: run pip freeze > requirements.txt.
+    *   Status: DONE
+*   **Cursor Task:** Create C:\DreamerAI\engine\core\bridge.py with the provided send_to_ui function code.
+    *   Status: DONE
+*   **Cursor Task:** Modify C:\DreamerAI\engine\agents\base.py. Import send_to_ui from engine.core.bridge. Replace the placeholder send_update_to_ui method with the new implementation calling bridge.send_to_ui.
+    *   Status: DONE
+*   **Cursor Task:** Modify C:\DreamerAI\engine\agents\main_chat.py. Ensure the ChefJeff.run method calls await self.send_update_to_ui(response_content, update_type="chat_response") using the final response_content before returning.
+    *   Status: DONE
+*   **Cursor Task:** Modify C:\DreamerAI\app\src\App.jsx. Update the useEffect listener's req.on('end', ...) handler to parse the body as JSON (JSON.parse(body)) and log the structured payload (e.g., console.log('Received structured backend message:', JSON.parse(body));). Include a try...catch around JSON.parse.
+    *   Status: DONE
+*   **Cursor Task:** Modify C:\DreamerAI\main.py. Ensure the run_dreamer_flow test function actually awaits and gets a response from Jeff that will be sent via the bridge (no code change likely needed from Day 12 version, just ensuring it runs Jeff).
+    *   Status: DONE
+*   **Cursor Task:** Test the full flow:
+    *   Status: DONE
+*   **Cursor Task:** Stage changes (bridge.py, base.py, main_chat.py, App.jsx, requirements.txt, main.py, logs), commit, and push.
+    *   Status: DONE
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
+    *   Status: DONE
+*   **Overall Day Status:** DONE
+*   **Summary:** Implement the UI Bridge using aiohttp to allow backend agents to send messages to the Electron frontend listener.
+*   **Issues Encountered:** UI Bridge errors (404, Connection Refused - resolved by port change to 3131), OpenRouter intermittent TypeError (#20250416234500).
 
 ---
 
