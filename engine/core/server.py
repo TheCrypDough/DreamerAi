@@ -5,6 +5,8 @@ import sys
 import os
 from typing import Optional # Added for github_token type hint
 from pathlib import Path
+import json
+import traceback # Added for detailed exception logging
 
 # Add project root to path for sibling imports (engine, etc.)
 # Adjust based on actual execution context if needed
@@ -17,8 +19,15 @@ try:
 except ImportError:
     import logging
     logger = logging.getLogger(__name__)
-    logger.warning("Could not import custom logger, using basic logging.")
+    logging.basicConfig(level=logging.INFO)
+    logger.warning("Could not import logger_instance, using basic logging.")
 
+# NEW: Import ChefJeff
+try:
+    from engine.agents.main_chat import ChefJeff
+except ImportError:
+    logger.error("Failed to import ChefJeff agent in server.py!")
+    ChefJeff = None # Allow server to start but endpoint will fail
 
 # --- FastAPI App Initialization ---
 app = FastAPI(title="DreamerAI Backend API", version="0.1.0")
@@ -29,13 +38,14 @@ app = FastAPI(title="DreamerAI Backend API", version="0.1.0")
 origins = [
     "http://localhost", # Base domain
     "http://localhost:3000", # Default React dev server port (if used)
+    "http://localhost:3131",  # UI Bridge listener port
     "app://.", # Allow Electron app origin
     # Add other origins if needed
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allows all origins for easy dev start - tighten later!
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"], # Allows all methods (GET, POST, etc.)
     allow_headers=["*"], # Allows all headers
@@ -44,6 +54,13 @@ app.add_middleware(
 # --- Global Variables / State (Use cautiously, consider context/dependency injection) ---
 # Example: Store GitHub token globally (Needs proper user session management later)
 github_token: Optional[str] = None
+
+# TODO: Need a better way to manage agent instances and user sessions/directories.
+# For Day 14, we instantiate Jeff per request, using a default path. This is NOT scalable.
+DEFAULT_USER_DIR_SERVER = r"C:\DreamerAI\Users\Example User"
+# Ensure default dir exists for the agent run
+os.makedirs(os.path.join(DEFAULT_USER_DIR_SERVER, "Projects"), exist_ok=True)
+os.makedirs(os.path.join(DEFAULT_USER_DIR_SERVER, "Chats", "Jeff"), exist_ok=True)
 
 # --- API Endpoints ---
 
@@ -68,6 +85,45 @@ async def set_github_token(request: Request):
     except Exception as e:
         logger.error(f"Error setting GitHub token: {e}")
         raise HTTPException(status_code=500, detail="Failed to process token")
+
+# --- NEW Endpoint for Jeff ---
+@app.post("/agents/jeff/chat")
+async def handle_jeff_chat(request: Request):
+    """Endpoint to receive user chat messages and forward them to Jeff."""
+    logger.info("Received request for /agents/jeff/chat")
+    if not ChefJeff: # Check if import failed
+        logger.error("ChefJeff agent class not loaded. Cannot process chat.")
+        raise HTTPException(status_code=500, detail="Chat agent service is unavailable.")
+
+    try:
+        data = await request.json()
+        user_input = data.get("user_input")
+
+        if not user_input:
+            logger.warning("Received chat request with empty input.")
+            raise HTTPException(status_code=400, detail="User input cannot be empty.")
+
+        logger.debug(f"Received user input for Jeff: '{user_input[:50]}...'")
+
+        # TODO: TEMPORARY - Instantiate Jeff per request. Need proper agent lifecycle mgmt later.
+        # Use the default user dir for now. Future requires user context.
+        logger.warning("Instantiating ChefJeff per request (temporary).")
+        jeff_agent = ChefJeff(user_dir=DEFAULT_USER_DIR_SERVER)
+
+        # Execute Jeff's run method (which includes sending response via bridge)
+        # We don't directly use the return value here for the chat panel display.
+        agent_result = await jeff_agent.run(user_input=user_input)
+
+        # Return acknowledgment to the calling frontend fetch
+        logger.info("Jeff agent run initiated. Response sent via bridge.")
+        return {"status": "received", "message": "Input sent to Jeff for processing."}
+
+    except json.JSONDecodeError:
+         logger.error("Failed to decode JSON body for Jeff chat.")
+         raise HTTPException(status_code=400, detail="Invalid JSON format in request body.")
+    except Exception as e:
+        logger.exception(f"Error handling Jeff chat request: {e}") # Log full traceback
+        raise HTTPException(status_code=500, detail=f"Internal server error processing chat: {str(e)}")
 
 # Add more endpoints here later for:
 # - /create-project, /create-subproject (Day 25)

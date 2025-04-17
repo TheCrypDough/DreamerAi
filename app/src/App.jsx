@@ -1,5 +1,5 @@
 const React = require('react');
-const { useState, useEffect } = React; // Import hooks
+const { useState, useEffect, useCallback } = React; // Added useCallback
 const http = require('http'); // Node.js http module for listener
 
 // Import Material UI components
@@ -11,6 +11,11 @@ const Tab = require('@mui/material/Tab').default;
 const Switch = require('@mui/material/Switch').default;
 const FormControlLabel = require('@mui/material/FormControlLabel').default;
 const Typography = require('@mui/material/Typography').default; // For displaying content
+const Alert = require('@mui/material/Alert').default; // For showing errors
+const Snackbar = require('@mui/material/Snackbar').default;
+
+// Import Panels
+const MainChatPanel = require('../components/MainChatPanel').default;
 
 // --- App Component ---
 
@@ -18,7 +23,11 @@ function App() {
     // State for active tab and beginner mode
     const [activeTab, setActiveTab] = useState(0); // Index of the active tab
     const [beginnerMode, setBeginnerMode] = useState(false);
-    const [lastBackendMessage, setLastBackendMessage] = useState({}); // Store parsed JSON
+    const [chatMessages, setChatMessages] = useState([
+        { role: 'assistant', content: "Welcome to DreamerAI! I'm Jeff. How can I help you build today?" } // Initial welcome
+    ]);
+    const [lastBackendStatus, setLastBackendStatus] = useState(''); // For non-chat updates
+    const [uiError, setUiError] = useState(null); // For displaying UI/Network errors
 
     // Handle tab change
     const handleTabChange = (event, newValue) => {
@@ -33,6 +42,41 @@ function App() {
         setBeginnerMode(isBeginner);
         // Add logic later to change UI based on beginnerMode state
     };
+
+    const handleCloseError = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setUiError(null);
+    };
+
+    // Backend Communication
+    // Function to send message TO backend (Jeff)
+    const handleSendMessage = useCallback(async (message) => {
+        console.log(`Sending message to Jeff: ${message}`);
+        // Optimistically update UI
+        setChatMessages(prev => [...prev, { role: 'user', content: message }]);
+
+        try {
+            const response = await fetch('http://localhost:8000/agents/jeff/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_input: message })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Backend error: ${response.status} - ${errorData.detail || 'Unknown error'}`);
+            }
+            const result = await response.json();
+            console.log("Backend acknowledgment:", result); // e.g., {"status": "received"}
+            // NOTE: Jeff's actual chat response comes back via the Bridge Listener below
+
+        } catch (error) {
+            console.error("Failed to send message to backend:", error);
+            setUiError(`Failed to send message: ${error.message}`);
+            // Optional: Add message indicating failure to chat panel
+            setChatMessages(prev => [...prev, { role: 'system', content: `Error sending message: ${error.message}` }]);
+        }
+    }, []); // useCallback to stabilize the function reference
 
     // MODIFY Effect hook for backend listener - Revert to specific path check
     useEffect(() => {
@@ -50,14 +94,30 @@ function App() {
                     // Keep JSON parsing logic
                     try {
                         const receivedData = JSON.parse(body);
-                        console.log('Received structured backend message:', receivedData);
-                        setLastBackendMessage(receivedData);
+                        console.log('UI Listener received:', receivedData);
+
+                        // Process based on message type/agent
+                        if (receivedData.agent === 'Jeff' && receivedData.type === 'chat_response') {
+                            // Add Jeff's response to chat
+                             // Check if payload is an error object or string
+                            const content = typeof receivedData.payload === 'object' && receivedData.payload.error
+                                ? `Jeff Error: ${receivedData.payload.error}`
+                                : receivedData.payload;
+                             setChatMessages(prev => [...prev, { role: 'assistant', content: content }]);
+                        } else if (receivedData.type === 'error') {
+                             // Handle generic error messages from backend agents
+                             console.error("Backend Agent Error:", receivedData.payload);
+                             setChatMessages(prev => [...prev, { role: 'system', content: `Agent Error: ${receivedData.payload}` }]);
+                        } else {
+                            // Handle other message types later (e.g., progress, status)
+                            setLastBackendStatus(`Received: ${receivedData.type} from ${receivedData.agent}`);
+                        }
+
                         res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ status: 'Message Received by UI (/update)', received: receivedData })); // Updated status msg
+                        res.end(JSON.stringify({ status: 'Message Received by UI (/update)' })); // Updated status msg
                     } catch (e) {
-                        console.error('Failed to parse incoming JSON from backend (/update):', e); // Updated log msg
-                        console.error('Received Raw Body (/update):', body); 
-                        setLastBackendMessage({ error: 'Failed to parse backend message (/update)', raw: body });
+                        console.error('UI Listener: Failed to parse JSON:', e, 'Body:', body);
+                        setUiError('Received invalid message from backend.');
                         res.writeHead(400, { 'Content-Type': 'application/json' });
                         res.end(JSON.stringify({ status: 'error', message: 'Invalid JSON received (/update)' }));
                     }
@@ -85,9 +145,9 @@ function App() {
 
         server.on('error', (err) => {
              console.error(`UI Listener Server error (Port ${port}): ${err}`); // <-- Updated log message
+             setUiError(`UI Listener failed: ${err.message}`); // Set UI error state
              if (err.code === 'EADDRINUSE') {
                 console.error(`ERROR: Port ${port} is already in use. Backend bridge may fail.`);
-                setLastBackendMessage({ error: 'Cannot listen on Port', port: port });
              }
          });
 
@@ -112,21 +172,18 @@ function App() {
     const renderTabContent = (tabIndex) => {
         // Example: Display last message details in the Chat tab
         if (tabIndex === 0) {
-             return React.createElement(Box, null,
-                 React.createElement(Typography, null, "Chat Panel Placeholder"),
-                 React.createElement(Typography, { variant: 'caption', sx: { mt: 2, display: 'block', color: 'grey.500' } },
-                     // Display structured data from state
-                     `Last backend message: Agent='${lastBackendMessage?.agent || 'N/A'}', Type='${lastBackendMessage?.type || 'N/A'}', Payload='${JSON.stringify(lastBackendMessage?.payload)?.substring(0, 100) || '(None)'}...'`
-                 )
-             );
+             return React.createElement(MainChatPanel, {
+                 messages: chatMessages,
+                 onSendMessage: handleSendMessage // Pass the sending handler
+             });
         }
         // ... (Keep other placeholders) ...
         switch(tabIndex) {
-            case 1: return <Typography>Plan/Build Panel Placeholder (Arch/Nexus/Coders)</Typography>;
-            case 2: return <Typography>Dream Theatre Placeholder (Hermie's View)</Typography>;
-            case 3: return <Typography>Project Manager Placeholder (User/Subprojects)</Typography>;
-            case 4: return <Typography>Settings Panel Placeholder</Typography>;
-            default: return <Typography>Unknown Tab</Typography>;
+            case 1: return React.createElement(Typography, null, "Plan/Build Panel Placeholder");
+            case 2: return React.createElement(Typography, null, "Dream Theatre Placeholder");
+            case 3: return React.createElement(Typography, null, "Project Manager Placeholder");
+            case 4: return React.createElement(Typography, null, "Settings Panel Placeholder");
+            default: return React.createElement(Typography, null, "Unknown Tab");
         }
     };
 
@@ -139,7 +196,7 @@ function App() {
                 {/* Header Area (Example: Toggle Switch) */}
                 <Box sx={{ p: 1, display: 'flex', justifyContent: 'flex-end' }}>
                     <FormControlLabel
-                        control={<Switch checked={beginnerMode} onChange={handleBeginnerModeChange} />}
+                        control={React.createElement(Switch, { checked: beginnerMode, onChange: handleBeginnerModeChange })}
                         label="Beginner Mode"
                     />
                 </Box>
@@ -147,7 +204,7 @@ function App() {
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={activeTab} onChange={handleTabChange} aria-label="DreamerAI Main Navigation Tabs">
                         {tabLabels.map((label, index) => (
-                            <Tab label={label} key={index} />
+                            React.createElement(Tab, { label: label, key: index })
                         ))}
                     </Tabs>
                 </Box>
@@ -155,6 +212,12 @@ function App() {
                 <Box sx={{ p: 3, flexGrow: 1, overflowY: 'auto' }}> {/* Added flexGrow and overflow */}
                     {renderTabContent(activeTab)}
                 </Box>
+                {/* Error Snackbar */}
+                <Snackbar open={!!uiError} autoHideDuration={6000} onClose={handleCloseError}>
+                    <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
+                        {uiError}
+                    </Alert>
+                </Snackbar>
             </Box>
         </ThemeProvider>
     );
