@@ -4,6 +4,7 @@ import asyncio
 import os
 import sys
 from typing import Dict
+from pathlib import Path # <-- Import Path
 
 # Ensure engine directory is in path
 project_root_main = os.path.abspath(os.path.dirname(__file__))
@@ -15,13 +16,15 @@ try:
     from engine.agents.base import BaseAgent # Need BaseAgent for type hinting
     from engine.agents.main_chat import ChefJeff # Import Jeff
     from engine.agents.planning import PlanningAgent # <-- Import Arch
+    from engine.agents.frontend_agent import LamarAgent # <-- Import Lamar
+    from engine.agents.backend_agent import DudleyAgent # <-- Import Dudley
     # Import other agents as they are implemented...
     # from engine.agents.planning import Arch # Example for later
     from engine.core.workflow import DreamerFlow
     from engine.core.logger import logger_instance as logger
 except ImportError as e:
     print(f"Error importing modules in main.py: {e}")
-    print("Please ensure all core components (BaseAgent, ChefJeff, DreamerFlow, logger) are implemented.")
+    print("Check file paths and ensure all agent files exist.") # Updated error message
     sys.exit(1)
 
 # Define user directory (can be made dynamic later)
@@ -31,33 +34,41 @@ DEFAULT_USER_DIR = r"C:\DreamerAI\Users\Example User"
 async def run_dreamer_flow():
     """
     Initializes agents and runs a test execution of the DreamerFlow.
-    Includes calling PlanningAgent (Arch) after Jeff.
+    Includes Arch -> Lamar & Dudley steps.
     """
     logger.info("--- Initializing DreamerAI Backend ---")
     # Define test project details
     test_user_name = "Example User" # Matches DEFAULT_USER_DIR
-    test_project_name = "ArchTestProject"
-    user_workspace_dir = DEFAULT_USER_DIR # C:\DreamerAI\Users\Example User
-    test_project_context_path = os.path.join(user_workspace_dir, "Projects", test_project_name) # C:\...\Projects\ArchTestProject
+    test_project_name = "CodeGenProjectDay12"
+    user_workspace_dir = Path(DEFAULT_USER_DIR) # Use Path object
+    test_project_context_path = user_workspace_dir / "Projects" / test_project_name
+    # Define output path within project context path
+    test_project_output_path = test_project_context_path / "output"
+    test_project_overview_path = test_project_context_path / "Overview" # Path for blueprint
 
-    # Ensure directories exist for the test
-    os.makedirs(test_project_context_path, exist_ok=True)
-    logger.info(f"Ensured test project context path exists: {test_project_context_path}")
+    # Ensure directories exist for the test using pathlib
+    test_project_context_path.mkdir(parents=True, exist_ok=True)
+    test_project_output_path.mkdir(parents=True, exist_ok=True)
+    # Arch's run method should create Overview if needed
+    logger.info(f"Ensured base test project path exists: {test_project_context_path}")
+    logger.info(f"Output path set to: {test_project_output_path}")
 
     # --- Agent Initialization ---
     agents: Dict[str, BaseAgent] = {}
     try:
         # Instantiate Jeff (Requires user_dir)
-        agents["Jeff"] = ChefJeff(user_dir=user_workspace_dir)
-        agents["Arch"] = PlanningAgent(user_dir=user_workspace_dir) # <-- Instantiate Arch
-        logger.info("ChefJeff and PlanningAgent agents instantiated.")
+        agents["Jeff"] = ChefJeff(user_dir=str(user_workspace_dir))
+        agents["Arch"] = PlanningAgent(user_dir=str(user_workspace_dir))
+        agents["Lamar"] = LamarAgent(user_dir=str(user_workspace_dir))   # <-- Instantiate Lamar
+        agents["Dudley"] = DudleyAgent(user_dir=str(user_workspace_dir)) # <-- Instantiate Dudley
+        logger.info("Jeff, Arch, Lamar, Dudley agents instantiated.")
 
         # Add other agents here as implemented...
         # e.g., agents["Arch"] = Arch(user_dir=DEFAULT_USER_DIR)
         # For Day 9, we only have Jeff implemented. Placeholders can be added later if needed for dict completeness.
 
     except NameError as ne:
-         logger.error(f"Agent class not found during instantiation: {ne}. Has it been implemented?")
+         logger.error(f"Agent class not found during instantiation: {ne}. Check imports.")
          print(f"ERROR: Required agent class not found: {ne}. Exiting.")
          sys.exit(1)
     except Exception as e:
@@ -73,7 +84,7 @@ async def run_dreamer_flow():
         sys.exit(1)
 
     try:
-        dreamer_flow = DreamerFlow(agents=agents, user_dir=user_workspace_dir)
+        dreamer_flow = DreamerFlow(agents=agents, user_dir=str(user_workspace_dir))
         logger.info("DreamerFlow instantiated.")
     except Exception as e:
         logger.exception(f"Failed to initialize DreamerFlow: {e}")
@@ -82,43 +93,62 @@ async def run_dreamer_flow():
 
 
     # --- Test Execution ---
-    test_input = f"Hi Jeff, let's plan a project called '{test_project_name}' about a personal blog."
-    logger.info(f"\n--- Running Test Execution with Input: '{test_input}' ---")
+    logger.info(f"\n--- Running Day 12 Test Execution ---")
 
-    # 1. Initial interaction with Jeff (via Flow)
-    # Note: Current DreamerFlow.execute only calls Jeff
-    jeff_response = await dreamer_flow.execute(initial_user_input=test_input)
+    # 1. Call Arch to generate blueprint
+    plan_idea = "Basic web application with a counter. Frontend using React shows a number and increment/decrement buttons. Minimal FastAPI backend (placeholder for now)."
+    print(f"\n--- Calling Arch for: '{plan_idea}' ---")
+    arch_result = await agents['Arch'].run(
+        project_idea=plan_idea,
+        project_context_path=str(test_project_context_path) # Pass base project path
+        )
+    print(f"Arch Result: {arch_result}")
 
-    print("\n--- Jeff's Initial Response --- (via Flow)")
-    if isinstance(jeff_response, dict) and 'error' in jeff_response:
-        print(f"Jeff ERROR: {jeff_response['error']}")
-        # Decide if flow should stop on Jeff error - for now, continue to Arch
-    else:
-        print(f"Jeff Response Snippet: {str(jeff_response)[:200]}...")
-
-    # 2. Pass the idea to Arch (using Jeff's response or original idea)
-    # For this test, let's use the original idea concept derived from the input
-    plan_idea = f"Create the '{test_project_name}' personal blog project mentioned in the chat."
-    print(f"\n--- Calling Planning Agent (Arch) directly for: '{plan_idea}' ---")
-    # Need a way to call Arch *through* the flow eventually,
-    # for now, call directly using the instantiated agent object
-    # We also need to provide the specific project context path
-    if "Arch" in agents:
-        arch_result = await agents['Arch'].run(
-            project_idea=plan_idea,
-            project_context_path=test_project_context_path
-            )
-
-        print("\n--- Arch's Planning Result ---")
-        print(arch_result)
-        if isinstance(arch_result, dict) and arch_result.get("status") == "success":
-             print(f"==> Blueprint expected at: {arch_result.get('blueprint_path')}")
-        elif isinstance(arch_result, dict):
-             print(f"==> Planning failed or pending: {arch_result.get('message')}")
+    blueprint_path_str = arch_result.get("blueprint_path")
+    blueprint_content = None
+    if arch_result.get("status") == "success" and blueprint_path_str:
+        blueprint_path = Path(blueprint_path_str) # Convert to Path
+        if blueprint_path.exists():
+            print(f"Blueprint generated at: {blueprint_path}")
+            try:
+                with open(blueprint_path, "r", encoding="utf-8") as f:
+                    blueprint_content = f.read()
+                logger.info(f"Successfully read blueprint: {blueprint_path}")
+            except Exception as e:
+                logger.error(f"Failed to read blueprint file {blueprint_path}: {e}")
+                print(f"ERROR: Could not read blueprint file.")
         else:
-            print(f"==> Unexpected result from Arch: {arch_result}")
+             print(f"ERROR: Arch reported success but blueprint file not found at {blueprint_path}.")
+             logger.error(f"Blueprint file missing: {blueprint_path}")
     else:
-        print("\n--- Arch not found in agents dictionary. Skipping planning step. ---")
+         print(f"ERROR: Planning failed or blueprint path missing. Cannot run coding agents.")
+         logger.error(f"Planning failed: {arch_result.get('message')}")
+
+    # 2. Call Lamar & Dudley if blueprint exists
+    if blueprint_content:
+        print(f"\n--- Calling Dudley (Backend) with Blueprint ---")
+        dudley_result = await agents['Dudley'].run(
+            blueprint_content=blueprint_content,
+            project_output_path=str(test_project_output_path) # Pass output sub-path
+            )
+        print(f"Dudley Result: {dudley_result}")
+        if dudley_result.get("status") == "success":
+             print(f"==> Backend code saved to: {dudley_result.get('file_path')}")
+        else:
+             print(f"==> Dudley failed: {dudley_result.get('message')}")
+
+        print(f"\n--- Calling Lamar (Frontend) with Blueprint ---")
+        lamar_result = await agents['Lamar'].run(
+             blueprint_content=blueprint_content,
+             project_output_path=str(test_project_output_path)
+             )
+        print(f"Lamar Result: {lamar_result}")
+        if lamar_result.get("status") == "success":
+             print(f"==> Frontend code saved to: {lamar_result.get('file_path')}")
+        else:
+             print(f"==> Lamar failed: {lamar_result.get('message')}")
+    else:
+        print("Skipping coding agents due to missing blueprint.")
 
 
     logger.info("--- Test Execution Finished ---")
@@ -129,7 +159,7 @@ if __name__ == "__main__":
     # Pre-requisites:
     # 1. Activate venv: C:\DreamerAI\venv\Scripts\activate
     # 2. Run Ollama server OR have Cloud API keys in .env.development
-    # 3. RAG DB for Jeff seeded (from Day 8)
+    # 3. RAG DB for Jeff seeded (from Day 8) - Not directly used in this test
     # 4. Run main script: python main.py (from C:\DreamerAI)
     print(f"Running main.py from: {os.getcwd()}")
     asyncio.run(run_dreamer_flow()) 
