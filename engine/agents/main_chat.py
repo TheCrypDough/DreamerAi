@@ -198,9 +198,8 @@ class ChefJeff(BaseAgent):
             final_response_content = response_content # Store successful response
 
             # --- Send Immediate Chat Response (Bridge D13 via BaseAgent V2 send_update_to_ui) ---
-            # Temporarily comment out bridge call
-            # await self.send_update_to_ui(response_content, update_type="chat_response")
-            self.logger.info("Jeff V1 generated response (UI bridge call commented out).")
+            await self.send_update_to_ui(response_content, update_type="chat_response")
+            self.logger.info("Jeff V1 generated response and sent update to UI.")
             # -----------------------------------------------------------------------------------
 
             # 5. Identify Task & Trigger Handoff/Progress Sim (Keep V1 keyword logic)
@@ -226,7 +225,7 @@ class ChefJeff(BaseAgent):
             self._state = AgentState.ERROR 
             final_response_content = f"Jeff V1 Error: {e}"
             self.logger.exception(f"Error during Jeff V1 run")
-            # Send error via bridge (commented out)
+            # Send error via bridge (consider adding this back later if needed)
             # try:
             #      await self.send_update_to_ui(final_response_content, "error")
             # except Exception as send_err:

@@ -93,7 +93,18 @@ async def run_dreamer_flow():
 
 
     # --- Test Execution ---
-    logger.info(f"\n--- Running Day 12 Test Execution ---")
+    logger.info(f"\n--- Running Day 13 Test Execution (Includes Bridge Test) ---") # Updated log
+
+    # **NEW: Call Jeff to test the bridge**
+    jeff_input = "Hello Jeff! Just testing the connection."
+    print(f"\n--- Calling Jeff with: '{jeff_input}' (Bridge Test) ---")
+    try:
+        jeff_result = await agents['Jeff'].run(user_input=jeff_input)
+        print(f"Jeff Result: {jeff_result}")
+        # Check logs and frontend console for the bridged message
+    except Exception as e:
+        logger.error(f"Error running Jeff for bridge test: {e}")
+        print(f"ERROR running Jeff: {e}")
 
     # 1. Call Arch to generate blueprint
     plan_idea = "Basic web application with a counter. Frontend using React shows a number and increment/decrement buttons. Minimal FastAPI backend (placeholder for now)."

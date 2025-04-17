@@ -18,7 +18,7 @@ function App() {
     // State for active tab and beginner mode
     const [activeTab, setActiveTab] = useState(0); // Index of the active tab
     const [beginnerMode, setBeginnerMode] = useState(false);
-    const [lastBackendMessage, setLastBackendMessage] = useState(''); // To display test messages
+    const [lastBackendMessage, setLastBackendMessage] = useState({}); // Store parsed JSON
 
     // Handle tab change
     const handleTabChange = (event, newValue) => {
@@ -34,47 +34,60 @@ function App() {
         // Add logic later to change UI based on beginnerMode state
     };
 
-    // Effect hook to set up the backend listener
+    // MODIFY Effect hook for backend listener - Revert to specific path check
     useEffect(() => {
-        const port = 3000;
+        const port = 3131; // Keep changed port
         const server = http.createServer((req, res) => {
-            // Listen only for POST requests on /update path (from Python backend)
+            // Revert DEBUG: Log only specific requests if needed
+            // console.log(`Listener (Port ${port}) received request: Method=${req.method}, URL=${req.url}`);
+
+            // Revert check: Check for POST method AND specific /update path
             if (req.method === 'POST' && req.url === '/update') {
+                // console.log(`POST request received for URL: ${req.url}`); // Keep logging specific URL?
                 let body = '';
-                req.on('data', chunk => {
-                    body += chunk.toString(); // Convert Buffer chunks to string
-                });
+                req.on('data', chunk => { body += chunk.toString(); });
                 req.on('end', () => {
-                    console.log('Received backend message:', body);
-                    setLastBackendMessage(`Received @ ${new Date().toLocaleTimeString()}: ${body}`); // Update state to display message
-                    // --- TODO LATER: Process the message based on its content ---
-                    // e.g., if (body.type === 'progress') { updateProgressBar(body.data); }
-                    // e.g., if (body.agent === 'Jeff') { addJeffMessageToChatPanel(body.content); }
-                    res.writeHead(200, { 'Content-Type': 'text/plain' });
-                    res.end('Message Received by UI');
+                    // Keep JSON parsing logic
+                    try {
+                        const receivedData = JSON.parse(body);
+                        console.log('Received structured backend message:', receivedData);
+                        setLastBackendMessage(receivedData);
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ status: 'Message Received by UI (/update)', received: receivedData })); // Updated status msg
+                    } catch (e) {
+                        console.error('Failed to parse incoming JSON from backend (/update):', e); // Updated log msg
+                        console.error('Received Raw Body (/update):', body); 
+                        setLastBackendMessage({ error: 'Failed to parse backend message (/update)', raw: body });
+                        res.writeHead(400, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ status: 'error', message: 'Invalid JSON received (/update)' }));
+                    }
                 });
-                req.on('error', (err) => {
-                     console.error('Request error in UI listener:', err);
-                     res.writeHead(500);
-                     res.end('Server error processing request');
+                 req.on('error', (err) => {
+                     console.error('Request error in UI listener (/update):', err); // Updated log msg
+                     if (!res.writableEnded) {
+                         res.writeHead(500);
+                         res.end('Server error processing request (/update)');
+                     }
                  });
             } else {
-                 // Respond to other requests (e.g., GET requests) if needed, or ignore
-                 res.writeHead(404);
-                 res.end('Not Found');
+                 // Handle non-POST or non-/update requests
+                 // console.log(`Non-POST/update request (${req.method}) received for URL: ${req.url}. Responding 404.`);
+                 if (!res.writableEnded) {
+                     res.writeHead(404);
+                     res.end('Not Found'); // Revert status msg
+                 }
             }
         });
 
         server.listen(port, '127.0.0.1', () => {
-            console.log(`UI Backend Listener started on port ${port}`);
+            console.log(`UI Backend Listener started on port ${port}`); // <-- Updated log message
         });
 
         server.on('error', (err) => {
-             console.error(`UI Listener Server error: ${err}`);
-             // Handle specific errors like EADDRINUSE if port is taken
+             console.error(`UI Listener Server error (Port ${port}): ${err}`); // <-- Updated log message
              if (err.code === 'EADDRINUSE') {
                 console.error(`ERROR: Port ${port} is already in use. Backend bridge may fail.`);
-                setLastBackendMessage(`ERROR: Cannot listen on Port ${port}. It might be in use.`);
+                setLastBackendMessage({ error: 'Cannot listen on Port', port: port });
              }
          });
 
@@ -83,7 +96,7 @@ function App() {
             console.log('Closing UI Backend Listener...');
             server.close();
         };
-    }, []); // Empty dependency array ensures this runs only once on mount
+    }, []);
 
     // Define theme (using default dark theme for now)
     const theme = createTheme({
@@ -95,11 +108,20 @@ function App() {
     // Define Tab Labels (can be internationalized later)
     const tabLabels = ["Chat", "Plan/Build", "Dream Theatre", "Project Manager", "Settings"];
 
-    // Placeholder Content for Tabs
+    // Modify placeholder content rendering slightly to show structured message
     const renderTabContent = (tabIndex) => {
-        // Later, these will render specific panel components
+        // Example: Display last message details in the Chat tab
+        if (tabIndex === 0) {
+             return React.createElement(Box, null,
+                 React.createElement(Typography, null, "Chat Panel Placeholder"),
+                 React.createElement(Typography, { variant: 'caption', sx: { mt: 2, display: 'block', color: 'grey.500' } },
+                     // Display structured data from state
+                     `Last backend message: Agent='${lastBackendMessage?.agent || 'N/A'}', Type='${lastBackendMessage?.type || 'N/A'}', Payload='${JSON.stringify(lastBackendMessage?.payload)?.substring(0, 100) || '(None)'}...'`
+                 )
+             );
+        }
+        // ... (Keep other placeholders) ...
         switch(tabIndex) {
-            case 0: return <Typography>Chat Panel Placeholder (Jeff's Home)</Typography>;
             case 1: return <Typography>Plan/Build Panel Placeholder (Arch/Nexus/Coders)</Typography>;
             case 2: return <Typography>Dream Theatre Placeholder (Hermie's View)</Typography>;
             case 3: return <Typography>Project Manager Placeholder (User/Subprojects)</Typography>;
@@ -132,10 +154,6 @@ function App() {
                 {/* Main Content Area (swaps based on active tab) */}
                 <Box sx={{ p: 3, flexGrow: 1, overflowY: 'auto' }}> {/* Added flexGrow and overflow */}
                     {renderTabContent(activeTab)}
-                    {/* Display last backend message for testing the listener */}
-                    <Typography variant="caption" sx={{ mt: 2, display: 'block', color: 'grey.500' }}>
-                        {`Last backend message: ${lastBackendMessage || '(None received yet)'}`}
-                    </Typography>
                 </Box>
             </Box>
         </ThemeProvider>

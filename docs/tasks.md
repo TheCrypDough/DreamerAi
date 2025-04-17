@@ -198,6 +198,25 @@
 *   **Summary:** Implemented PlanningAgent (Arch) V1. Arch generates a project blueprint from text input using LLM and saves it to the project's Overview directory. Tested via direct call from main.py.
 *   **Issues Encountered:** ValueError during Arch instantiation (PlanningAgent has no field 'llm') - resolved by using PrivateAttr _llm. Expected Redis/n8n/RAG failures logged during main.py test.
 
+## Day 12 - Coding Agents V1 (Lamar & Dudley), The Forge Ignites!
+- [X] Cursor Task: Create C:\DreamerAI\engine\agents\agent_utils.py and implement the `save_code_to_file` helper function.
+- [X] Cursor Task: Create C:\DreamerAI\engine\agents\frontend_agent.py and implement the LamarAgent class using the code provided below (derived from ShakAgent code, renamed). Ensure it inherits BaseAgent.
+- [X] Cursor Task: Create C:\DreamerAI\engine\agents\backend_agent.py and implement the DudleyAgent class using the code provided below (derived from RakAgent code, renamed). Ensure it inherits BaseAgent.
+- [X] Cursor Task: Implement their respective run methods. They should accept blueprint_content: str and project_output_path: str. Construct prompts asking the LLM for React/JS frontend code (Lamar) and Python/FastAPI backend code (Dudley) based on the blueprint. Call await self._llm.generate(prompt). # Corrected to _llm
+- [X] Cursor Task: Add logic using the save_code_to_file helper (imported from agent_utils) to save generated code to [project_output_path]/frontend/src/App.jsx (Lamar) and [project_output_path]/backend/main.py (Dudley). Include error handling.
+- [X] Cursor Task: Modify C:\DreamerAI\main.py. After Arch runs and generates/reads the blueprint.md:
+    - Import LamarAgent and DudleyAgent (from frontend_agent and backend_agent).
+    - Instantiate LamarAgent and DudleyAgent.
+    - Define the project_output_path (e.g., C:\DreamerAI\Users\Example User\Projects\CodeGenProjectDay12\output). Ensure this directory exists.
+    - Call await agents['Lamar'].run(blueprint_content=..., project_output_path=...). 
+    - Call await agents['Dudley'].run(blueprint_content=..., project_output_path=...). 
+    - Print/log the results.
+- [X] Cursor Task: Execute python main.py (after activating venv). Verify output shows Lamar and Dudley running. Check the specified project_output_path subdirectories (frontend/src/ and backend/) for App.jsx and main.py. Briefly inspect generated code. Check logs.
+- [X] Cursor Task: Stage changes (agent_utils.py, frontend_agent.py, backend_agent.py, main.py), commit, and push.
+*   **Overall Day Status:** DONE
+*   **Summary:** Implemented V1 coding agents (Lamar/Frontend, Dudley/Backend) and utils helper. Agents generate initial code from Arch's blueprint and save to project output dirs. Tested flow via main.py.
+*   **Issues Encountered:** Minor linter errors in dummy classes fixed. Expected Redis/OpenRouter failures during main.py test. Git commit/push commands required retries due to tool issues.
+
 ---
 
 *(Future days/tasks will be added here)*

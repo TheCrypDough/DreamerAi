@@ -21,15 +21,30 @@ except ImportError as e:
     print(f"Error importing modules in frontend_agent.py: {e}")
     # Dummy classes / functions for parsing
     class BaseAgent:
-        def __init__(self, *args, **kwargs): self.logger=print; self.name="DummyFE"; self.memory=Memory()
-    class AgentState: IDLE,RUNNING,FINISHED,ERROR = 1,2,3,4
-    class Message: pass
+        def __init__(self, *args, **kwargs):
+            self.logger = print
+            self.name = "DummyFE"
+            self.memory = Memory()  # Assuming Memory is defined below or is a dummy
+
+    class AgentState:
+        IDLE = 1
+        RUNNING = 2
+        FINISHED = 3
+        ERROR = 4
+
+    class Message:
+        def __init__(self, role=None, content=None): # Added basic init for potential use
+            self.role = role
+            self.content = content
+
     class Memory:
         def add_message(self, *args, **kwargs):
             pass # Define method body properly
+
     class LLM:
         def generate(self, *args, **kwargs):
              return "Placeholder FE Code Error"
+
     import logging
     logger = logging.getLogger(__name__)
     def log_rules_check(action): logger.info(f"RULES CHECK (import failed): {action}")

@@ -63,6 +63,7 @@ idna==3.10
 importlib_metadata==8.6.1
 importlib_resources==6.5.2
 Jinja2==3.1.6
+jiter==0.9.0
 joblib==1.4.2
 jsonlines==4.0.0
 jsonschema==4.23.0
@@ -87,6 +88,7 @@ numpy==1.26.4
 oauthlib==3.2.2
 ollama==0.4.7
 onnxruntime==1.21.0
+openai==1.74.0
 opentelemetry-api==1.32.0
 opentelemetry-exporter-otlp-proto-common==1.32.0
 opentelemetry-exporter-otlp-proto-grpc==1.32.0

@@ -8,6 +8,21 @@ from pydantic_core import PydanticCustomError
 from loguru import logger
 from datetime import datetime
 
+# NEW: Import the bridge function
+try:
+    from engine.core.bridge import send_to_ui
+except ImportError as e:
+    # Use logger if available, otherwise print
+    log_func = getattr(logger, 'error', print)
+    log_func(f"Failed to import send_to_ui from bridge: {e}. UI updates will fail.")
+    # Define a dummy function if import fails so agent init doesn't break
+    # Ensure signature EXACTLY matches the real one, including type hint
+    async def send_to_ui(message_payload: Dict[str, Any]):
+        log_func = getattr(logger, 'warning', print)
+        log_func(f"Dummy send_to_ui called because bridge import failed. Payload: {message_payload}")
+        await asyncio.sleep(0)
+
+
 # Configure agent-level logger (can be customized further)
 # Ensures agents have a logger instance readily available
 agent_logger = logger.bind(agent=True)
@@ -126,6 +141,15 @@ class BaseAgent(BaseModel, ABC):
                 last_result = await self.step(step_input)
                 results.append(last_result)
 
+                # Send step result to UI via bridge
+                if last_result: # Only send if step returned something
+                    # Adapt payload based on typical step output structure if possible
+                    payload_content = last_result if isinstance(last_result, (str, dict, list)) else str(last_result)
+                    await self.send_update_to_ui(
+                        payload_content,
+                        update_type=f"step_{current_step}_result"
+                    )
+
                 # Basic check: If step returns None or specific signal, maybe finish?
                 # Subclasses should manage their state more explicitly within step()
                 if last_result is None: # Placeholder for completion condition
@@ -162,12 +186,21 @@ class BaseAgent(BaseModel, ABC):
         # Returning the last result for simplicity now
         return last_result
 
-    # Helper to potentially send updates to UI via bridge (implementation deferred)
-    async def send_update_to_ui(self, message: str):
-        self.logger.debug(f"Sending update to UI (placeholder): {message}")
-        # from ..core.bridge import send_to_ui # Avoid circular import issues
-        # await send_to_ui(f"{self.name}: {message}")
-        pass
+    # REPLACE placeholder send_update_to_ui method
+    async def send_update_to_ui(self, content: Any, update_type: str):
+        """Sends an update payload to the UI listener via the bridge."""
+        payload = {
+            "agent": self.name,
+            "type": update_type,
+            "payload": content
+        }
+        self.logger.debug(f"Agent '{self.name}' sending update to UI: Type='{update_type}'")
+        try:
+            # Call the imported bridge function
+            await send_to_ui(payload)
+        except Exception as e:
+            # Log error but don't crash the agent if UI send fails
+            self.logger.error(f"Agent '{self.name}' failed to send update to UI: {e}")
 
 # Basic Test Block (can be run with `python -m engine.agents.base`)
 if __name__ == "__main__":
@@ -186,7 +219,7 @@ if __name__ == "__main__":
                 result = f"Step {step_count} processed: {input_data}"
 
             self.memory.add_message(Message(role="assistant", content=result))
-            await self.send_update_to_ui(result) # Simulate UI update
+            await self.send_update_to_ui(result, update_type="step_result") # Simulate UI update
             return result
 
     async def main():
