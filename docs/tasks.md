@@ -242,6 +242,46 @@
 *   **Summary:** Implement the UI Bridge using aiohttp to allow backend agents to send messages to the Electron frontend listener.
 *   **Issues Encountered:** UI Bridge errors (404, Connection Refused - resolved by port change to 3131), OpenRouter intermittent TypeError (#20250416234500).
 
+## Day 14 - UI Panel Integration (Chat Panel V1), Jeff Takes the Mic!
+*   **Cursor Task:** Create C:\DreamerAI\app\components\MainChatPanel.jsx with the provided React component code.
+    *   Status: DONE
+*   **Cursor Task:** Modify C:\DreamerAI\app\src\App.jsx: Add chatMessages state, modify listener, create handleSendMessage, render MainChatPanel.
+    *   Status: DONE
+*   **Cursor Task:** Modify C:\DreamerAI\engine\core\server.py: Add /agents/jeff/chat POST endpoint.
+    *   Status: DONE
+*   **Cursor Task:** Test the full loop: Start backend, start frontend, send message, verify UI and logs.
+    *   Status: DONE
+*   **Cursor Task:** Stage changes (MainChatPanel.jsx, App.jsx, server.py, forge.config.js, logs), commit, and push.
+    *   Status: DONE
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
+    *   Status: DONE
+*   **Overall Day Status:** DONE
+*   **Summary:** Integrated the first functional UI panel (MainChatPanel) into the Dreamer Desktop, allowing users to interact with the Jeff agent via a dedicated UI.
+*   **Issues Encountered:** Content Security Policy (CSP) blocked fetch; resolved by modifying forge.config.js. Git commit commands unreliable via tool.
+
+---
+
+## Day 15 - Nexus Agent V1 (Coding Manager), The Chef Enters the Kitchen!
+*   **Cursor Task:** Create C:\DreamerAI\engine\agents\rules_nexus.md. Populate from rules template, defining Nexus's V1 Role ("Coding Manager"), Scope ("Delegates to Lamar/Dudley V1 sequentially"), and basic Rules.
+    *   Status: TODO
+*   **Cursor Task:** Create and execute a temporary Python script C:\DreamerAI\scripts\seed_rag_nexus.py to initialize and seed C:\DreamerAI\data\rag_dbs\rag_nexus.db.
+    *   Status: TODO
+*   **Cursor Task:** Implement the NexusAgent class in C:\DreamerAI\engine\agents\coding_manager.py.
+    *   Status: TODO
+*   **Cursor Task:** Modify C:\DreamerAI\main.py. Remove direct Lamar/Dudley calls. Instantiate NexusAgent. Call NexusAgent.run after Arch.
+    *   Status: TODO
+*   **Cursor Task:** Execute python main.py. Verify Nexus runs, calls Lamar/Dudley, check logs and output files.
+    *   Status: TODO
+*   **Cursor Task:** Delete the temporary seed script (seed_rag_nexus.py).
+    *   Status: TODO
+*   **Cursor Task:** Stage changes (coding_manager.py, rules_nexus.md, rag_nexus.db, main.py), commit, and push.
+    *   Status: TODO
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
+    *   Status: TODO
+*   **Overall Day Status:** TODO
+*   **Summary:** Implement Nexus Agent V1 (Coding Manager) to orchestrate initial code generation by delegating to Lamar and Dudley based on Arch's blueprint.
+*   **Issues Encountered:** None Anticipated Yet
+
 ---
 
 *(Future days/tasks will be added here)*
