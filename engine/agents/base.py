@@ -3,7 +3,7 @@ import os
 import traceback
 from abc import ABC, abstractmethod
 from typing import List, Optional, Dict, Any, cast
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field, ValidationError, PrivateAttr
 from pydantic_core import PydanticCustomError
 from loguru import logger
 from datetime import datetime
@@ -69,6 +69,9 @@ class BaseAgent(BaseModel, ABC):
     max_steps: int = Field(default=10, description="Maximum execution steps for the run loop")
     logger: Any = Field(default=agent_logger, description="Agent-specific logger instance")
     agent_chat_dir: Optional[str] = Field(None, init=False, description="Path to agent-specific chat logs")
+
+    # Private attribute for LLM instance, specific agents will initialize it
+    _llm: Optional[Any] = PrivateAttr(default=None)
 
     # Allow arbitrary types for flexibility with future integrations (like LLM clients)
     class Config:

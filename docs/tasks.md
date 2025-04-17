@@ -187,6 +187,14 @@
 - [x] Day 10 - Task 5: Stage changes, commit, and push
 - [ ] Day 11 - Task 1: # Placeholder - Get from Guide
 
+## Day 11 - Planning Agent V1 (Arch)
+- [X] Cursor Task: Modify the file C:\DreamerAI\engine\agents\planning.py (created as placeholder Day 7). Implement the PlanningAgent (or Arch) class using the code provided below. Ensure it inherits BaseAgent.
+- [ ] Cursor Task: Implement the run (or step) method. It should accept the project_idea string and optionally a project_output_path string. Construct a detailed prompt for the LLM asking for a project blueprint in Markdown format. Call await self.llm.generate(prompt).
+- [ ] Cursor Task: Add logic to save the returned Markdown string to a file named blueprint.md within the provided project_output_path (creating subdirs like Overview if needed). Use pathlib for robust path handling. Add error handling for file I/O.
+- [ ] Cursor Task: Modify C:\DreamerAI\main.py. Instantiate the PlanningAgent. Modify the run_dreamer_flow function: after getting Jeff's response, pass Jeff's response (or the original input) to await agents['Arch'].run(project_idea=..., project_output_path=...). Define a specific test project path for output. Print or log the result of Arch's run.
+- [ ] Cursor Task: Execute python main.py (after activating venv). Verify output shows Arch being called and completing. Check the specified test project output directory (e.g., C:\DreamerAI\Users\Example User\Projects\ArchTestProj\Overview\) for the created blueprint.md file and review its contents. Check logs.
+- [ ] Cursor Task: Stage changes (planning.py, main.py), commit, and push.
+
 ---
 
 *(Future days/tasks will be added here)*
