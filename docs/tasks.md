@@ -303,14 +303,13 @@
 *   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V1 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
 *   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
 
-## Day 17: Lewis & Foundational Agent Placeholders (DONE)
+## Day 17: Lewis Agent V1 & Toolchest Setup (DONE)
 -   [x] Create `tools/toolchest.json` File
 -   [x] Create `engine/agents/rules_lewis.md` File
 -   [x] Implement Lewis V1 Agent (`administrator.py`) placeholder
--   [x] Create `rules_arch.md` File
--   [x] Implement Arch V1 (`planning.py`) placeholder
--   [x] Create `rules_nexus.md` File (Update if Exists)
--   [x] Implement Nexus V1 (`coding_manager.py`) placeholder
+-   [x] Modify `main.py` to test Lewis V1
+-   [x] Test: Execute `python main.py` and verify Lewis V1 functionality
+-   [x] Corrective Action: Added `rules_arch.md` (Missed Day 11)
 
 ## Day 18: Hermie & UI Bridge V2 (Chat Focus) (TODO)
 -   [ ] Create `engine/agents/rules_hermie.md` File

@@ -3,20 +3,20 @@
 *Last Updated: 2025-04-18 HH:MM:SS*
 
 ## Current Status
-- Day 17 (Lewis & Foundational Placeholders) completed.
-- V1 placeholders for Lewis (Admin), Arch (Planning), and Nexus (Coding Mgr) are implemented, inheriting from BaseAgent V2.
-- Rules files (`rules_lewis.md`, `rules_arch.md`, `rules_nexus.md`) created/updated.
-- `tools/toolchest.json` created and populated for Lewis.
-- `main.py` successfully tested the V1 placeholder functionalities.
+- Day 17 (Lewis V1 & Toolchest) completed.
+- Corrective action for Day 11 (adding `rules_arch.md`) completed.
+- Erroneous Arch/Nexus placeholder changes from earlier today have been reverted.
+- Lewis V1 Agent (`administrator.py`) implemented, tested, and working.
+- `tools/toolchest.json` created and populated.
 - Project is ready for Day 18: Hermie V1 & UI Bridge V2.
 
 ## What Works
 - BaseAgent V2 (RAG, Memory, Rules, State, Logging).
 - ChefJeff V1 (Basic interaction, RAG query).
-- Arch V1 (Placeholder blueprint generation).
-- Nexus V1 (Placeholder dummy file creation).
+- Arch V1 (Functional from Day 11 - Placeholder code reverted).
+- Nexus Agent (Reverted to Day 15 state - Placeholder code removed).
 - Lewis V1 (Toolchest JSON cache loading and querying).
-- DreamerFlow V2 simulation (Jeff -> Arch -> Nexus V1) completes.
+- DreamerFlow V2 simulation (Jeff -> Arch -> Nexus Sim - Note: Nexus part is now reverted to Day 15 state) completes.
 - Basic Electron frontend shell (Day 10) launches.
 - Basic React UI with Tabs (Day 10) renders.
 - UI Bridge V1 (Agent -> Frontend via POST) works but needs refinement.
@@ -27,7 +27,8 @@
 - Hermie V1 (Communications Hub).
 - UI Bridge V2 (Dedicated endpoints).
 - Functional chat integration (Jeff <-> UI).
-- Remaining 23 core agents (implementing V1 placeholders first).
+- Nexus V1 functional placeholder (revisit after reverting bad changes).
+- Remaining core agents (implementing V1 placeholders first).
 - Functional code generation (Nexus V2+ coordinating specialists).
 - Dreamer Desktop UI refinement (Panels, Layout, Theming).
 - SnapApp template integration (Lewis V2+).

@@ -74,106 +74,18 @@ NEXUS_EMBEDDING_MODEL = "all-MiniLM-L6-v2" # Consistent embedding model
 
 class NexusAgent(BaseAgent):
     """
-    Nexus Agent V1: Placeholder Coding Manager.
-    Receives blueprint path, simulates code generation by creating dummy files.
-    Inherits functional BaseAgent V2.
+    Nexus Agent V1: Coding Manager Placeholder.
+    Inherits BaseAgent V2, simulates task breakdown/delegation via logs.
+    Does NOT call other coding agents functionally in V1.
     """
-    # V2+ would manage instances of specialist agents
-    # specialists: Dict[str, BaseAgent] = {}
-
-    def __init__(self, user_dir: str, **kwargs):
+    def __init__(self, user_dir: str, agents: Optional[Dict[str, BaseAgent]] = None, **kwargs):
+        # BaseAgent V2 handles rules, memory, RAG init
         super().__init__(name=NEXUS_AGENT_NAME, user_dir=user_dir, **kwargs)
-        self.logger.info(f"{self.name} V1 Initialized (Inherits BaseAgent V2).")
-        # V2+ : Initialize specialist agents like Lamar, Dudley here
-        # self.specialists['frontend'] = LamarAgent(user_dir=user_dir)
-        # self.specialists['backend'] = DudleyAgent(user_dir=user_dir)
+        # V1 doesn't need LLM or functional agent references
+        self.logger.info(f"NexusAgent '{self.name}' V1 Initialized (Placeholder - Inherits BaseAgent V2).")
 
-    async def step(self, input_data: Optional[Any] = None) -> Optional[Dict[str, Any]]:
-        """
-        V1: Simulates code generation based on the blueprint path provided.
-        Creates dummy output files and returns their paths.
-        Relies on 'blueprint_path' being in input_data.
-        """
-        self.state = AgentState.RUNNING
-        log_rules_check(f"{self.name} V1 step triggered.")
-        self.logger.debug(f"Nexus V1 received input: {input_data}")
-
-        # --- Input Validation & Path Setup --- #
-        if not isinstance(input_data, dict):
-            self.logger.error("Invalid input_data format: expected dict with 'blueprint_path'.")
-            self.state = AgentState.FINISHED
-            return {"status": "error", "error": "Invalid input format. Expected dict with 'blueprint_path'.", "agent": self.name}
-
-        blueprint_path_str = input_data.get("blueprint_path")
-        if not blueprint_path_str:
-            self.logger.error("Missing 'blueprint_path' in input_data for Nexus.")
-            self.state = AgentState.FINISHED
-            return {"status": "error", "error": "Missing 'blueprint_path' in input data.", "agent": self.name}
-
-        try:
-            blueprint_path = Path(blueprint_path_str)
-            if not blueprint_path.is_file():
-                raise FileNotFoundError(f"Blueprint file not found at provided path: {blueprint_path_str}")
-
-            # Determine project root and output directory from blueprint path
-            # Assumes blueprint is in .../Projects/ProjectName/Overview/blueprint.md
-            overview_dir = blueprint_path.parent
-            project_base_path = overview_dir.parent
-            output_dir = project_base_path / "output" # V1: Simple flat output dir
-            output_dir.mkdir(parents=True, exist_ok=True)
-            self.logger.info(f"Target output directory: {output_dir}")
-
-        except FileNotFoundError as fnf_e:
-            self.logger.error(f"Blueprint file validation failed: {fnf_e}")
-            self.state = AgentState.FINISHED
-            return {"status": "error", "error": str(fnf_e), "agent": self.name}
-        except Exception as path_e:
-            self.logger.error(f"Error setting up output path from blueprint path: {path_e}", exc_info=True)
-            self.state = AgentState.FINISHED
-            return {"status": "error", "error": f"Failed to determine output path: {path_e}", "agent": self.name}
-
-        # --- Blueprint Reading (V1 - Optional Placeholder) --- #
-        try:
-            with open(blueprint_path, 'r', encoding='utf-8') as f:
-                blueprint_content = f.read()
-            self.logger.info(f"Read blueprint from {blueprint_path} (V1 does not use content).")
-            # V2+ would parse this content to determine tasks
-        except Exception as read_e:
-            self.logger.warning(f"Could not read blueprint content (non-critical for V1): {read_e}")
-
-        # --- V1 Simulation: Create Dummy Files --- #
-        created_files = []
-        dummy_files = ["main.py", "requirements.txt", "README.md", "src/__init__.py", "src/utils.py"]
-        self.logger.info(f"Simulating code generation by creating dummy files in {output_dir}...")
-
-        try:
-            for dummy_file_rel_path in dummy_files:
-                file_path = output_dir / Path(dummy_file_rel_path)
-                # Ensure subdirectory exists (e.g., for src/)
-                file_path.parent.mkdir(parents=True, exist_ok=True)
-                # Create empty file
-                with open(file_path, 'w', encoding='utf-8') as f:
-                    f.write(f"# Placeholder file created by Nexus V1: {file_path.name}\n")
-                created_files.append(str(file_path))
-                self.logger.debug(f"Created dummy file: {file_path}")
-
-            self.logger.info(f"Successfully created {len(created_files)} dummy files.")
-            self.state = AgentState.FINISHED
-            return {
-                "status": "success",
-                "message": f"Nexus V1 simulation complete. {len(created_files)} dummy files created.",
-                "created_files": created_files, # List of paths to created files
-                "agent": self.name
-            }
-
-        except IOError as io_e:
-            self.logger.error(f"Failed to create dummy output file: {io_e}", exc_info=True)
-            self.state = AgentState.FINISHED
-            return {"status": "error", "error": f"Failed to create dummy file: {io_e}", "agent": self.name, "created_files": created_files}
-        except Exception as e:
-            self.logger.error(f"An unexpected error occurred during Nexus V1 file creation: {e}", exc_info=True)
-            self.state = AgentState.FINISHED
-            return {"status": "error", "error": f"Unexpected error during dummy file creation: {e}", "agent": self.name, "created_files": created_files}
+    # BaseAgent V2 handles _load_rules
+    # BaseAgent V2 handles RAG init, query_rag, store_in_rag
 
     async def run(self, blueprint_content: Optional[str] = "No blueprint provided V1.", project_output_path: Optional[str] = None) -> Dict[str, Any]:
         """ V1: Simulates receiving blueprint, breaking down tasks, delegating via LOGS only. """
@@ -225,9 +137,12 @@ class NexusAgent(BaseAgent):
         self.memory.add_message(Message(role="assistant", content=json.dumps(results)))
         return results
 
-    async def shutdown(self):
-        # Implement shutdown logic if needed
-        pass
+    async def step(self, input_data: Optional[Any] = None) -> Any: # Basic step V1
+        logger.warning(f"{self.name}.step() called. V1 uses run().")
+        bp = input_data.get("blueprint_content") if isinstance(input_data, dict) else str(input_data or "")
+        out_path = input_data.get("project_output_path") if isinstance(input_data, dict) else None
+        return await self.run(blueprint_content=bp, project_output_path=out_path)
+
 
 # --- Test Block (Adapted from Guide) ---
 async def test_nexus_agent_v1():

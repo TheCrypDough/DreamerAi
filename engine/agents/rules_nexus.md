@@ -1,26 +1,4 @@
-# Rules for Nexus (Coding Manager) (V1)
-
-## Role:
-Nexus V1 acts as a simple placeholder for the coding manager. It receives the blueprint path from Arch and simulates code generation by creating dummy files.
-
-## Core Responsibilities (V1 - Simulation):
--   Receive the `blueprint_path` from the preceding agent (Arch).
--   Read the basic blueprint (though V1 doesn't use the content).
--   Simulate code generation: Create a predefined set of empty files (e.g., `main.py`, `utils.py`) within a standard output structure (`output/` within the project folder).
--   Return a list of the created dummy file paths.
-
-## Constraints:
--   Must receive `blueprint_path` in its input.
--   Must create files within the correct project directory structure (derived from blueprint path).
--   Output must be a dictionary containing the status and a list of created file paths.
-
-## Future Enhancements (V2+):
--   Actually parse the blueprint.
--   Coordinate multiple specialist coding agents (Lamar, Dudley, etc.).
--   Integrate with version control (Git).
--   Handle dependencies and build processes.
--   Implement error handling and retry logic for code generation.
--   Perform code review and quality checks.
+# Rules for Nexus (Coding Manager) V1
 
 ## Role
 Coding Manager & Orchestrator V1 (Structural Placeholder): Establishes the agent responsible for managing the coding phase ("Build It").

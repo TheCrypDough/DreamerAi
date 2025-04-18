@@ -54,8 +54,9 @@ Note: Established and documented strategy (in cursorrules.md) for adapting Days 
 
 Note: Encountered and resolved NameError in main.py (missing DreamerFlow import from guide code). Also logged recurring OpenRouter TypeError during Day 16 Task 3 testing. Task: Day 16 Task 3. Date: 2025-04-17
 
-**[2025-04-18] - End of Day 17: Lewis & Foundational Placeholders**
-*   **Milestone Completed:** Day 17: Lewis & Foundational Agent Placeholders. Implemented V1 placeholders for Lewis, Arch, and Nexus inheriting BaseAgent V2. Created/updated rules files and toolchest.json. Tested successfully via main.py.
+**[2025-04-18] - End of Day 17 (Corrected): Lewis V1 & Toolchest Setup**
+*   **Milestone Completed:** Day 17: Lewis Agent V1 & Toolchest Setup. Implemented Lewis V1, created `rules_lewis.md` and `tools/toolchest.json`. Tested successfully via `main.py`.
+*   **Corrective Actions:** Added `rules_arch.md` (missed from Day 11). Reverted incorrect modifications to `planning.py`, `coding_manager.py`, `rules_nexus.md` made earlier today. Cleaned up `migration_tracker.md`.
 *   **Next Task:** Day 18: Hermie & UI Bridge V2 (Chat Focus).
-*   **Feeling:** On track. Placeholders established, ready for communication focus.
-*   **Issues:** Resolved minor logging oversight during the process.
+*   **Feeling:** Back on track after significant correction. Need to maintain strict guide adherence.
+*   **Issues:** Resolved major deviation by reverting incorrect file changes and cleaning logs.

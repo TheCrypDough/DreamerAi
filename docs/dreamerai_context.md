@@ -231,8 +231,8 @@ Template for Entries must be completed at least Daily!
 *   **Blocking Issues Encountered/Resolved:** Multiple `AttributeError`s (`query_rag`, `_state`) and an `ImportError` (`event_manager`) during testing were traced back to issues with the previous `BaseAgent` implementation or incorrect fallback logic triggering. Replacing `base.py` entirely with the verified Day 72 code and removing the faulty `event_manager` import resolved these. Issue with ignored log file during staging resolved with `git add -f`.
 *   **Next Task Context:** Proceeding to Day 16, Task: DreamerFlow V2 (Basic Orchestration - Jeff->Arch->Nexus(V1)).
 
-**Day 17: Lewis & Foundational Agent Placeholders (Completed: 2025-04-18)**
-*   **Summary:** Created V1 placeholder agents for Lewis (Administrator), Arch (Planning), and Nexus (Coding Manager), ensuring all inherit from the functional `BaseAgent V2`. Created/updated their respective `rules_*.md` files. Lewis V1 loads and provides info from a `toolchest.json` cache. Arch V1 simulates creating a `blueprint.md`. Nexus V1 simulates creating dummy output files based on the blueprint path. Updated `main.py` to test these agents individually after the DreamerFlow V2 simulation. Ran `main.py` successfully, verifying the placeholder functionality and `BaseAgent V2` inheritance.
-*   **Key Decisions:** Standardized V1 placeholder approach using `BaseAgent V2`. Used agent `step` methods for core logic simulation. Ensured path handling within agents respects the project structure derived from `user_dir` and `project_name`.
-*   **Anthony's Feedback/Vibe:** Focused on getting tasks done sequentially and correctly logging steps.
-*   **Blocking Issues:** Initial missed logging steps required correction.
+**Day 17: Lewis Agent V1 & Toolchest Setup (Completed: 2025-04-18)**
+*   **Summary:** Implemented Lewis V1 Agent (`administrator.py`), created `rules_lewis.md` and `tools/toolchest.json`. Lewis V1 loads tool info from the JSON into an in-memory cache. Updated `main.py` to test Lewis V1 functionality (cache loading, info retrieval). Successfully verified via `python main.py`. Also performed corrective action: added `rules_arch.md` which was missed in Day 11.
+*   **Key Decisions:** Focused only on Lewis V1 implementation as per the official Day 17 guide. Reverted erroneous Arch/Nexus placeholder implementations made earlier.
+*   **Anthony's Feedback/Vibe:** Frustrated by previous deviations, emphasized strict adherence to guide tasks.
+*   **Blocking Issues:** Significant deviation from guide required manual file reversions (`planning.py`, `coding_manager.py`, `rules_nexus.md`) via `git checkout` and cleanup of migration logs.
