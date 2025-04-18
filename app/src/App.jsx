@@ -16,6 +16,7 @@ const Snackbar = require('@mui/material/Snackbar').default;
 
 // Import Panels
 const MainChatPanel = require('../components/MainChatPanel').default;
+const DreamTheatrePanel = require('../components/DreamTheatrePanel').default;
 
 // --- App Component ---
 
@@ -168,25 +169,19 @@ function App() {
     // Define Tab Labels (can be internationalized later)
     const tabLabels = ["Chat", "Plan/Build", "Dream Theatre", "Project Manager", "Settings"];
 
-    // Modify placeholder content rendering slightly to show structured message
+    // MODIFY Render Content for Active Tab
     const renderTabContent = (tabIndex) => {
-        // Example: Display last message details in the Chat tab
-        if (tabIndex === 0) {
-             return React.createElement(MainChatPanel, {
-                 messages: chatMessages,
-                 onSendMessage: handleSendMessage // Pass the sending handler
-             });
-        }
-        // ... (Keep other placeholders) ...
-        switch(tabIndex) {
+        switch (tabIndex) {
+            case 0: // Chat Panel
+                return React.createElement(MainChatPanel, { messages: chatMessages, onSendMessage: handleSendMessage });
             case 1: return React.createElement(Typography, null, "Plan/Build Panel Placeholder");
-            case 2: return React.createElement(Typography, null, "Dream Theatre Placeholder");
+            case 2: // Dream Theatre Panel
+                return React.createElement(DreamTheatrePanel); // Render the new panel
             case 3: return React.createElement(Typography, null, "Project Manager Placeholder");
             case 4: return React.createElement(Typography, null, "Settings Panel Placeholder");
             default: return React.createElement(Typography, null, "Unknown Tab");
         }
     };
-
 
     // Render the main UI
     return (
