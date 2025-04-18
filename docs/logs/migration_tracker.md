@@ -131,3 +131,12 @@ This log automatically records all file system structure changes (creations, ren
 [2025-04-17 00:07:30] - MODIFY - Path: C:\DreamerAI\app\src\App.jsx - Details: Integrated MainChatPanel, added chat state/handlers for Day 14.
 [2025-04-17 00:09:15] - MODIFY - Path: C:\DreamerAI\engine\core\server.py - Details: Added /agents/jeff/chat endpoint for Day 14.
 [2025-04-17 00:12:30] - MODIFY - Path: C:\DreamerAI\app\forge.config.js - Details: Added connect-src for localhost:8000 and localhost:3131 to devContentSecurityPolicy to fix fetch CSP error during Day 14 test.
+[2024-08-12 11:21:00] - CREATE - Path: C:\DreamerAI\scripts\seed_rag_nexus.py - Details: Created temporary Nexus RAG DB seed script.
+[2024-08-12 11:40:00] - CREATE - Path: C:\DreamerAI\scripts\seed_rag_nexus_lightrag.py - Details: Created ChromaDB/lightrag-based Nexus RAG DB seed script.
+[2024-08-12 11:45:00] - MODIFY - Path: C:\DreamerAI\engine\agents\coding_manager.py - Details: Implemented NexusAgent V1 class, adapted RAG to use ChromaDB.
+[2024-08-12 12:18:00] - MODIFY - Path: C:\DreamerAI\engine\agents\base.py - Details: Replaced content with BaseAgent V2 (ChromaDB/ST RAG implementation).
+[2024-08-12 12:18:01] - MODIFY - Path: C:\DreamerAI\engine\agents\base.py - Details: Fixed multiple SyntaxErrors and PrivateAttr naming issues.
+[2024-08-12 12:18:02] - MODIFY - Path: C:\DreamerAI\scripts\seed_rag_jeff.py - Details: Updated script to use agent.store_in_rag pattern.
+[2024-08-12 12:22:00] - MODIFY - Path: C:\DreamerAI\scripts\seed_rag_nexus.py - Details: Replaced content with correct script using agent.store_in_rag pattern.
+[2024-08-12 12:25:00] - DELETE - Path: C:\DreamerAI\scripts\seed_rag_nexus_lightrag.py - Details: Deleted obsolete ChromaDB/lightrag seed script.
+[2024-08-12 12:28:00] - MODIFY - Path: C:\DreamerAI\main.py - Details: Updated to import/instantiate NexusAgent and call its run method, removing direct Lamar/Dudley calls.

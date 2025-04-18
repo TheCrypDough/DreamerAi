@@ -1,0 +1,10 @@
+[
+  {
+    "role": "system",
+    "content": "Received blueprint for V1 simulation: # Blueprint: Simple API\n Features: GET /status..."
+  },
+  {
+    "role": "assistant",
+    "content": "{\"status\": \"success\", \"message\": \"Nexus V1 simulation complete.\"}"
+  }
+]

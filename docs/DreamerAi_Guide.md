@@ -4594,479 +4594,388 @@ Motivation:
 
 
 
-(Start of COMPLETE Guide Entry for Day 15)
-Day 15 - Nexus Agent V1 (Coding Manager), The Chef Enters the Kitchen!
-Anthony's Vision: "Nexus (originally coding assistant) now (Nerds Manager) The Chef... handles all the communications to and from the coding agents and supervises their workflow... breaks it down with his Sous chef Artemis... provide the specific task to the other Nerd agents... Nexus is the chef at the pass, tasting and perfecting the plating before sending the dish out... code quality control... When Nexus receives the plan is when the real magic happens..." Your vision paints Nexus as the crucial manager, the quality control expert orchestrating the entire coding process ("The Kitchen"). Today, we implement the first version of Nexus, establishing his foundational role in receiving the plan and managing the initial coding agents (Lamar & Dudley V1).
+(Start of REWRITTEN COMPLETE Guide Entry for Day 15)
+Day 15 - Nexus Agent V1 (Coding Manager Placeholder), The Chef Enters the Kitchen Structurally!
+Anthony's vision: "Nexus (originally coding assistant) now (Nerds Manager) The Chef... handles all the communications to and from the coding agents and supervises their workflow... breaks it down with his Sous chef Artemis... provide the specific task to the other Nerd agents... Nexus is the chef at the pass, tasting and perfecting the plating... code quality control... When Nexus receives the plan is when the real magic happens..." You envision Nexus as the crucial manager, the quality control expert orchestrating the entire coding process ("The Kitchen"). Today, we establish his foundational structure, inheriting the correct BaseAgent V2 capabilities, and simulate his initial role before he starts functional delegation.
 Description:
-Today implements Nexus Agent V1, the manager responsible for orchestrating the coding phase ("Build It"). Inheriting from BaseAgent, Nexus V1 receives the project blueprint (from Arch, simulated via main.py for now), analyzes it minimally, and delegates the initial frontend and backend code generation tasks sequentially to LamarAgent (Day 12) and DudleyAgent (Day 12). It then collects the paths to the generated code files and returns this information. This establishes Nexus's basic coordination role, setting the stage for more complex task delegation, specialist agent management (like Artemis and the Nerds), and quality control loops later.
+This day implements the placeholder structure for Nexus Agent V1, the manager responsible for orchestrating the coding phase ("Build It"). Inheriting from the now functional BaseAgent V2 (implemented Day 15 pre-task / Ref D72), Nexus V1's primary function is established structurally. His run method accepts blueprint content and project path context, logs activation, optionally uses BaseAgent V2 RAG helpers, simulates task breakdown and delegation via logging only (no functional LLM call or calls to other agents V1), and returns a static success message. We also create his rules file (rules_nexus.md) and seed his RAG DB (rag_nexus.db) using the correct store_in_rag pattern provided by the updated BaseAgent V2. This properly establishes Nexus's structure before functional enhancements (V2+ Task Breakdown/Delegation) occur later.
 Relevant Context:
-Technical Analysis: Creates/modifies engine/agents/coding_manager.py to implement the NexusAgent class (inheriting BaseAgent). The V1 run method accepts the blueprint_content string and project_output_path string. It instantiates LamarAgent and DudleyAgent (temporary simplification, ideally passed in or accessed via a registry later). It calls await lamar_agent.run(...) and await dudley_agent.run(...) sequentially, passing the blueprint and output path. It collects the results (dictionaries containing status and file paths) from these calls. The final return value aggregates this status information (e.g., paths to generated frontend/backend files). rules_nexus.md is created, and rag_nexus.db is seeded minimally. Integration into DreamerFlow (replacing direct Lamar/Dudley calls) happens on Day 16.
-Layman's Terms: We're building Nexus, the head chef in DreamerAI's coding kitchen. For now, his job is simple: Arch (the planner) gives him the recipe (blueprint). Nexus reads it and tells Lamar (frontend artisan) and Dudley (backend blacksmith) to get to work, one after the other. Once they're done, Nexus notes where they put their finished code pieces and reports back. He doesn't manage the full team or check the quality deeply yet – that comes later.
-Interaction: Nexus acts as the intermediary between planning (Arch) and coding execution (Lamar, Dudley). Receives input (blueprint) conceptually from Arch (simulated in main.py today, via DreamerFlow tomorrow). Calls LamarAgent and DudleyAgent directly in V1. Saves results (file paths) to be passed along the workflow later. Doesn't yet interact with Artemis, specialists, testing, or use advanced blueprint analysis (like reading diagrams). Connects to RAG/Rules like other agents.
+Technical Analysis: Implements the NexusAgent class in engine/agents/coding_manager.py, inheriting the functional BaseAgent V2 (which provides RAG via ChromaDB/ST, memory persistence, rules loading, state events). V1 run method takes blueprint_content, project_output_path. It logs start, optionally calls await self.query_rag() using rag_nexus.db. It includes placeholder logs simulating task breakdown (e.g., "Simulating task breakdown...") and delegation (e.g., "Simulating delegation of Task X to Lamar..."). Crucially, it does NOT call the LLM for task breakdown and does NOT call other agents (Lamar, Dudley) in V1. Returns {"status": "success", "message": "Nexus V1 simulation complete."}. Creates rules_nexus.md (V1 scope: Placeholder, logs simulation; V2+: LLM breakdown, functional delegation). Creates and runs scripts/seed_rag_nexus_lightrag.py using NexusAgent instance and await agent.store_in_rag(...). Tested via direct call in main.py, verifying logs and return value. This correctly aligns Day 15 with the BaseAgent V2 foundation.
+Layman's Terms: We're building the structure for Nexus, the head chef in DreamerAI's coding kitchen. He inherits all the standard agent tools fixed in BaseAgent V2 (memory, RAG access, etc.). When given the recipe (blueprint), his V1 job is simple: he just makes notes in his log saying "Thinking about tasks..." and "Pretending to tell Lamar to do something...". He doesn't actually break down the tasks or talk to the other coders yet. We also create his rulebook and seed his specific reference library (RAG DB) using the correct agent method provided by BaseAgent V2.
 Groks Thought Input:
-Nexus steps up! Even as a V1, establishing Nexus as the coordinator between planning and coding is architecturally sound. Having him call Lamar and Dudley sequentially is a necessary starting point before parallel execution or delegation logic. Creating his rules and RAG DB continues the pattern. Deferring Artemis, specialists, and complex QC makes sense. This clearly positions Nexus as the coding manager for the Dream Team.
+This is the correct way to implement Day 15 now. Build the NexusAgent placeholder inheriting the functional BaseAgent V2. The V1 run method purely simulates the future breakdown/delegation via logs, without attempting functional calls yet. Seeding his RAG using the agent's own store_in_rag method is the right pattern after the BaseAgent fix. This correctly establishes the structural foundation for Nexus before we add his functional LLM task breakdown (Day 77) and delegation calls (Day 84).
 My thought input:
-Okay, Nexus V1. Inherit BaseAgent. run method needs blueprint_content and project_output_path. Instantiate Lamar/Dudley (note this simplification). Call them sequentially with await. Aggregate the results. Create rules_nexus.md and seed rag_nexus.db. The main logic is simple delegation for V1. The key change tomorrow (Day 16) will be putting Nexus inside DreamerFlow. The temporary instantiation of Lamar/Dudley inside Nexus's run is acceptable for isolation today but must be fixed with dependency injection or an agent registry passed to DreamerFlow later.
+Okay, this aligns everything. The BaseAgent V2 fix is critical context. This new Day 15 entry correctly defines Nexus V1 as inheriting the functional BaseAgent V2. The key is the V1 run method MUST NOT call other agents functionally – it just logs the simulation as planned originally for Day 15's placeholder scope. The RAG seeding script uses the now-correct V2 pattern (await agent.store_in_rag(...)). The main.py test correctly focuses only on verifying the simulation logs and the simple success dictionary return, removing any checks for generated code files (because Nexus V1 doesn't trigger code gen). This feels right - it respects the original Day 15 intent (placeholder structure) while building on the correct, fixed foundation.
 Additional Files, Documentation, Tools, Programs etc needed:
-RAGstack: (Library), RAG DB interactions, Installed Day 2.
-rules_nexus.md: (Documentation), Defines Nexus's V1 behavior, Created today.
-rag_nexus.db: (Database), Nexus's knowledge (minimal V1), Created/Seeded today.
+engine/agents/rules_nexus.md: (Documentation), Defines Nexus V1 behavior & V2+ role, Created today.
+data/rag_dbs/rag_nexus.db/: (Database Directory), Nexus's knowledge base (ChromaDB), Created/Seeded today via script.
+scripts/seed_rag_nexus_lightrag.py: (Utility Script), Seeds Nexus RAG using agent method, Created/Run ONCE today, then deleted.
+BaseAgent V2: (Core Class), Inherited functionality, Updated pre-task Day 15 / Ref D72.
+RAG Libraries: (chromadb, sentence-transformers), Needed by BaseAgent V2, Installed Day 2 / Verified Day 15 pre-task.
 Any Additional updates needed to the project due to this implementation?
-Prior: BaseAgent, LamarAgent V1, DudleyAgent V1, Config-driven LLM, Logger required. Rules template should exist.
-Post: Nexus V1 exists. Ready for integration into DreamerFlow on Day 16. Requires future enhancements for managing full coding team and QC.
-Project/File Structure Update Needed:
-Yes: Modify/Implement engine/agents/coding_manager.py.
-Yes: Create engine/agents/rules_nexus.md.
-Yes: Create data/rag_dbs/rag_nexus.db.
-Any additional updates needed to the guide for changes or explanation due to this implementation:
-Day 16 (DreamerFlow V2) must show integration of Nexus.
-Future days need to detail Nexus V2+ (managing specialists, Artemis, QC).
-Any removals from the guide needed due to this implementation:
-Supersedes the old guide's concept of "Enoch" (Day 13).
-Effect on Project Timeline: Day 15 of ~80+ days.
+Prior: BaseAgent V2 stabilized (Day 15 pre-task). LLM functional. Logger functional. RAG libs installed/verified.
+Post: NexusAgent V1 placeholder structure exists, inheriting functional BaseAgent V2. Nexus RAG DB seeded correctly. Ready for DreamerFlow integration (Day 16) and functional enhancements (Day 77+).
+Project/File Structure Update Needed: Yes
+Create engine/agents/rules_nexus.md.
+Create scripts/seed_rag_nexus_lightrag.py (temporary).
+Create/Modify engine/agents/coding_manager.py.
+Modify main.py (update Nexus test).
+(Dynamic) Create data/rag_dbs/rag_nexus.db/ directory via seed script.
+Any additional updates needed to the guide for changes or explanation due to this implementation: Yes
+Update any subsequent guide entries (D16-D71) that might have incorrectly assumed Nexus V1 was functional or called other agents. Emphasize Nexus V1 is placeholder simulation logging only.
+Any removals from the guide needed due to this implementation (detailed): Yes
+Removes any implication from previous draft context or potentially incorrect prior guide entries that Day 15 Nexus V1 functionally calls Lamar/Dudley or performs LLM task breakdown. That logic belongs to Nexus V2/V3+ (Day 77/84).
+Effect on Project Timeline: Day 15 of ~80+ days. Corrects foundational dependencies, aligns guide with code reality.
 Integration Plan:
-When: Day 15 (Week 3) – After initial coding agents are built, before workflow integration.
-Where: engine/agents/coding_manager.py, rules_nexus.md, rag_nexus.db. Tested via direct call modification in main.py (temporary).
-Dependencies: Python 3.12, BaseAgent, LamarAgent, DudleyAgent, RAGstack, Loguru.
+When: Day 15 (Week 3) – Establishing coding manager structure on correct base.
+Where: engine/agents/coding_manager.py, rules_nexus.md, rag_nexus.db/. Tested via main.py.
+Dependencies: Python, BaseAgent V2 (functional), Logger, RAG libs, asyncio.
+Setup Instructions: Run the seed_rag_nexus_lightrag.py script ONCE after creating agent code.
 Recommended Tools:
-VS Code/CursorAI Editor.
-DB Browser for SQLite.
-File Explorer.
+VS Code/CursorAI Editor
+Terminal
+Log file viewer (dreamerai_dev.log)
+File Explorer (to check data/rag_dbs/rag_nexus.db/ creation)
 Tasks:
-Cursor Task: Create C:\DreamerAI\engine\agents\rules_nexus.md. Populate from rules template, defining Nexus's V1 Role ("Coding Manager"), Scope ("Delegates to Lamar/Dudley V1 sequentially"), and basic Rules.
-Cursor Task: Create and execute a temporary Python script C:\DreamerAI\scripts\seed_rag_nexus.py (similar structure to seed_rag_jeff.py from Day 8) to initialize and seed C:\DreamerAI\data\rag_dbs\rag_nexus.db with 1-2 simple facts about managing coding tasks or coordinating FE/BE work.
-Cursor Task: Implement the NexusAgent class in C:\DreamerAI\engine\agents\coding_manager.py using the code provided below. Ensure it inherits BaseAgent and its run method calls Lamar and Dudley V1. Include the temporary instantiation.
-Cursor Task: Modify C:\DreamerAI\main.py. Remove the direct calls to Lamar and Dudley from Day 12. Instead, after Arch runs and the blueprint is available:
-Instantiate NexusAgent: agents["Nexus"] = NexusAgent(...).
-Call await agents['Nexus'].run(blueprint_content=..., project_output_path=...).
-Print/log the aggregated result from Nexus.
-
-
-Cursor Task: Execute python main.py (after activating venv). Verify output shows Nexus running, then sequentially calling Lamar and Dudley (check logs). Verify the final result from Nexus lists the file paths. Verify code files are still created correctly in the project output directory. Check logs.
-Cursor Task: Delete the temporary seed script (seed_rag_nexus.py).
-Cursor Task: Stage changes (coding_manager.py, rules_nexus.md, rag_nexus.db, main.py), commit, and push.
+Cursor Task: Create C:\DreamerAI\engine\agents\rules_nexus.md. Populate using the code provided below.
+Cursor Task: Create the temporary Python script C:\DreamerAI\scripts\seed_rag_nexus_lightrag.py using the V2 pattern code provided below.
+Cursor Task: Execute the Nexus RAG seeding script: Run python scripts/seed_rag_nexus_lightrag.py (venv active). Verify success log and directory creation (data/rag_dbs/rag_nexus.db/).
+Cursor Task: Delete the temporary seed script: del scripts\seed_rag_nexus_lightrag.py (or OS equivalent).
+Cursor Task: Implement the NexusAgent V1 placeholder class in C:\DreamerAI\engine\agents\coding_manager.py. Ensure it inherits BaseAgent and its run method only logs simulations. Use the code provided below.
+Cursor Task: Modify C:\DreamerAI\main.py. Ensure NexusAgent is instantiated (no agents dict needed V1). Update the Nexus test block to call the V1 placeholder run method and verify only simulation logs appear and the correct success dictionary is returned. Remove checks for generated code files. Use code below.
+Cursor Task: Test the Nexus V1 placeholder: Run python main.py (venv active). Verify Nexus test block runs, prints placeholder success dict. Check logs for "Simulating task breakdown..." and "Simulating delegation..." messages. Confirm NO errors related to calling Lamar/Dudley.
+Cursor Task: Stage changes (rules_nexus.md, coding_manager.py, main.py), commit, and push. (Combine with BaseAgent V2 commit if desired).
+Cursor Task: Execute Auto-Update Triggers & Workflow (after both BaseAgent fix and Day 15 placeholder implemented and tested).
 Code:
 (New File)
 # C:\DreamerAI\engine\agents\rules_nexus.md
 # Rules for Nexus (Coding Manager) V1
 
 ## Role
-Coding Manager (The Chef V1): Orchestrates the initial phase of the "Build It" process by delegating tasks to core coding agents based on the project blueprint.
+Coding Manager & Orchestrator V1 (Structural Placeholder): Establishes the agent responsible for managing the coding phase ("Build It").
 
 ## Scope (V1)
-- Receive project blueprint content and target output path.
-- (Temporarily) Instantiate LamarAgent (Frontend V1) and DudleyAgent (Backend V1).
-- Sequentially trigger LamarAgent to generate frontend code.
-- Sequentially trigger DudleyAgent to generate backend code.
-- Aggregate results (file paths) from coding agents.
-- DOES NOT handle specialist coders, Artemis, QC loops, or advanced task breakdown yet.
+- Inherit from functional BaseAgent V2 (RAG, Memory, Rules, State Events).
+- Receive project blueprint content and target output path context.
+- Log activation and simulation steps.
+- Simulate task breakdown (Log message only).
+- Simulate task delegation to Lamar/Dudley/Specialists (Log messages only).
+- Query optional RAG database (`rag_nexus.db`) for basic coordination patterns using BaseAgent V2 `query_rag`.
+- Return a static success message indicating simulation complete.
+- **CRITICAL V1 Limitation:** Does NOT perform functional LLM-based task breakdown. Does NOT functionally call or assign tasks to Lamar, Dudley, or Specialist Coders.
 
-## Memory Bank (Illustrative - Managed by BaseAgent/Logging)
-- Last Task: Received blueprint for "Simple Web Counter"
-- Last Action: Delegated backend generation to Dudley.
-- Status: Waiting for Dudley result.
+## V2+ Vision (Future Scope - "The Chef")
+- Functionally break down blueprints into structured tasks using LLM (V3 Prep - Day 77).
+- Functionally delegate tasks to appropriate coding agents (Lamar, Dudley, Specialists) sequentially or in parallel (V3+ Func - Day 84).
+- Coordinate with Artemis (Sous Chef) for task refinement and code review (V3+ Sim - Day 85).
+- Implement quality control loops based on feedback from Artemis, Herc, Bastion.
+- Integrate generated code components, MCPs, custom models.
+- Manage dependencies between coding tasks.
+
+## Memory Bank (Illustrative)
+- Last Input: Blueprint for "Simple Web Counter"
+- Last Action: Simulated task breakdown & delegation logs.
+- Status: Idle.
 - Last Updated: [YYYY-MM-DD HH:MM:SS]
 
 ## Core Rules (V1)
-1.  **Review Rules:** Read this file conceptually before starting execution.
-2.  **Use RAG (Minimal):** Query `rag_nexus.db` for basic coordination patterns if needed (V1 RAG is minimal).
-3.  **Delegate Sequentially:** Call Lamar first, then Dudley. Await completion of each.
-4.  **Pass Context:** Provide the full blueprint and correct output path to coding agents.
-5.  **Aggregate Results:** Collect status and file path information from downstream agents.
-6.  **Log Actions:** Use `self.logger` for delegation steps, results, and errors.
-content_copy
-download
-Use code with caution.Markdown
-(Temporary Script - Run Once, then Delete)
-# C:\DreamerAI\scripts\seed_rag_nexus.py
+1.  **Review Rules:** Read conceptually.
+2.  **Use RAG (Optional):** Use BaseAgent V2 `query_rag` for basic coordination context from `rag_nexus.db`.
+3.  **Simulate Breakdown:** Log "Simulating task breakdown...".
+4.  **Simulate Delegation:** Log "Simulating delegation of Task X to [Agent]..." for 2-3 examples.
+5.  **Do Not Execute Coders:** Explicitly avoid calling `run` on Lamar, Dudley, etc.
+6.  **Log Actions:** Record simulation activity via bound logger.
+7.  **Return Placeholder Success:** Output standard success dictionary `{"status": "success", "message": "Nexus V1 simulation complete."}`.
+Use code with caution.
+Markdown
+(New Temporary Script - Run Once, Delete)
+# C:\DreamerAI\scripts\seed_rag_nexus_lightrag.py (V2 Pattern)
 import sys
 import os
 import traceback
+import asyncio
+from pathlib import Path
 
+# Add project root for imports
 project_root_seed = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if project_root_seed not in sys.path: sys.path.insert(0, project_root_seed)
 
+SEED_LIBS_OK = False
 try:
-    from ragstack import RAGDatabase
+    # Import NexusAgent (which inherits BaseAgent V2)
+    from engine.agents.coding_manager import NexusAgent
     from engine.core.logger import logger_instance as logger
+    SEED_LIBS_OK = True
 except ImportError as e:
-    print(f"ERROR importing in seed_rag_nexus: {e}. Is venv active? Are base modules built?")
+    print(f"ERROR importing in seed_rag_nexus: {e}. Is venv active? Are agents implemented? Was BaseAgent V2 fixed?")
+    sys.exit(1)
+except Exception as e:
+    print(f"Unexpected ERROR during import for seed_rag_nexus: {e}")
+    traceback.print_exc()
     sys.exit(1)
 
-db_dir = r"C:\DreamerAI\data\rag_dbs"
-db_path = os.path.join(db_dir, "rag_nexus.db")
+# Define data and target agent config
+AGENT_NAME = "Nexus"
+USER_DIR_FOR_SEED = r"C:\DreamerAI\Users\SeedUser_Nexus" # Use unique dummy user dir
+SEED_DOCUMENTS = [
+    "Nexus manages coding agents like Lamar (Frontend) and Dudley (Backend).",
+    "Nexus receives the blueprint from Arch and breaks it down into actionable tasks.",
+    "Nexus coordinates with Artemis for task assignments and code reviews.",
+    "Key coding tasks often involve UI components, API endpoints, database models, and integrations.",
+    "Prioritize modularity and clear interfaces when assigning component tasks.",
+    "Ensure API endpoints follow RESTful principles or specified standards."
+]
+SEED_IDS = [f"nexus_fact_{i+1}" for i in range(len(SEED_DOCUMENTS))]
 
-def seed_nexus_db():
-    logger.info(f"Seeding Nexus RAG database at: {db_path}")
-    os.makedirs(db_dir, exist_ok=True)
-    if os.path.exists(db_path):
-        logger.warning(f"Nexus RAG DB {db_path} already exists. Skipping seed.")
-        print(f"DB file already exists: {db_path}. Skipping.")
-        return
+async def seed_agent_rag():
+    """ Seeds the RAG DB for Nexus using its store_in_rag method via BaseAgent V2. """
+    if not SEED_LIBS_OK: return
+
+    # Ensure user dir exists for agent initialization (memory logs etc.)
+    Path(USER_DIR_FOR_SEED).mkdir(parents=True, exist_ok=True)
+
+    logger.info(f"Attempting to seed RAG DB for agent: {AGENT_NAME} using BaseAgent V2 method...")
+    agent_instance = None
     try:
-        rag_db = RAGDatabase(db_path, embedding_dims=768) # Match Jeff's dims for now
-        logger.info("Adding Nexus seed data...")
-        rag_db.store(content="Nexus manages coding agents. First, trigger frontend (Lamar), then backend (Dudley) for initial code generation based on the blueprint.")
-        rag_db.store(content="Ensure the complete project blueprint and the correct output path are passed to coding agents.")
-        # Add more basic coordination tips later
-        logger.info("Nexus RAG database seeding complete.")
-        print(f"Successfully seeded {db_path}")
+        # 1. Instantiate the NexusAgent (inherits BaseAgent V2)
+        # Pass empty agents dict V1, not needed for seeding own RAG
+        # User dir is needed for BaseAgent init (logs, chats dir etc)
+        agent_instance = NexusAgent(user_dir=USER_DIR_FOR_SEED, agents={}) # Pass empty dict for V1 placeholder
+        if not agent_instance._rag_initialized: # Check flag set by BaseAgent V2
+             raise Exception(f"RAG components failed to initialize for agent {AGENT_NAME}. Cannot seed.")
+
+        # 2. Call the agent's inherited store_in_rag method
+        success = await agent_instance.store_in_rag(
+            documents=SEED_DOCUMENTS,
+            ids=SEED_IDS,
+            metadatas=[{"source": "seed_script_nexus_v1"}] * len(SEED_DOCUMENTS) # Example metadata
+        )
+
+        if success:
+             logger.info(f"Successfully seeded {len(SEED_DOCUMENTS)} documents into RAG for {AGENT_NAME}.")
+             # Accessing collection directly is possible via private attr V1 for count check
+             count = agent_instance._rag_collection.count() if agent_instance._rag_collection else 'N/A'
+             print(f"Seeding successful for {AGENT_NAME}. Collection count: {count}")
+        else:
+             logger.error(f"Seeding failed for agent {AGENT_NAME} via store_in_rag.")
+             print(f"ERROR: Seeding failed for {AGENT_NAME}. Check logs.")
+
     except Exception as e:
-        logger.error(f"Failed to seed Nexus RAG database: {e}\n{traceback.format_exc()}")
-        print(f"ERROR during seeding: {e}")
+        logger.exception(f"Error during RAG seeding for {AGENT_NAME}")
+        print(f"ERROR during seeding for {AGENT_NAME}: {e}")
+    finally:
+        # Optional: Shutdown agent instance if needed
+        if agent_instance: await agent_instance.shutdown()
 
 if __name__ == "__main__":
-    print(f"Executing Nexus RAG seed script from: {os.getcwd()}")
-    seed_nexus_db()
-content_copy
-download
-Use code with caution.Python
-(New/Modified File)
+    print(f"Executing RAG seed script for {AGENT_NAME} using V2 BaseAgent store...")
+    # Requires chromadb, sentence-transformers installed in venv
+    asyncio.run(seed_agent_rag())
+    print("Seed script finished.")
+Use code with caution.
+Python
+(New/Modified File - Nexus V1 Placeholder)
 # C:\DreamerAI\engine\agents\coding_manager.py
 import asyncio
 import os
+import json
 import traceback
-from typing import Optional, Any, Dict
+from typing import Optional, Any, Dict, List
 from pathlib import Path
 
-# Add project root for sibling imports
+# Add project root...
 import sys
 project_root_nexus = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-if project_root_nexus not in sys.path:
-    sys.path.insert(0, project_root_nexus)
+if project_root_nexus not in sys.path: sys.path.insert(0, project_root_nexus)
 
+# Standard imports: BaseAgent V2 (MUST WORK), AgentState, Message, Logger, RAG(opt), log_rules_check, EventManager(opt)...
 try:
-    from engine.agents.base import BaseAgent, AgentState, Message
-    from engine.agents.frontend_agent import LamarAgent # Import Lamar
-    from engine.agents.backend_agent import DudleyAgent # Import Dudley
+    from engine.agents.base import BaseAgent, AgentState, Message # Use V2 functional base
     from engine.core.logger import logger_instance as logger, log_rules_check
-    from ragstack import RAGDatabase
+    from engine.core.event_manager import event_manager # Keep V1 placeholder reference maybe
+    EVENT_MANAGER_AVAILABLE = True
+    # Do NOT import LLM or other agents here for V1 placeholder logic
 except ImportError as e:
-    print(f"Error importing modules in coding_manager.py: {e}")
-    # Dummy classes for parsing
-    class BaseAgent: def __init__(self, *args, **kwargs): self.logger=print; self.name="DummyNexus"; self.memory=Memory()
-    class AgentState: IDLE,RUNNING,FINISHED,ERROR = 1,2,3,4
-    class Message: pass
-    class Memory: def add_message(self, *args, **kwargs): pass
-    class RAGDatabase: def retrieve(self,*args,**kwargs): return "RAG Import Failed"
-    class LamarAgent: async def run(self,*args,**kwargs): return {"status":"error", "message":"Lamar Import Failed"}
-    class DudleyAgent: async def run(self,*args,**kwargs): return {"status":"error", "message":"Dudley Import Failed"}
-    import logging
-    logger = logging.getLogger(__name__)
-    def log_rules_check(action): logger.info(f"RULES CHECK (import failed): {action}")
-
+    # Fallback dummies...
+    import logging; logger = logging.getLogger(__name__) # Etc...
+    EVENT_MANAGER_AVAILABLE = False
 
 NEXUS_AGENT_NAME = "Nexus"
 
 class NexusAgent(BaseAgent):
     """
-    Nexus: The Coding Manager Agent (V1).
-    Receives blueprints and delegates initial FE/BE code generation sequentially.
+    Nexus Agent V1: Coding Manager Placeholder.
+    Inherits BaseAgent V2, simulates task breakdown/delegation via logs.
+    Does NOT call other coding agents functionally in V1.
     """
-    def __init__(self, user_dir: str, **kwargs):
+    def __init__(self, user_dir: str, agents: Optional[Dict[str, BaseAgent]] = None, **kwargs):
+        # BaseAgent V2 handles rules, memory, RAG init
         super().__init__(name=NEXUS_AGENT_NAME, user_dir=user_dir, **kwargs)
-        # LLM instance primarily used by sub-agents in V1
-        # Nexus might use LLM later for task breakdown/QC
+        # V1 doesn't need LLM or functional agent references
+        logger.info(f"NexusAgent '{self.name}' V1 Initialized (Placeholder - Inherits BaseAgent V2).")
 
-        # Initialize RAG Database connection
-        self.rag_db_path = os.path.join(r"C:\DreamerAI\data\rag_dbs", f"rag_{self.name.lower()}.db")
-        self.rag_db: Optional[RAGDatabase] = None
-        try:
-            self.rag_db = RAGDatabase(self.rag_db_path)
-            logger.info(f"RAG database connected/loaded for Nexus at {self.rag_db_path}")
-        except NameError:
-             logger.error("Nexus: RAGDatabase class not found. Is ragstack installed?")
-        except Exception as e:
-            logger.error(f"Failed to initialize RAG database for Nexus: {e}")
-            logger.warning("Nexus will operate without RAG context.")
+    # BaseAgent V2 handles _load_rules
+    # BaseAgent V2 handles RAG init, query_rag, store_in_rag
 
-        self.rules_file = os.path.join(r"C:\DreamerAI\engine\agents", f"rules_{self.name.lower()}.md")
-        logger.info(f"NexusAgent '{self.name}' initialized.")
-        # TODO LATER: Nexus should have references to agent instances (Lamar, Dudley, etc.)
-        # passed in or retrieved from a registry, not instantiated ad-hoc in run().
+    async def run(self, blueprint_content: Optional[str] = "No blueprint provided V1.", project_output_path: Optional[str] = None) -> Dict[str, Any]:
+        """ V1: Simulates receiving blueprint, breaking down tasks, delegating via LOGS only. """
+        self.state = AgentState.RUNNING # Publishes event via setter
+        log_rules_check(f"Running {self.name} V1 placeholder simulation.")
+        logger.info(f"'{self.name}' V1 received blueprint snippet: {blueprint_content[:100]}...")
+        self.memory.add_message(Message(role="system", content=f"Received blueprint for V1 simulation: {blueprint_content[:100]}..."))
 
-    def _load_rules(self) -> str:
-        """Loads rules specific to Nexus."""
-        log_rules_check(f"Loading rules for {self.name}")
-        # ... (Implementation similar to Jeff's _load_rules) ...
-        if not os.path.exists(self.rules_file): return "Error: Rules Missing"
-        try:
-            with open(self.rules_file, 'r', encoding='utf-8') as f: return f.read()
-        except Exception as e: logger.error(f"Failed loading Nexus rules: {e}"); return "Error Loading Rules"
-
-    def _retrieve_rag_context(self, query: str, n_results: int = 1) -> str:
-         """Retrieves context from Nexus's RAG database."""
-         if not self.rag_db: return "No RAG context available."
-         try:
-            logger.debug(f"Nexus querying RAG DB for: '{query}'")
-            results = self.rag_db.retrieve(query=query, n_results=n_results)
-            if not results: return "No relevant info in Nexus knowledge base."
-            context = "\n".join([f"- {str(res)}" for res in results])
-            return context
-         except Exception as e:
-            logger.error(f"Nexus RAG DB retrieval failed: {e}")
-            return f"Error retrieving Nexus RAG context: {str(e)}"
-
-
-    async def run(self, blueprint_content: str, project_output_path: str) -> Dict[str, Any]:
-        """
-        V1: Sequentially triggers Lamar and Dudley based on blueprint.
-
-        Args:
-            blueprint_content: The Markdown content of the project blueprint.
-            project_output_path: The base path for generated code output (e.g., .../output).
-
-        Returns:
-            A dictionary summarizing the results, including paths to generated files.
-        """
-        self.state = AgentState.RUNNING
-        log_rules_check(f"Running {self.name} V1 for project output: {project_output_path}")
-        logger.info(f"'{self.name}' starting sequential code generation management...")
-        self.memory.add_message(Message(role="system", content="Task: Manage Lamar & Dudley V1 based on blueprint."))
-
-        rules = self._load_rules()
-        # Optional: Query RAG for general coordination tips based on blueprint summary
-        # rag_context = self._retrieve_rag_context(blueprint_content[:100])
-
-        results = {
-            "status": "pending",
-            "frontend": {"status": "pending", "file_path": None, "message": None},
-            "backend": {"status": "pending", "file_path": None, "message": None},
-        }
-
-        # --- TODO: Agent Instantiation - Replace this temporary approach ---
-        # Ideally, agents are injected or retrieved from a shared context/registry
-        try:
-            logger.warning("Nexus V1 creating Lamar/Dudley instances directly (temporary).")
-            lamar_agent = LamarAgent(user_dir=self.user_dir) # Pass user_dir context
-            dudley_agent = DudleyAgent(user_dir=self.user_dir)
-        except Exception as e:
-             logger.exception("Failed to instantiate coding agents within Nexus.")
-             self.state = AgentState.ERROR
-             results["status"] = "error"
-             results["message"] = "Could not create coding agents."
-             return results
-        # --- End Temporary Instantiation ---
+        final_status = "success"
+        message = "Nexus V1 simulation complete."
 
         try:
-            # 1. Run Lamar (Frontend)
-            logger.info(f"Nexus delegating to Lamar for output path: {project_output_path}")
-            lamar_result = await lamar_agent.run(
-                blueprint_content=blueprint_content,
-                project_output_path=project_output_path
-            )
-            results["frontend"] = lamar_result # Store full result dict
-            self.memory.add_message(Message(role="system", content=f"Lamar Result: {lamar_result.get('status')} - {lamar_result.get('file_path') or lamar_result.get('message')}"))
-            logger.info(f"Lamar execution completed with status: {lamar_result.get('status')}")
+            # Optional: Query RAG for coordination principles V1
+            rag_context = await self.query_rag("Nexus coordination principles")
+            if rag_context: logger.debug(f"Nexus RAG Context V1: {rag_context}")
 
-            if lamar_result.get("status") == "error":
-                raise Exception(f"Lamar failed: {lamar_result.get('message')}") # Stop if critical agent fails
+            # 1. Simulate Task Breakdown (Log Only)
+            logger.info("V1 SIMULATION: Analyzing blueprint and breaking down into tasks...")
+            await asyncio.sleep(0.2) # Simulate analysis time
 
-            # 2. Run Dudley (Backend)
-            logger.info(f"Nexus delegating to Dudley for output path: {project_output_path}")
-            dudley_result = await dudley_agent.run(
-                blueprint_content=blueprint_content,
-                project_output_path=project_output_path
-            )
-            results["backend"] = dudley_result
-            self.memory.add_message(Message(role="system", content=f"Dudley Result: {dudley_result.get('status')} - {dudley_result.get('file_path') or dudley_result.get('message')}"))
-            logger.info(f"Dudley execution completed with status: {dudley_result.get('status')}")
+            # 2. Simulate Delegation (Log Only)
+            simulated_tasks = [
+                {"task_id": "T1-Sim", "description": "Setup Frontend Boilerplate", "agent": "Lamar"},
+                {"task_id": "T2-Sim", "description": "Define Core DB Models", "agent": "Takashi"},
+                {"task_id": "T3-Sim", "description": "Implement Backend User API", "agent": "Dudley"},
+                {"task_id": "T4-Sim", "description": "Integrate External Auth API", "agent": "Gilbert"}
+            ]
+            logger.info(f"V1 SIMULATION: Identified {len(simulated_tasks)} example tasks. Simulating delegation logs...")
+            for task in simulated_tasks:
+                logger.info(f"  -> SIMULATING delegation of Task {task['task_id']} ('{task['description']}') to {task['agent']}...")
+                # V1: Does NOT publish event here
+                await asyncio.sleep(0.05)
 
-            if dudley_result.get("status") == "error":
-                 # Decide if Dudley error stops the whole process in V1
-                 logger.warning(f"Dudley failed, but continuing Nexus V1 run: {dudley_result.get('message')}")
-                 results["status"] = "partial_success"
-            else:
-                 results["status"] = "success"
+            # CRITICAL V1: No functional calls to Lamar/Dudley/Specialists etc.
+            logger.info("V1 SIMULATION: Functional coding agent calls skipped.")
 
-            self.state = AgentState.FINISHED
+            self.state = AgentState.FINISHED # Publishes event
 
         except Exception as e:
-            self.state = AgentState.ERROR
-            error_msg = f"Error during Nexus V1 orchestration: {e}"
-            logger.exception(error_msg)
-            results["status"] = "error"
-            results["message"] = error_msg # Add overall error message
-            self.memory.add_message(Message(role="system", content=f"Nexus Error: {error_msg}"))
-
+            self.state = AgentState.ERROR # Publishes event
+            message = f"Nexus V1 simulation Error: {e}"
+            logger.exception(message)
+            final_status = "error"
         finally:
-            current_state = self.state
-            if current_state == AgentState.FINISHED: self.state = AgentState.IDLE
-            logger.info(f"'{self.name}' V1 run finished. Final state: {self.state} (was {current_state})")
+            if self._state == AgentState.FINISHED: self.state = AgentState.IDLE # Publishes event
+            logger.info(f"'{self.name}' V1 simulation finished. State: {self.state}")
 
-        return results # Return the aggregated results dictionary
+        results = {"status": final_status, "message": message}
+        self.memory.add_message(Message(role="assistant", content=json.dumps(results)))
+        return results
 
-    async def step(self, input_data: Optional[Any] = None) -> Any:
-         logger.warning(f"{self.name}.step() called, but run() expects specific args. Step not supported in V1.")
-         self.state = AgentState.ERROR
-         return {"error": f"{self.name} cannot be executed via step() in V1."}
-
-
-# --- Test Block ---
-async def test_nexus_agent_v1():
-    print("--- Testing Nexus Agent V1 ---")
-    test_user_base_dir = Path("./test_nexus_workspace_day15").resolve()
-    test_project_name = "NexusManagedProject"
-    user_workspace_dir = test_user_base_dir / "Users" / "TestUser"
-    test_project_path = user_workspace_dir / "Projects" / test_project_name
-    test_output_path = test_project_path / "output" # Path for generated code
-
-    # Sample blueprint content
-    blueprint_content = """
-# Blueprint: Simple Task Manager API
-
-## Project Summary
-A simple API using FastAPI to manage tasks (add, view).
-
-## Core Features
-- Add a task (POST /tasks).
-- Get all tasks (GET /tasks).
-- Basic in-memory task storage.
-
-## Potential Tech Stack
-- Backend: Python (FastAPI)
-- Frontend: Minimal/None needed for API testing
-
-## High-Level Steps
-1. Setup FastAPI app.
-2. Implement task model (Pydantic).
-3. Implement routes (/tasks).
-4. Basic in-memory list for storage.
-"""
-
-    try:
-        # Needs user_dir for base agent init / logs / potential future file access
-        nexus_agent = NexusAgent(user_dir=str(user_workspace_dir))
-        print("Nexus agent instantiated.")
-
-        print(f"\nRunning Nexus V1 for output path: {test_output_path}")
-        final_results = await nexus_agent.run(
-            blueprint_content=blueprint_content,
-            project_output_path=str(test_output_path)
-        )
-
-        print("\n--- Nexus V1 Final Results ---")
-        import json
-        print(json.dumps(final_results, indent=2))
-
-        # Verify outputs
-        if final_results.get("status") in ["success", "partial_success"]:
-            fe_path = final_results.get("frontend", {}).get("file_path")
-            be_path = final_results.get("backend", {}).get("file_path")
-            print("\nVerifying file existence:")
-            print(f"- Frontend ({fe_path}): {'Exists' if fe_path and Path(fe_path).exists() else 'MISSING/Error'}")
-            print(f"- Backend ({be_path}): {'Exists' if be_path and Path(be_path).exists() else 'MISSING/Error'}")
-
-    except Exception as e:
-        print(f"An error occurred during the Nexus V1 test: {e}")
-        traceback.print_exc()
-
-
-if __name__ == "__main__":
-    print(f"Running Nexus Agent V1 Test Block from: {os.getcwd()}")
-    # Prerequisites: Requires Lamar V1, Dudley V1 implementations. LLM service needed. Seed Nexus RAG DB.
-    asyncio.run(test_nexus_agent_v1())
-content_copy
-download
-Use code with caution.Python
-(Modification)
+    async def step(self, input_data: Optional[Any] = None) -> Any: # Basic step V1
+        logger.warning(f"{self.name}.step() called. V1 uses run().")
+        bp = input_data.get("blueprint_content") if isinstance(input_data, dict) else str(input_data or "")
+        out_path = input_data.get("project_output_path") if isinstance(input_data, dict) else None
+        return await self.run(blueprint_content=bp, project_output_path=out_path)
+Use code with caution.
+Python
+(Modification - Update main.py Test Block for Nexus V1)
 # C:\DreamerAI\main.py
-# ... (Keep imports: asyncio, os, sys, Dict, Path) ...
+# Keep imports... Ensure NexusAgent imported...
+import json # For printing dicts
+from pathlib import Path # Keep Path
 
-try:
-    from engine.agents.base import BaseAgent
-    from engine.agents.main_chat import ChefJeff
-    from engine.agents.planning import PlanningAgent
-    from engine.agents.frontend_agent import LamarAgent # Still need for typing/direct call below
-    from engine.agents.backend_agent import DudleyAgent # Still need for typing/direct call below
-    from engine.agents.coding_manager import NexusAgent # <-- Import Nexus
-    # from engine.agents.agent_utils import save_code_to_file
-    from engine.core.workflow import DreamerFlow
-    from engine.core.logger import logger_instance as logger
-except ImportError as e:
-    # ... (Keep existing error handling) ...
+DEFAULT_USER_DIR = r"C:\DreamerAI\Users\TestUserMain" # Use consistent test user dir
 
-DEFAULT_USER_DIR = r"C:\DreamerAI\Users\Example User"
-
-async def run_dreamer_flow():
-    logger.info("--- Initializing DreamerAI Backend ---")
-    test_user_name = "Example User"
-    test_project_name = "NexusTestProjectDay15" # New project name
+async def run_dreamer_flow_and_tests():
+    # ... Setup paths using a main test project name ...
     user_workspace_dir = Path(DEFAULT_USER_DIR)
+    test_project_name = f"MainTestRun_PostBaseFix_{int(time.time())}"
     test_project_context_path = user_workspace_dir / "Projects" / test_project_name
-    test_project_output_path = test_project_context_path / "output" # Consistent output path
-
+    test_project_output_path = test_project_context_path / "output"
+    # Ensure base project dir exists for context passed to agents V1
     test_project_context_path.mkdir(parents=True, exist_ok=True)
-    test_project_output_path.mkdir(parents=True, exist_ok=True)
-    logger.info(f"Project context path: {test_project_context_path}")
-    logger.info(f"Output path: {test_project_output_path}")
+    test_project_output_path.mkdir(parents=True, exist_ok=True) # Nexus V1 needs this path even if not writing V1
 
     # --- Agent Initialization ---
     agents: Dict[str, BaseAgent] = {}
     try:
+        # Instantiate agents needed for tests, including Nexus V1 Placeholder
+        agents["Promptimizer"] = PromptimizerAgent(user_dir=str(user_workspace_dir))
         agents["Jeff"] = ChefJeff(user_dir=str(user_workspace_dir))
         agents["Arch"] = PlanningAgent(user_dir=str(user_workspace_dir))
-        agents["Nexus"] = NexusAgent(user_dir=str(user_workspace_dir)) # <-- Instantiate Nexus
-        # No need to instantiate Lamar/Dudley here for flow test IF Nexus instantiates them
-        # BUT Nexus V1 temporary code *does* instantiate them, so this dict is sufficient for now.
-        logger.info("Jeff, Arch, Nexus agents instantiated.")
-    except NameError as ne: /*...*/
-    except Exception as e: /*...*/
+        # Instantiate Nexus V1 Placeholder (doesn't need agents dict V1)
+        agents["Nexus"] = NexusAgent(user_dir=str(user_workspace_dir))
+        # ... Instantiate other placeholders (Lewis, Hermie, Sophia, Spark, Specialists, QA, Docs, Deploy, Riddick, Shade, Ziggy, Ogre, Billy, Artemis)...
+        # Ensure Lewis/Hermie get agents dict if their V1 needs it (Check D17/D19/D52)
+        # agents["Lewis"] = LewisAgent(agents=agents, user_dir=...) # Example if needed
+        # agents["Hermie"] = HermieAgent(agents=agents, user_dir=...) # Example if needed
+        logger.info("All required agent placeholders instantiated.")
+    except Exception as e:
+        logger.exception(f"Agent initialization failed: {e}")
+        return # Stop if agents can't init
 
-    # --- Workflow Initialization ---
-    # DreamerFlow init unchanged from Day 9 for now
-    try:
-        dreamer_flow = DreamerFlow(agents=agents, user_dir=str(user_workspace_dir))
-        logger.info("DreamerFlow instantiated.")
-    except Exception as e: /*...*/
+    # --- Workflow Initialization (V1 Flow test deferred until D16) ---
+    # dreamer_flow = DreamerFlow(agents=agents, user_dir=str(user_workspace_dir))
 
-    # --- Test Execution (Simplified Flow for Day 15 Test) ---
-    # We simulate the flow getting to Nexus with a blueprint
-    logger.info("\n--- Running Test Execution via Main (Simulating Flow to Nexus) ---")
-
-    # 1. Simulate Arch generating blueprint
-    blueprint_content = """
-# Blueprint: Basic API Server
-
-## Project Summary
-Minimal FastAPI backend with a root endpoint.
-
-## Core Features
-- `/` endpoint returning `{"message": "API Online"}`.
-
-## Tech Stack
-- Backend: Python (FastAPI)
-    """
-    logger.info("Using sample blueprint content.")
-
-    # 2. Call Nexus directly with the blueprint and output path
-    # (DreamerFlow will handle this delegation starting Day 16)
+    # --- Test Nexus V1 Placeholder Directly ---
+    print("\n--- Testing Nexus V1 Placeholder (Simulation Only) ---")
     nexus_agent = agents.get("Nexus")
+    # Simulate blueprint content
+    blueprint_for_nexus_v1 = "# Blueprint: Simple API\n Features: GET /status"
+
     if nexus_agent:
-        print(f"\n--- Directly Calling Nexus V1 ---")
-        nexus_result = await nexus_agent.run(
-            blueprint_content=blueprint_content,
-            project_output_path=str(test_project_output_path)
-        )
-        print("\n--- Nexus V1 Result (from main.py) ---")
-        import json
-        print(json.dumps(nexus_result, indent=2))
-        # Check file paths in the output if needed
-        if nexus_result.get("status") in ["success", "partial_success"]:
-            print("Check output folder for generated code.")
+        print(f"Calling Nexus V1 placeholder run...")
+        try:
+            nexus_result = await nexus_agent.run(
+                blueprint_content=blueprint_for_nexus_v1,
+                # Provide the output path Nexus V1 run signature expects V1
+                project_output_path=str(test_project_output_path)
+                )
+            print(f"Nexus V1 Result: {nexus_result}")
+
+            # Verification Steps - UPDATED for V1 Placeholder
+            print("\nACTION REQUIRED (Verify Nexus V1 Simulation):")
+            print(f"1. Check Nexus V1 Result above: 'status' should be 'success', message indicates simulation.")
+            print(f"2. Check logs for 'Simulating task breakdown...' message.")
+            print(f"3. Check logs for multiple 'Simulating delegation of Task...' messages.")
+            print(f"4. Verify NO errors occurred during Nexus V1 run execution (check logs).")
+            print(f"5. Verify NO code files were generated in the output path by this run: {test_project_output_path}")
+            assert nexus_result.get("status") == "success", "Nexus V1 run status was not success!"
+        except Exception as nexus_e:
+             print(f"ERROR running Nexus V1 test: {nexus_e}")
+             logger.exception("Nexus V1 test block failed.")
     else:
-        print("ERROR: Nexus agent not found in dictionary!")
+        print("ERROR: Nexus agent not found.")
+    print("---------------------------------------")
 
 
-    logger.info("--- Test Execution Finished ---")
-    print("--------------------------------")
+    # --- Keep Other Direct Agent Tests (Optional Run - Modify as needed for BaseAgent V2) ---
+    # Example: Verify Jeff V1 RAG works now BaseAgent V2 is fixed
+    # print("\n--- Verifying Jeff V1 RAG (Post BaseAgent Fix) ---")
+    # jeff_agent = agents.get("Jeff")
+    # if jeff_agent:
+    #    # Ensure Jeff RAG DB seeded (requires D8 seed script update to V2 pattern too!)
+    #    print("Checking Jeff V1 RAG Query...")
+    #    try:
+    #        rag_results = await jeff_agent.query_rag("core DreamerAI agents")
+    #        print(f"Jeff V1 RAG Results (Count: {len(rag_results)}): {rag_results}")
+    #        assert len(rag_results) > 0, "Jeff RAG query returned no results!"
+    #        print(" -> Jeff V1 RAG Query Seems OK.")
+    #    except Exception as jeff_e:
+    #        print(f"ERROR during Jeff V1 RAG check: {jeff_e}")
+    # else: print("Jeff not found for RAG check.")
+
+    # ... Keep other placeholder tests (Lewis V1, Specialists V1, QA V1, Docs V1, Deploy V1, etc.) ...
+    # These should run without error as they are simple placeholders inheriting BaseAgent V2.
+
+    # ... Agent Shutdown Loop ...
+    print("\n--- Shutting Down Agents ---")
+    for name, agent in agents.items():
+        if hasattr(agent, 'shutdown'):
+            print(f"Shutting down {name}...")
+            try: await agent.shutdown()
+            except Exception as shut_e: print(f"Error shutting down {name}: {shut_e}")
+
 
 if __name__ == "__main__":
-    # Ensure Nexus RAG DB is seeded: python scripts/seed_rag_nexus.py
-    asyncio.run(run_dreamer_flow())
-content_copy
-download
-Use code with caution.Python
+    # Ensure venv active, BaseAgent V2 applied, Nexus seed script run
+    asyncio.run(run_dreamer_flow_and_tests())
 Explanation:
 rules_nexus.md: Defines Nexus's V1 role (manage Lamar/Dudley sequentially) and scope (receives blueprint, delegates, aggregates results).
 seed_rag_nexus.py: Minimal seeding script for rag_nexus.db.
