@@ -280,17 +280,22 @@
 *   **Summary:** Implement Nexus Agent V1 (Coding Manager) to orchestrate initial code generation by delegating to Lamar and Dudley based on Arch's blueprint.
 *   **Issues Encountered:** None Anticipated Yet
 
-## Day 16: DreamerFlow V2 (Basic Orchestration - Jeff->Arch->Nexus(V1))
-*   **Cursor Task:** Create the file C:\DreamerAI\engine\core\workflow.py. - Status: DONE
-*   **Cursor Task:** Implement the `DreamerFlow` class within `workflow.py` using the code provided below. Include `__init__` accepting `agents: Dict[str, BaseAgent]` and `user_dir`. Implement a basic `async execute` method that primarily calls the 'Jeff' agent's `run` method. - Status: DONE
-*   **Cursor Task:** Create the file `C:\DreamerAI\main.py` in the project root. - Status: DONE
-*   **Cursor Task:** Implement the main execution logic in `main.py` using the code provided below. Include imports, instantiation of Jeff (and placeholders for other agents eventually), creation of the agent dictionary, instantiation of `DreamerFlow`, and an `asyncio.run` call to test the `flow.execute` method. - Status: DONE
-*   **Cursor Task:** Execute the main script (`python main.py` from `C:\DreamerAI` after activating venv). Verify the output shows Jeff being called via the DreamerFlow and generating a response (or AI error message). Check logs. - Status: DONE
-*   **Cursor Task:** Stage changes, commit, and push. - Status: DONE
-*   **Cursor Task:** Execute Auto-Update Triggers & Workflow. - Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Implemented the initial `DreamerFlow` class and a `main.py` test script to verify basic orchestration (calling Jeff V1).
-*   **Issues Encountered:** n8n connection failure during `main.py` test (Expected if server not running). RAG query failure persisted (Expected).
+## Day 16: DreamerFlow V2 (Basic Orchestration - Jeff->Arch->Nexus(V1)), The Conductor Leads the Band!
+*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V1 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V1. Use await for agent run calls. Add error handling. Use the full code provided below.
+    *   Status: TODO
+*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V1 made on Day 15. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V1, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V1 placeholder result. Use the full code provided below.
+    *   Status: TODO
+*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V1 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V1 placeholder. Check dreamerai_dev.log and errors.log for issues.
+    *   Status: TODO
+*   **Cursor Task:** Present Summary for Approval: "Task 'Day 16: DreamerFlow V2 (Basic Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V1)->Arch(V1)->Nexus(V1 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V1 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V1 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V1 sim logs appeared. Verified Nexus V1 placeholder success dict returned. Requesting approval for Day 17. (yes/no/details?)"
+    *   Status: TODO
+*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
+    *   Status: TODO
+*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
+    *   Status: TODO
+*   **Overall Day Status:** TODO
+*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V1 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
+*   **Issues Encountered:** None Anticipated Yet
 
 ---
 

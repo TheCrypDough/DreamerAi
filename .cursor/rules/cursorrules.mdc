@@ -67,6 +67,27 @@ Before executing **ANY** command, file modification, or UI interaction requested
 
 7.   **Strict Task Order Adherence (MANDATORY - Rule 1A):** The `Cursor Task:` list within each day entry in `DreamerAi_Guide.md` defines the **ONLY valid execution sequence**. Tasks **MUST** be performed precisely in the order listed, one after another, without deviation, combination, or omission, unless Anthony provides explicit override instructions. Failure to follow the exact sequence **WILL** cause critical errors. This is the most fundamental execution principle. Reference Pre-Action Check #4 for verification procedure.
 
+### Strategy for Adapting Guide Code (Days 16-71) to BaseAgent V2 (MANDATORY POST-DAY 15)
+
+**Context:** After stabilizing `BaseAgent` V2 on Day 15, it became the ground truth for core agent functionality (RAG, memory, state events, rules loading, etc.). The `DreamerAi_Guide.md` entries for Days 16 through 71 were written based on earlier, less capable `BaseAgent` versions. Therefore, blindly copying code snippets from these guide days might reintroduce outdated patterns or conflict with `BaseAgent` V2.
+
+**Mandatory Adaptation Strategy:**
+1.  **`BaseAgent` V2 is Ground Truth:** Assume `engine/agents/base.py` (as of Day 15 completion) provides the standard methods for core functions.
+2.  **Prioritize Guide Intent, Adapt Snippets:** When implementing Days 16-71:
+    *   Read the **goal and description** of the task carefully.
+    *   Examine guide code snippets critically.
+    *   **If a snippet manually implements logic now handled by `BaseAgent` V2** (e.g., manual RAG interaction, direct memory file access, custom event publishing for basic states, manual rule loading):
+        *   **DO NOT COPY THE SNIPPET VERBATIM.**
+        *   **Adapt the implementation** to use the standardized `BaseAgent` V2 methods (e.g., `self.query_rag`, `self.store_in_rag`, `self.memory.add_message`, `self.state = AgentState.XYZ`, rely on automatic rule loading in `__init__`).
+3.  **Ask When Unsure:** If a guide snippet (Days 16-71) seems to conflict with `BaseAgent` V2 capabilities, **HALT** and ask Anthony for clarification before implementing (e.g., "Anthony, the Day X code shows manual state logging, shouldn't the `BaseAgent` V2 state setter handle this?").
+4.  **Vigilant Pre-Day Checks:** Before starting *any* new day (16-71):
+    *   Briefly review `engine/agents/base.py` capabilities.
+    *   Read the *entire* guide entry for the day.
+    *   Actively ask: "Does this day's implementation assume core functionality inconsistent with `BaseAgent` V2?" Flag potential conflicts *before* starting tasks.
+5.  **Log Adaptations Clearly:** When adapting guide code to fit `BaseAgent` V2, log the adaptation clearly in `docs/logs/issues.log` (as `INFO` or `DEBUG` level, not necessarily an 'issue') and mention it in the `docs/daily_progress/daily_context_log.md` summary. Example: `INFO: Adapted Day X guide code to use BaseAgent V2 self.query_rag instead of outdated manual RAG call pattern.`
+
+**Goal:** Maintain forward progress using the guide's *intent* while ensuring all implementations leverage the correct, stabilized `BaseAgent` V2 foundation, preventing regressions and inconsistencies.
+
 ## Logging Protocol
 
 This section centralizes all logging requirements for traceability and context maintenance. All file paths are relative to `C:\DreamerAI\`.
@@ -222,7 +243,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: 2025-04-17 00:18:00 # Approximate timestamp of Day 14 completion
+# Last Updated: 2025-04-17 00:45:00 # Updated after Day 15 completion & strategy discussion
 
 ## Memory Bank Structure
 
@@ -259,7 +280,7 @@ flowchart TD
    - Recent changes
    - Next steps
    - Active decisions and considerations
-   - Reflects Day 14 completion (Chat Panel V1 integrated, connected to Jeff via endpoint/bridge). Ready for Day 15.
+   - Reflects Day 15 completion: BaseAgent V2 stabilized, Nexus V1 placeholder implemented & tested, RAG DB seeded. New strategy for adapting Days 16-71 guide code established. Ready for Day 16.
 
 4. `systemPatterns.md`
    - System architecture
@@ -267,6 +288,7 @@ flowchart TD
    - Design patterns in use
    - Component relationships
    - DreamerFlow orchestrator pattern established.
+   - BaseAgent V2 provides core RAG, memory, event patterns.
 
 5. `techContext.md`
    - Technologies used
@@ -274,13 +296,14 @@ flowchart TD
    - Technical constraints
    - Dependencies
    - asyncio used in main.py for flow execution.
+   - ChromaDB used for RAG, accessed via BaseAgent V2.
 
 6. `progress.md`
-   - What works: Day 1-14 foundations. UI shell with working Chat Panel V1. Jeff V1 usable via UI. Arch V1. Lamar/Dudley V1. UI Bridge (Port 3131).
-   - What's left: Day 15+ (Nexus Agent, workflow integration, other agents).
-   - Current status: Day 14 complete. Ready for Day 15.
-   - Known issues: Jeff RAG limited. Redis cache disabled. OpenRouter intermittent TypeError (#20250416234500). Temporary agent instantiation in server.py.
-   - Last Updated: 2025-04-17 00:18:00 # Approximate timestamp of Day 14 completion
+   - What works: Day 1-15 foundations. UI shell with working Chat Panel V1. Jeff V1 usable via UI. Arch V1. Lamar/Dudley V1. Nexus V1 (placeholder). BaseAgent V2 functional (RAG, memory, state events). UI Bridge (Port 3131).
+   - What's left: Day 16+ (Workflow integration, functional Nexus, other agents).
+   - Current status: Day 15 complete. Ready for Day 16.
+   - Known issues: Redis cache disabled. OpenRouter intermittent TypeError (#20250416234500). Temporary agent instantiation in server.py. Old BaseAgent errors resolved by V2 update.
+   - Last Updated: 2025-04-17 00:45:00 # Updated after Day 15 completion & strategy discussion
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:

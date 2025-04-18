@@ -3,22 +3,23 @@
 import asyncio
 import os
 import sys
-from typing import Dict
-from pathlib import Path # <-- Import Path
+from typing import Dict, Optional, List, Any
+from pathlib import Path
 import json # For printing dicts
 import time # For unique test project name
+import traceback # Added for better error reporting
 
 # Ensure engine directory is in path
-project_root_main = os.path.abspath(os.path.dirname(__file__))
+project_root_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if project_root_main not in sys.path:
     sys.path.insert(0, project_root_main)
 
 # Import necessary components
 try:
-    from engine.agents.base import BaseAgent, AgentState, Message # Use V2 functional base
+    from engine.agents.base import BaseAgent # Need BaseAgent for type hinting
     # from engine.agents.promptimizer import PromptimizerAgent # Assume exists Day 7+
-    # from engine.agents.main_chat import ChefJeff
-    # from engine.agents.planning import PlanningAgent # Arch
+    from engine.agents.main_chat import ChefJeff
+    from engine.agents.planning import PlanningAgent # Arch V1/V2
     # from engine.agents.frontend_agent import LamarAgent # <-- Import Lamar
     # from engine.agents.backend_agent import DudleyAgent # <-- Import Dudley
     # Import other agents as they are implemented...
@@ -40,15 +41,14 @@ try:
 
     # from engine.core.workflow import DreamerFlow # Keep if testing flow later
     from engine.core.logger import logger_instance as logger
+    from engine.core.workflow import DreamerFlow # <--- Uncomment this line
 except ImportError as e:
-    print(f"FATAL Error importing modules in main.py: {e}")
-    print("Ensure all required agent files and core modules exist and venv is active.")
-    import traceback
+    print(f"CRITICAL ERROR importing modules in main.py: {e}")
+    print("Ensure all agent files and core modules exist and venv is active.")
     traceback.print_exc() # Print full traceback for import errors
     sys.exit(1)
 except Exception as e:
-     print(f"Unexpected FATAL Error during imports in main.py: {e}")
-     import traceback
+     print(f"CRITICAL UNEXPECTED ERROR during imports in main.py: {e}")
      traceback.print_exc()
      sys.exit(1)
 
@@ -57,92 +57,120 @@ except Exception as e:
 DEFAULT_USER_DIR = r"C:\DreamerAI\Users\TestUserMain" # Use consistent test user dir
 
 async def run_dreamer_flow_and_tests():
-    # Setup paths using a main test project name
+    logger.info("--- Initializing DreamerAI Backend (DreamerFlow V2 Test) ---")
+    # Initialize dependencies like DB pool first (if using Day 100+ structure)
+    # await initialize_db_pool() # Keep commented out for Day 16
+
+    # Define paths using a unique name for this flow test run
+    test_project_name_flow = f"FlowV2Test_D16_{int(time.time())}"
     user_workspace_dir = Path(DEFAULT_USER_DIR)
-    # Use timestamp for unique project run
-    timestamp = int(time.time())
-    test_project_name = f"MainTestRun_NexusV1_{timestamp}"
-    test_project_context_path = user_workspace_dir / "Projects" / test_project_name
-    test_project_output_path = test_project_context_path / "output"
-    # Ensure base project dir exists for context passed to agents V1
-    test_project_context_path.mkdir(parents=True, exist_ok=True)
-    test_project_output_path.mkdir(parents=True, exist_ok=True) # Nexus V1 needs this path even if not writing V1
-    logger.info(f"Main Test Run Project Context Path: {test_project_context_path}")
-    logger.info(f"Main Test Run Output Path: {test_project_output_path}")
+    # Base project path - Flow's execute method handles creating subdirs now
+    test_project_context_path = user_workspace_dir / "Projects" / test_project_name_flow
+    test_project_context_path.parent.mkdir(parents=True, exist_ok=True) # Ensure Projects dir exists
 
-    # --- Agent Initialization --- (Example Structure)
+    # --- Agent Initialization ---
     agents: Dict[str, BaseAgent] = {}
+    dreamer_flow: Optional[DreamerFlow] = None
     try:
-        logger.info("Initializing agent placeholders...")
-        # Instantiate ONLY Nexus for Day 15 V1 Test
-        agents["Nexus"] = NexusAgent(user_dir=str(user_workspace_dir)) # Pass empty agents dict V1 is default
-        logger.info("Nexus V1 placeholder instantiated.")
+        # Instantiate agents needed for Flow V2 (Jeff, Arch, Nexus)
+        logger.info("Instantiating required agents for Flow V2 test...")
+        agents["Jeff"] = ChefJeff(user_dir=str(user_workspace_dir))
+        agents["Arch"] = PlanningAgent(user_dir=str(user_workspace_dir))
+        agents["Nexus"] = NexusAgent(user_dir=str(user_workspace_dir)) # V1 Placeholder
 
-        # --- Commented out other agent instantiations ---
-        # agents["Promptimizer"] = PromptimizerAgent(user_dir=str(user_workspace_dir))
-        # agents["Jeff"] = ChefJeff(user_dir=str(user_workspace_dir))
-        # agents["Arch"] = PlanningAgent(user_dir=str(user_workspace_dir))
-        # agents["Lewis"] = LewisAgent(agents=agents, user_dir=...) # Example if needed
-        # agents["Hermie"] = HermieAgent(agents=agents, user_dir=...) # Example if needed
-        # ... etc ...
+        # Instantiate others if keeping their direct tests (commented out V16)
+        # logger.info("Instantiating other placeholder agents...")
+        # agents["Lewis"] = LewisAgent(agents=agents, user_dir=...) # Lewis needs agent dict now D52+
+        # ... instantiate placeholders for Lewis, Sophia, Spark etc. ...
+
+        logger.info("Agents for Flow V2 (Jeff, Arch, Nexus V1 Sim) instantiated.")
+
+        # --- Workflow Initialization ---
+        # Pass only agents needed by V2 flow for this test
+        flow_agents_v2 = {name: agent for name, agent in agents.items() if name in ["Jeff", "Arch", "Nexus"]}
+        dreamer_flow = DreamerFlow(agents=flow_agents_v2, user_dir=str(user_workspace_dir))
+        logger.info("DreamerFlow V2 instantiated.")
 
     except Exception as e:
-        logger.exception(f"Agent initialization failed: {e}")
-        return # Stop if agents can't init
-
-    # --- Workflow Initialization (V1 Flow test deferred until D16) ---
-    # dreamer_flow = DreamerFlow(agents=agents, user_dir=str(user_workspace_dir))
-
-    # --- Test Nexus V1 Placeholder Directly --- (UPDATED for Day 15 V1)
-    print("\n" + "="*10 + " Testing Nexus V1 Placeholder (Simulation Only) " + "="*10)
-    nexus_agent = agents.get("Nexus")
-    # Simulate blueprint content
-    blueprint_for_nexus_v1 = "# Blueprint: Simple API\n Features: GET /status"
-
-    if nexus_agent:
-        print(f"Calling Nexus V1 placeholder run...")
-        try:
-            nexus_result = await nexus_agent.run(
-                blueprint_content=blueprint_for_nexus_v1,
-                # Provide the output path Nexus V1 run signature expects V1
-                project_output_path=str(test_project_output_path)
-                )
-            print(f"Nexus V1 Result: {json.dumps(nexus_result, indent=2)}") # Pretty print result
-
-            # Verification Steps - UPDATED for V1 Placeholder
-            print("\nACTION REQUIRED (Verify Nexus V1 Simulation):")
-            print(f"1. Check Nexus V1 Result above: 'status' should be 'success', message indicates simulation.")
-            print(f"2. Check logs (dreamerai_dev.log) for 'V1 SIMULATION: Analyzing blueprint...' message.")
-            print(f"3. Check logs for multiple 'V1 SIMULATION: ... Simulating delegation of Task...' messages.")
-            print(f"4. Verify NO errors occurred during Nexus V1 run execution (check logs for exceptions/errors)." )
-            print(f"5. Verify NO code files were generated in the output path by this run: {test_project_output_path}")
-            # Assertion to check status programmatically
-            assert nexus_result.get("status") == "success", "Nexus V1 run status was not success!"
-            print(" -> Nexus V1 Simulation Test Verification Steps Passed (Manual Log Check Recommended)." )
-
-        except Exception as nexus_e:
-             print(f"ERROR running Nexus V1 test: {nexus_e}")
-             logger.exception("Nexus V1 test block failed.")
-    else:
-        print("ERROR: Nexus agent not found.")
-    print("="*40)
+        logger.exception(f"Agent or Flow initialization failed: {e}")
+        # await close_db_pool() # Keep commented out for Day 16
+        return # Stop if core components fail to init
 
 
-    # --- Keep Other Direct Agent Tests Commented Out --- 
-    # ... (Jeff RAG test, etc.) ...
+    # --- Execute Core Workflow (Jeff V1 -> Arch V1 -> Nexus V1 Sim) ---
+    test_input = f"Plan project '{test_project_name_flow}': Basic command-line timer app."
+    logger.info(f"\n--- Running DreamerFlow V2 Execute with Input: '{test_input}' ---")
 
-    # --- Agent Shutdown Loop ---
-    print("\n--- Shutting Down Agents ---")
-    for name, agent in agents.items():
-        if hasattr(agent, 'shutdown'):
-            print(f"Shutting down {name}...")
-            try: await agent.shutdown()
-            except Exception as shut_e: print(f"Error shutting down {name}: {shut_e}")
-    print("Agent shutdown sequence complete.")
+    final_flow_result: Any = {"status": "error", "error": "Flow did not execute"}
+    try:
+        final_flow_result = await dreamer_flow.execute(
+            initial_user_input=test_input,
+            test_project_name=test_project_name_flow # Pass name for consistent path generation
+            )
+    except Exception as flow_exec_e:
+         logger.exception(f"DreamerFlow execute encountered an unhandled exception: {flow_exec_e}")
+         final_flow_result = {"status": "error", "error": str(flow_exec_e), "stage": "Flow Execute"}
+
+
+    logger.info("--- DreamerFlow V2 Execution Finished (from main.py) ---")
+    print("\n--- Final Workflow Result (Nexus V1 Placeholder Output) ---")
+    try:
+        print(json.dumps(final_flow_result, indent=2))
+    except TypeError as json_e:
+         print(f"Could not serialize result to JSON: {json_e}\nRaw result: {final_flow_result}")
+    print("-------------------------------------------------------")
+
+    # --- Verification Steps (Updated for Day 16 Flow) ---
+    print("\nACTION REQUIRED (Verify Flow V2 Execution):")
+    print("1. Check logs verify Jeff V1 run completed.")
+    print("2. Check logs verify Arch V1 run completed and blueprint path logged.")
+    # Construct expected path for verification message
+    expected_blueprint_path = test_project_context_path / 'Overview' / 'blueprint.md'
+    print(f"3. Check file system for blueprint: {expected_blueprint_path}")
+    print("4. Check logs verify Nexus V1 simulation ran AFTER Arch.")
+    # Check the actual result dictionary status
+    is_success = isinstance(final_flow_result, dict) and final_flow_result.get("status") == "success"
+    success_msg = "SUCCESS" if is_success else "FAILURE (or unexpected format)"
+    print(f"5. Verify final printed result above shows Nexus V1 success: {success_msg}")
+    print("6. Verify NO functional code generation occurred (No files in output/ dir from this run).")
+
+
+    # --- Keep Existing Direct Agent Tests (Optional Run - Commented Out for Day 16) ---
+    # logger.info(f"\n--- Running Other Direct Agent Tests ---")
+    # await test_lewis_v5(...)
+    # await test_sophia_v2(...)
+    # ... etc ...
+
+
+    # --- Agent Shutdown ---
+    logger.info("\n--- Shutting Down Agents ---")
+    for name, agent in agents.items(): # Shutdown ALL instantiated agents
+        # Use hasattr for safety, good practice
+        if hasattr(agent, 'shutdown') and callable(agent.shutdown):
+            logger.debug(f"Shutting down {name}...")
+            try:
+                # Ensure shutdown is awaited if it's async
+                shutdown_method = agent.shutdown()
+                if asyncio.iscoroutine(shutdown_method):
+                    await shutdown_method
+            except Exception as shut_e:
+                 logger.error(f"Error shutting down {name}: {shut_e}", exc_info=True)
+        else:
+            logger.warning(f"Agent {name} does not have a callable shutdown method.")
+
+    # Close DB Pool if it was initialized
+    # await close_db_pool() # Keep commented out for Day 16
+    # logger.info("DB Pool closed.")
+    logger.info("--- Main Test Sequence Finished ---")
 
 
 if __name__ == "__main__":
-    # Ensure venv active, BaseAgent V2 applied, Nexus seed script run
-    print(f"Running main.py test sequence from: {os.getcwd()}")
-    asyncio.run(run_dreamer_flow_and_tests())
-    print("Main test sequence finished.") 
+    # Ensure venv active
+    # Ensure relevant RAG DBs seeded if agents use them on init/run
+    # (Jeff/Arch/Nexus V1 placeholders don't heavily rely on RAG for this test)
+    print(f"Executing main.py for DreamerFlow V2 Test from: {os.getcwd()}")
+    try:
+        asyncio.run(run_dreamer_flow_and_tests())
+    except Exception as main_run_e:
+         print(f"FATAL ERROR running main asyncio loop: {main_run_e}")
+         traceback.print_exc() 

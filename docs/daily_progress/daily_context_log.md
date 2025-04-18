@@ -49,3 +49,7 @@ Milestone Completed: Day 11 - Planning Agent V1 (Arch). Next Task: Day 12 (Fetch
 Milestone Completed: Day 13 UI Bridge Implementation. Next Task: Day 14 UI Panel Integration (Chat Panel V1). Feeling: Communication lines are open! Backend can push updates to frontend listener on port 3131. Date: 2025-04-16
 Milestone Completed: Day 14 UI Panel Integration (Chat Panel V1). Next Task: Day 15 Nexus Agent V1. Feeling: Awesome! Can finally talk to Jeff via the UI. Date: 2025-04-17
 Milestone Completed: Day 15 Nexus V1 Placeholder (BaseAgent V2 Fixed). Next Task: Day 16 DreamerFlow V2 (Basic Orchestration - Jeff->Arch->Nexus(V1)). Feeling: Back on track! Date: 2025-04-17
+
+Note: Established and documented strategy (in cursorrules.md) for adapting Days 16-71 guide code to use BaseAgent V2 capabilities, prioritizing guide intent over potentially outdated snippets. BaseAgent V2 stabilization is complete. Task: Post-Day 15 Context. Date: 2025-04-17
+
+Note: Encountered and resolved NameError in main.py (missing DreamerFlow import from guide code). Also logged recurring OpenRouter TypeError during Day 16 Task 3 testing. Task: Day 16 Task 3. Date: 2025-04-17
