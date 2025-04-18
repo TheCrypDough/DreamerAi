@@ -130,6 +130,20 @@ class LewisAgent(BaseAgent):
         self.logger.debug(f"Found {len(matching_tools)} tools for category '{category}' in cache.")
         return matching_tools
 
+    # --- NEW V1 Placeholder Method ---
+    async def receive_task(self, task_data: Dict[str, Any]):
+        """ V1: Placeholder to acknowledge task receipt from Hermie. """
+        task_desc = task_data.get("task_description", "Unknown task")
+        log_rules_check(f"{self.name} received task simulation") # Use global check
+        self.logger.info(f"LEWIS V1: Received task data via receive_task(): '{task_desc[:100]}...'") # Use instance logger
+        # Check if memory attribute exists and is not None before adding message
+        if hasattr(self, 'memory') and self.memory:
+             self.memory.add_message(Message(role="system", content=f"Received task memo: {task_desc[:100]}"))
+        else:
+             self.logger.warning("Memory not available for Lewis V1 receive_task logging.")
+        # In V2+, this might trigger analysis, monitoring setup, or resource checks based on the task
+        await asyncio.sleep(0.05) # Simulate minimal processing acknowledgement
+
     # --- Future V2+ Method Placeholder ---
     async def request_research(self, query: str, project_context_path: str) -> Dict[str, Any]:
         # Logic from Day 52/97 goes here V2+

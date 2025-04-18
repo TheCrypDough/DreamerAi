@@ -23,11 +23,15 @@ try:
     from pydantic import Field
     from engine.agents.base import BaseAgent, AgentState, Message
     from engine.core.logger import logger_instance as logger, log_rules_check
+    # Need PlanningAgent and LewisAgent for type hints and calls (NEW)
+    from engine.agents.planning import PlanningAgent
+    from engine.agents.administrator import LewisAgent
     # RAG Import handled by BaseAgent V2 init check
 except ImportError as e:
     # Fallback dummies...
-    print(f"ERROR importing in communications.py: {e}")
+    logger.error(f"Failed to import manager agents or base components in Hermie: {e}") # Updated error message
     import logging; logger = logging.getLogger(__name__); AgentState=type('AgentState', (), {'IDLE':'idle','RUNNING':'running','FINISHED':'finished','ERROR':'error'}); Message=dict; BaseAgent=object; log_rules_check=print; Field=lambda **k: None # Basic dummies
+    PlanningAgent, LewisAgent = None, None # Define as None if import fails (NEW)
 
 HERMIE_AGENT_NAME = "Hermie"
 
@@ -36,61 +40,95 @@ HERMIE_AGENT_NAME = "Hermie"
 
 class HermieAgent(BaseAgent):
     """
-    Hermie Agent V1: Communications Hub Relay (Structural Placeholder).
-    Inherits BaseAgent V2. V1 run method is placeholder simulation.
+    Hermie: The Communications Agent V1.
+    Simulates routing tasks from Jeff (via run input) to Arch and Lewis.
     """
-    # Add agents dict placeholder for future use, make Optional V1 init
-    agents: Dict[str, BaseAgent] = Field(default_factory=dict, exclude=True)
+    # Re-add agents field definition for Pydantic, mark as Optional
+    agents: Optional[Dict[str, BaseAgent]]
 
-    def __init__(self, user_dir: str, agents: Optional[Dict[str, BaseAgent]] = None, **kwargs):
-         # BaseAgent V2 handles rules, memory, RAG init
-         super().__init__(name=HERMIE_AGENT_NAME, user_dir=user_dir, **kwargs)
-         # Store agent refs for future V2+ routing logic
-         self.agents = agents or {}
-         logger.info(f"HermieAgent '{self.name}' V1 Initialized (Placeholder). Inherits BaseAgent V2. Agent Refs: {list(self.agents.keys())}")
+    # Modified __init__ to require agents dictionary (logically)
+    def __init__(self, agents: Dict[str, BaseAgent], user_dir: str, **kwargs): # Add agents dict
+        super().__init__(name=HERMIE_AGENT_NAME, user_dir=user_dir, **kwargs)
+        if not agents: # Check if agents dict is provided and not empty
+            logger.error("HermieAgent initialized without a valid agents dictionary!")
+            # Consider raising an error or handling appropriately
+        self.agents = agents # Store the dictionary of all agent instances
+        # self.rules_file = os.path.join(r"C:\DreamerAI\engine\agents", f"rules_{self.name.lower()}.md") # BaseAgent V2 handles this
+        # self._load_rules() # BaseAgent V2 handles this
+        logger.info(f"HermieAgent '{self.name}' V1 initialized with agent references: {list(self.agents.keys())}")
 
-    # BaseAgent V2 handles _load_rules, RAG init/query/store etc.
+    # BaseAgent V2 handles _load_rules etc.
 
-    async def run(self, input_context: Any = None) -> Dict[str, Any]:
-        """ V1: Simulates receiving a message or task for routing. """
-        self.state = AgentState.RUNNING # Publishes event via setter
-        context_str = str(input_context)[:100] if input_context else "Trigger"
-        log_rules_check(f"Running {self.name} V1 placeholder simulation.") # Use global check
-        self.logger.info(f"'{self.name}' V1 simulation received context: {context_str}...") # Use instance logger
-        # self.memory.add_message(Message(role="system", content=f"Simulating routing for context: {context_str}")) # Correct Message usage if needed
+    # Added placeholder for broadcast_dream_theatre_update
+    async def broadcast_dream_theatre_update(self, update: Dict[str, Any]):
+        """ Placeholder for sending updates to the Dream Theatre UI. """
+        # In a real implementation, this would use a WebSocket or similar mechanism
+        # provided via the Bridge or a dedicated event system.
+        self.logger.debug(f"(Simulated) Broadcasting to Dream Theatre: {update.get('event', 'Unknown event')}")
+        await asyncio.sleep(0.01) # Simulate async call
 
-        final_status = "success"
-        message = "Hermie V1 simulation complete. No routing performed."
+    # Replace previous placeholder run method with V1 routing logic
+    async def run(self, task_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        V1 Run: Receives task data (simulating from Jeff via n8n placeholder trigger)
+        and calls receive_task on Arch and Lewis.
+        """
+        self.state = AgentState.RUNNING
+        if task_data is None: task_data = {"task_description": "Default test task for Hermie"}
+        task_desc = task_data.get("task_description", "No description")
 
-        try:
-            # Optional V1 RAG Query (using inherited BaseAgent V2 method)
-            rag_query = "Agent communication protocols"
-            rag_context = await self.query_rag(rag_query)
-            if rag_context:
-                self.logger.info(f"Hermie RAG Context V1 (Query: '{rag_query}'): Found {len(rag_context)} result(s).")
-                # self.logger.debug(f"  -> RAG Snippet: {rag_context[0][:100]}...") # Accessing rag_context[0] might fail if list is empty
+        # log_rules_check(f"Running {self.name} V1 routing simulation") # Use instance logger
+        self.logger.info(f"Running {self.name} V1 routing simulation...") # Use instance logger
+        self.logger.info(f"'{self.name}' V1 received task data: {task_desc[:50]}...")
+        self.memory.add_message(Message(role="system", content=f"Received task: {task_desc}"))
+
+        results = {"status": "failed", "routed_to": [], "errors": []}
+
+        targets = ["Arch", "Lewis"] # V1: Distribute to planner and admin
+        for target_name in targets:
+            target_agent = self.agents.get(target_name)
+            # Check if target_agent exists and has the 'receive_task' async method
+            if target_agent and hasattr(target_agent, 'receive_task') and asyncio.iscoroutinefunction(getattr(target_agent, 'receive_task', None)):
+                try:
+                    self.logger.debug(f"Hermie routing task to {target_name}...")
+                    # Pass the received task data dictionary directly
+                    await target_agent.receive_task(task_data)
+                    self.logger.info(f"Task successfully routed to {target_name} (simulated receipt).")
+                    results["routed_to"].append(target_name)
+                except Exception as e:
+                    error_msg = f"Error calling receive_task on {target_name}: {e}"
+                    self.logger.exception(error_msg) # Log full traceback
+                    results["errors"].append({target_name: error_msg})
+            elif not target_agent:
+                 error_msg = f"Agent '{target_name}' not found in Hermie's dictionary."
+                 self.logger.error(error_msg)
+                 results["errors"].append({target_name: error_msg})
             else:
-                self.logger.info(f"Hermie RAG Context V1 (Query: '{rag_query}'): No results found.")
+                # Handle case where receive_task exists but is not an async function or is missing
+                error_msg = f"Agent '{target_name}' does not have a suitable 'receive_task' async method."
+                self.logger.error(error_msg)
+                results["errors"].append({target_name: error_msg})
 
-            # Simulate processing delay
-            await asyncio.sleep(0.1)
-            self.logger.info("V1 SIMULATION: Message processing/routing simulated.")
+        # Determine final status
+        if results["routed_to"] and not results["errors"]:
+            results["status"] = "success"
+        elif results["routed_to"] and results["errors"]:
+             results["status"] = "partial_success"
+        # If no routing succeeded, status remains "failed"
 
-            self.state = AgentState.FINISHED # Publishes event via setter
+        # Simulate broadcast (logic TBD)
+        await self.broadcast_dream_theatre_update({"event": "task_distributed", "targets": targets, "task": task_desc[:50]})
 
-        except Exception as e:
-            self.state = AgentState.ERROR # Publishes event via setter
-            message = f"Hermie V1 simulation Error: {e}"
-            self.logger.exception(message)
-            final_status = "error"
-        finally:
-            # Let state setter handle transition to IDLE if appropriate
-            if hasattr(self, '_state') and self._state == AgentState.FINISHED: # Check attribute exists
-                self.state = AgentState.IDLE
-            self.logger.info(f"'{self.name}' V1 simulation finished. Final state: {getattr(self, 'state', 'unknown')}") # Safer access
+        # Transition state based on outcome
+        if results["status"] == "success" or results["status"] == "partial_success":
+             self.state = AgentState.FINISHED
+        else:
+             self.state = AgentState.ERROR
 
-        results = {"status": final_status, "message": message}
-        # self.memory.add_message(Message(role="assistant", content=json.dumps(results))) # Correct Message usage if needed
+        # BaseAgent V2 handles IDLE transition from FINISHED/ERROR if configured
+
+        self.logger.info(f"'{self.name}' V1 routing simulation finished. Status: {results['status']}")
+        self.memory.add_message(Message(role="assistant", content=f"Routing simulated. Status: {results['status']}"))
         return results
 
     async def step(self, input_data: Optional[Any] = None) -> Any:
@@ -98,4 +136,25 @@ class HermieAgent(BaseAgent):
         self.logger.warning(f"{self.name}.step() called. V1 placeholder delegates to run().")
         return await self.run(input_data)
 
-    # Inherited shutdown from BaseAgent V2 handles memory save etc. 
+    # Test function placeholder (can be removed or updated for V1 test if needed)
+    # async def test_hermie_agent_v1(self):
+    #     self.logger.info(f"--- Testing {self.name} V1 ---")
+    #     test_task = {"task_description": "Test task for Hermie V1 routing"}
+    #     result = await self.run(task_data=test_task)
+    #     self.logger.info(f"Test Result: {result}")
+    #     self.logger.info(f"--- Test {self.name} V1 Complete ---")
+
+# Keep __main__ block if needed for standalone testing, otherwise remove/comment out
+# if __name__ == "__main__":
+#     # Example usage for standalone testing (requires setting up dummy agents)
+#     user_dir = r"C:\DreamerAI\Users\TestUserHermie"
+#     # Create dummy agents for testing
+#     dummy_arch = BaseAgent(name="Arch", user_dir=user_dir)
+#     dummy_lewis = BaseAgent(name="Lewis", user_dir=user_dir)
+#     # Add dummy receive_task methods
+#     async def dummy_receive(task_data): logger.info(f"Dummy Received: {task_data['task_description'][:20]}")
+#     dummy_arch.receive_task = dummy_receive
+#     dummy_lewis.receive_task = dummy_receive
+#     test_agents = {"Arch": dummy_arch, "Lewis": dummy_lewis}
+#     hermie = HermieAgent(agents=test_agents, user_dir=user_dir)
+#     asyncio.run(hermie.test_hermie_agent_v1()) 

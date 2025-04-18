@@ -303,287 +303,52 @@
 *   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V1 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
 *   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
 
-## Day 17: Lewis Agent V1 & Toolchest Setup (DONE)
--   [x] Create `tools/toolchest.json` File
--   [x] Create `engine/agents/rules_lewis.md` File
--   [x] Implement Lewis V1 Agent (`administrator.py`) placeholder
--   [x] Modify `main.py` to test Lewis V1
--   [x] Test: Execute `python main.py` and verify Lewis V1 functionality
--   [x] Corrective Action: Added `rules_arch.md` (Missed Day 11)
-
-## Day 18: Hermie & UI Bridge V2 (Chat Focus) (TODO) # Corrected Title from Guide
--   [x] ~~**Day 18:** Hermie Agent V1 Structure Setup (Corrected Scope & Execution)~~ `DONE: 2025-04-18`
-    -   [x] ~~Verify `engine/agents/communications.py` matches target Hermie V1 code.~~
-    -   [x] ~~Replace `main.py` content with focused Hermie V1 test code.~~
-    -   [x] ~~Execute `python main.py` (venv active).~~
-    -   [x] ~~Log changes to migration tracker.~~
-    -   [x] ~~Request approval.~~
-
--   [ ] **Day 19:** Hermie Agent V1 (Basic Routing Simulation) `TODO`
-    -   [ ] Modify `C:\DreamerAI\engine\agents\communications.py`: Update `HermieAgent.__init__` to accept and store `agents: Dict[str, BaseAgent]`. Update `HermieAgent.run` to retrieve 'Arch' and 'Lewis' from `self.agents` and call `await agent.receive_task(task_data)` on each. Implement basic error handling.
-    -   [ ] Modify `C:\DreamerAI\engine\agents\planning.py`: Add placeholder `async def receive_task(self, task_data: Dict[str, Any]):` to `PlanningAgent`.
-    -   [ ] Modify `C:\DreamerAI\engine\agents\administrator.py`: Add placeholder `async def receive_task(self, task_data: Dict[str, Any]):` to `LewisAgent`.
-    -   [ ] Modify `C:\DreamerAI\main.py`: Instantiate core agents (Jeff, Arch, Lewis, Hermie, Nexus), pass `agents` dict to Hermie, remove prior flow execution, call `agents['Hermie'].run(task_data=...)` directly with sample data, print result.
-    -   [ ] Execute `python main.py` (venv active). Verify logs show Hermie running, retrieving Arch/Lewis, calling `receive_task`. Verify Arch/Lewis log receipt. Check errors.
-    -   [ ] Stage changes (`communications.py`, `planning.py`, `administrator.py`, `main.py`), commit, and push.
-
-## Day 20: DreamerFlow V3 (Advanced Orchestration - Jeff->Arch->Nexus(V2)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V2 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V2. Use await for agent run calls. Add error handling. Use the full code provided below.
+## Day 17: Lewis Agent V1 & Toolchest Setup, The Administrator Takes Inventory!
+*   **Cursor Task:** Create `tools/toolchest.json` File
     *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V2 made on Day 19. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V2, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V2 placeholder result. Use the full code provided below.
+*   **Cursor Task:** Create `engine/agents/rules_lewis.md` File
     *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V2 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V2 placeholder. Check dreamerai_dev.log and errors.log for issues.
+*   **Cursor Task:** Implement Lewis V1 Agent (`administrator.py`) placeholder
     *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 20: DreamerFlow V3 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V2)->Arch(V2)->Nexus(V2 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V2 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V2 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V2 sim logs appeared. Verified Nexus V2 placeholder success dict returned. Requesting approval for Day 21. (yes/no/details?)"
+*   **Cursor Task:** Modify `main.py` to test Lewis V1
     *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
+*   **Cursor Task:** Test: Execute `python main.py` and verify Lewis V1 functionality
     *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
+*   **Cursor Task:** Corrective Action: Added `rules_arch.md` (Missed Day 11)
+    *   Status: DONE
+*   **Cursor Task:** Corrective Action: Revert incorrect Arch/Nexus placeholder changes (Git)
+    *   Status: DONE
+*   **Cursor Task:** Stage changes, commit, push.
+    *   Status: DONE
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
     *   Status: DONE
 *   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V2 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
+*   **Summary:** Implemented Lewis V1 placeholder, created toolchest JSON, added missing Arch rules, reverted incorrect changes.
+*   **Issues Encountered:** Major deviation from guide required manual Git reversion.
 
-## Day 21: DreamerFlow V4 (Advanced Orchestration - Jeff->Arch->Nexus(V3)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V3 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V3. Use await for agent run calls. Add error handling. Use the full code provided below.
+## Day 18: Hermie Agent V1 Structure Setup (Corrected Scope & Execution), The Messenger Gets His Desk!
+*   **Cursor Task:** Verify `engine/agents/communications.py` matches target Hermie V1 code.
     *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V3 made on Day 20. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V3, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V3 placeholder result. Use the full code provided below.
+*   **Cursor Task:** Replace `main.py` content with focused Hermie V1 test code.
     *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V3 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V3 placeholder. Check dreamerai_dev.log and errors.log for issues.
+*   **Cursor Task:** Execute `python main.py` (venv active).
     *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 21: DreamerFlow V4 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V3)->Arch(V3)->Nexus(V3 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V3 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V3 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V3 sim logs appeared. Verified Nexus V3 placeholder success dict returned. Requesting approval for Day 22. (yes/no/details?)"
+*   **Cursor Task:** Log changes to migration tracker.
+    *   Status: DONE (Implicitly done via file edits)
+*   **Cursor Task:** Request approval.
     *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
     *   Status: DONE
 *   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V3 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
+*   **Summary:** Corrected Day 18 scope, implemented and tested Hermie V1 placeholder structure using BaseAgent V2 and focused test script.
+*   **Issues Encountered:** ValueError during RAG seed (resolved), ImportError for DB funcs (mitigated).
 
-## Day 22: DreamerFlow V5 (Advanced Orchestration - Jeff->Arch->Nexus(V4)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V4 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V4. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V4 made on Day 21. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V4, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V4 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V4 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V4 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 22: DreamerFlow V5 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V4)->Arch(V4)->Nexus(V4 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V4 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V4 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V4 sim logs appeared. Verified Nexus V4 placeholder success dict returned. Requesting approval for Day 23. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V4 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
+**Day 19 - Hermie Agent V1 (Basic Routing)**
+*   TODO - Cursor Task: Modify `C:\DreamerAI\engine\agents\communications.py`. Update `HermieAgent.__init__` to accept and store the `agents: Dict[str, BaseAgent]`. Update the `HermieAgent.run` method to retrieve 'Arch' and 'Lewis' from `self.agents` and call `await agent.receive_task(task_data)` on each. Implement basic error handling. Use the code provided in the Day 19 guide entry.
+*   TODO - Cursor Task: Modify `C:\DreamerAI\engine\agents\planning.py`. Add the placeholder method `async def receive_task(self, task_data: Dict[str, Any]):` to the `PlanningAgent` class, as shown in the Day 19 guide entry.
+*   TODO - Cursor Task: Modify `C:\DreamerAI\engine\agents\administrator.py`. Add the placeholder method `async def receive_task(self, task_data: Dict[str, Any]):` to the `LewisAgent` class, as shown in the Day 19 guide entry.
+*   TODO - Cursor Task: Modify `C:\DreamerAI\main.py`. Update `run_dreamer_test` to: Instantiate all core agents needed (Jeff, Arch, Lewis, Hermie, Nexus). Pass the agents dictionary when instantiating Hermie. Remove the previous `dreamer_flow.execute` call. Instead, directly call `await agents['Hermie'].run(task_data=...)` with sample task data. Print the result from Hermie. Use the code provided in the Day 19 guide entry.
+*   TODO - Cursor Task: Execute `python main.py` (venv active). Verify the logs show Hermie running, retrieving Arch and Lewis, and calling their `receive_task` methods. Verify Arch and Lewis log that they received the task. Check for errors.
+*   TODO - Cursor Task: Stage changes (`communications.py`, `planning.py`, `administrator.py`, `main.py`), commit, and push.
 
-## Day 23: DreamerFlow V6 (Advanced Orchestration - Jeff->Arch->Nexus(V5)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V5 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V5. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V5 made on Day 22. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V5, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V5 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V5 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V5 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 23: DreamerFlow V6 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V5)->Arch(V5)->Nexus(V5 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V5 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V5 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V5 sim logs appeared. Verified Nexus V5 placeholder success dict returned. Requesting approval for Day 24. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V5 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 24: DreamerFlow V7 (Advanced Orchestration - Jeff->Arch->Nexus(V6)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V6 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V6. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V6 made on Day 23. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V6, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V6 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V6 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V6 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 24: DreamerFlow V7 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V6)->Arch(V6)->Nexus(V6 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V6 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V6 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V6 sim logs appeared. Verified Nexus V6 placeholder success dict returned. Requesting approval for Day 25. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V6 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 25: DreamerFlow V8 (Advanced Orchestration - Jeff->Arch->Nexus(V7)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V7 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V7. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V7 made on Day 24. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V7, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V7 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V7 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V7 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 25: DreamerFlow V8 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V7)->Arch(V7)->Nexus(V7 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V7 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V7 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V7 sim logs appeared. Verified Nexus V7 placeholder success dict returned. Requesting approval for Day 26. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V7 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 26: DreamerFlow V9 (Advanced Orchestration - Jeff->Arch->Nexus(V8)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V8 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V8. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V8 made on Day 25. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V8, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V8 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V8 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V8 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 26: DreamerFlow V9 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V8)->Arch(V8)->Nexus(V8 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V8 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V8 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V8 sim logs appeared. Verified Nexus V8 placeholder success dict returned. Requesting approval for Day 27. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V8 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 27: DreamerFlow V10 (Advanced Orchestration - Jeff->Arch->Nexus(V9)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V9 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V9. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V9 made on Day 26. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V9, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V9 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V9 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V9 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 27: DreamerFlow V10 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V9)->Arch(V9)->Nexus(V9 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V9 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V9 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V9 sim logs appeared. Verified Nexus V9 placeholder success dict returned. Requesting approval for Day 28. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V9 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 28: DreamerFlow V11 (Advanced Orchestration - Jeff->Arch->Nexus(V10)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V10 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V10. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V10 made on Day 27. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V10, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V10 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V10 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V10 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 28: DreamerFlow V11 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V10)->Arch(V10)->Nexus(V10 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V10 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V10 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V10 sim logs appeared. Verified Nexus V10 placeholder success dict returned. Requesting approval for Day 29. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V10 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 29: DreamerFlow V12 (Advanced Orchestration - Jeff->Arch->Nexus(V11)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V11 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V11. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V11 made on Day 28. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V11, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V11 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V11 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V11 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 29: DreamerFlow V12 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V11)->Arch(V11)->Nexus(V11 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V11 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V11 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V11 sim logs appeared. Verified Nexus V11 placeholder success dict returned. Requesting approval for Day 30. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V11 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 30: DreamerFlow V13 (Advanced Orchestration - Jeff->Arch->Nexus(V12)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V12 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V12. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V12 made on Day 29. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V12, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V12 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V12 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V12 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 30: DreamerFlow V13 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V12)->Arch(V12)->Nexus(V12 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V12 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V12 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V12 sim logs appeared. Verified Nexus V12 placeholder success dict returned. Requesting approval for Day 31. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V12 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 31: DreamerFlow V14 (Advanced Orchestration - Jeff->Arch->Nexus(V13)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V13 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V13. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V13 made on Day 30. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V13, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V13 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V13 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V13 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 31: DreamerFlow V14 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V13)->Arch(V13)->Nexus(V13 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V13 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V13 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V13 sim logs appeared. Verified Nexus V13 placeholder success dict returned. Requesting approval for Day 32. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V13 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 32: DreamerFlow V15 (Advanced Orchestration - Jeff->Arch->Nexus(V14)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V14 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V14. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V14 made on Day 31. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V14, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V14 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V14 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V14 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 32: DreamerFlow V15 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V14)->Arch(V14)->Nexus(V14 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V14 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V14 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V14 sim logs appeared. Verified Nexus V14 placeholder success dict returned. Requesting approval for Day 33. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V14 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 33: DreamerFlow V16 (Advanced Orchestration - Jeff->Arch->Nexus(V15)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V15 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V15. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V15 made on Day 32. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V15, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V15 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V15 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V15 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 33: DreamerFlow V16 (Advanced Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V15)->Arch(V15)->Nexus(V15 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V15 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V15 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V15 sim logs appeared. Verified Nexus V15 placeholder success dict returned. Requesting approval for Day 34. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V15 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 34: DreamerFlow V17 (Advanced Orchestration - Jeff->Arch->Nexus(V16)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V16 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V16. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V16 made on Day 33. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V16, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V16 placeholder result. Use the full code provided below.
-    *   Status: DONE
--   [ ] Cursor Task: Create C:\DreamerAI\engine\agents\rules_hermie.md. Populate from rules template (V1 Role: Comms Hub Placeholder, Scope: Log activation, V2+ Vision: Event-driven routing Jeff<->Managers, Dream Theatre updates). Use code below.
--   [ ] Cursor Task: Create the temporary Python script C:\DreamerAI\scripts\seed_rag_hermie.py using the V2 pattern (instantiate HermieAgent, call await agent.store_in_rag(...)). Seed with basic communication patterns or agent names. Use code below.
--   [ ] Cursor Task: Execute the Hermie RAG seeding script: Run python scripts\seed_rag_hermie.py (venv active). Verify success log and directory creation (data/rag_dbs/rag_hermie.db/).
--   [ ] Cursor Task: Delete the temporary seed script: del scripts\seed_rag_hermie.py.
--   [ ] Cursor Task: Create C:\DreamerAI\engine\agents\communications.py. Implement the HermieAgent V1 placeholder class inheriting BaseAgent. Use the code provided below.
--   [ ] Cursor Task: Modify C:\DreamerAI\main.py. Instantiate HermieAgent. Ensure the main test calls Jeff V2 (e.g., via dreamer_flow.execute if Day 16 code is used, or direct Jeff call) with input designed to trigger the task handoff keywords (e.g., "build", "plan"). Update verification instructions to check Jeff's logs for successful n8n POST attempt AND to check n8n execution logs for webhook receipt. Use code below.
--   [ ] Cursor Task: Test the Jeff->n8n Handoff:
-    *   (Manual Prep) Start n8n start in a separate terminal. Ensure the Day 33 Task Receiver workflow is active.
-    *   Run python main.py (venv active).
-    *   Verify Logs: Check dreamerai_dev.log. Find Jeff's execution logs. Confirm the "HANDOFF (Jeff -> n8n): Attempting to trigger n8n workflow..." message appears, followed by "Successfully triggered n8n webhook..." (indicating aiohttp POST succeeded).
-    *   Verify n8n: Check the n8n console or n8n Web UI Executions list. Confirm the task_receiver_v1 workflow executed successfully around the time main.py ran, triggered by the webhook call from Jeff.
--   [ ] Cursor Task: Present Summary for Approval: "Task 'Day 18: Hermie V1 Structure & Jeff Handoff Verification (Corrected)' complete. Implementation: Created HermieAgent V1 placeholder class/rules (inheriting BaseAgent V2), seeded Hermie RAG DB using V2 pattern. Updated main.py test to instantiate Hermie and trigger Jeff V2 handoff logic. Tests/Verification: Ran main.py, verified Jeff V2 logs show successful aiohttp POST to n8n webhook. Manually verified n8n execution logs show the webhook trigger was received successfully. Ready for Day 19. Requesting approval. (yes/no/details?)"
--   [ ] Cursor Task: (Upon Approval): Stage changes (communications.py, rules_hermie.md, main.py), commit, push.
--   [ ] Cursor Task: (Upon Approval): Execute Auto-Update Triggers & Workflow.
-
----
-*(Older tasks omitted for brevity)*
+*(Future days/tasks will be added here)*

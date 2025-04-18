@@ -49,6 +49,20 @@ class PlanningAgent(BaseAgent):
         self._llm = LLM() # Assign to private _llm attribute
         logger.info(f"PlanningAgent '{self.name}' initialized.")
 
+    # --- NEW V1 Placeholder Method ---
+    async def receive_task(self, task_data: Dict[str, Any]):
+        """ V1: Placeholder to acknowledge task receipt from Hermie. """
+        task_desc = task_data.get("task_description", "Unknown task")
+        log_rules_check(f"{self.name} received task simulation") # Use global check
+        self.logger.info(f"ARCH V1: Received task data via receive_task(): '{task_desc[:100]}...'") # Use instance logger
+        # Check if memory attribute exists and is not None before adding message
+        if hasattr(self, 'memory') and self.memory:
+             self.memory.add_message(Message(role="system", content=f"Received task memo: {task_desc[:100]}"))
+        else:
+             self.logger.warning("Memory not available for Arch V1 receive_task logging.")
+        # In V2+, this would trigger planning logic or add to Arch's queue
+        await asyncio.sleep(0.05) # Simulate minimal processing acknowledgement
+
     def _get_output_path(self, base_user_project_path: str) -> Path:
         """Determines the path to save the blueprint."""
         # Ensure base path is Path object

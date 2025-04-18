@@ -233,7 +233,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: 2025-04-17 00:45:00 # Updated after Day 15 completion & strategy discussion
+# Last Updated: 2025-04-18 02:35:00 (After Day 18 Completion & Correction)
 
 ## Memory Bank Structure
 
@@ -266,34 +266,26 @@ flowchart TD
    - User experience goals
 
 3. `activeContext.md`
-   - Current work focus
-   - Recent changes
-   - Next steps
-   - Active decisions and considerations
-   - Reflects Day 15 completion: BaseAgent V2 stabilized, Nexus V1 placeholder implemented & tested, RAG DB seeded. New strategy for adapting Days 16-71 guide code established. Ready for Day 16.
+   - Current Work Focus: Starting Day 19 (Hermie V1 Routing Sim).
+   - Recent Changes: Corrected Day 18 scope & execution (verified Hermie V1 structure/RAG, tested via focused main.py, handled missing DB pool funcs, reverted prior incorrect changes).
+   - Next Steps: Proceed with Day 19 tasks sequentially (Modify Hermie/Arch/Lewis, update main.py, test, commit/push).
+   - Active Decisions: Strict guide adherence mandatory. Adapt Day 19+ guide code to BaseAgent V2. Defer DB Pool/Jeff n8n issues.
 
 4. `systemPatterns.md`
-   - System architecture
-   - Key technical decisions
-   - Design patterns in use
-   - Component relationships
-   - DreamerFlow orchestrator pattern established.
-   - BaseAgent V2 provides core RAG, memory, event patterns.
+   - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
+   - BaseAgent V2 provides core RAG (ChromaDB/ST), memory, event patterns.
+   - Agent communication currently direct calls (main.py test), Hermie V1 aims to centralize this.
 
 5. `techContext.md`
-   - Technologies used
-   - Development setup
-   - Technical constraints
-   - Dependencies
-   - asyncio used in main.py for flow execution.
-   - ChromaDB used for RAG, accessed via BaseAgent V2.
+   - asyncio used for main flow/agent execution.
+   - ChromaDB/SentenceTransformer used for RAG (via BaseAgent V2).
+   - Missing DB Pool functions handled via try/except for now.
 
 6. `progress.md`
    - What works: BaseAgent V2 (RAG V2 ChromaDB/ST), Jeff V1, Arch V1, Nexus V1, Lewis V1, Hermie V1 placeholders functional. DreamerFlow V2 basic sequence (Jeff->Arch->Nexus). Basic UI bridge. Day 18 Hermie V1 test passed.
    - What's left to build: Full agent implementations, DreamerFlow advanced orchestration, UI integration, n8n workflows, error handling, testing framework, etc.
    - Current status: Completed Day 18 (Hermie V1 Placeholder Test - Corrected). Ready for Day 19 (Hermie V1 Routing Sim).
-   - Known issues: Jeff V2 n8n handoff verification needs code implementation (logged issue). Potential Redis connection issues (logged).
-   - Last Updated: 2025-04-17 00:45:00 # Updated after Day 15 completion & strategy discussion
+   - Known issues: Jeff V2 n8n handoff verification needs code (Open Issue). Redis connection fails (Known Issue). DB Pool functions missing (Mitigated Issue). Intermittent OpenRouter TypeError (Monitoring Issue).
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -440,9 +432,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 ## Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 19 - Hermie Agent V1 (Basic Routing Simulation)
+Task: Day 19 - Task 1: Modify communications.py
 Status: TODO
-Details: Follow detailed steps in DreamerAi_Guide.md Day 19. Modify Hermie to simulate routing tasks to Arch and Lewis. Add placeholder receive_task methods to Arch and Lewis. Update main.py for isolated Hermie V1 routing test.
+Details: Modify `C:\DreamerAI\engine\agents\communications.py`. Update `HermieAgent.__init__` to accept and store the `agents: Dict[str, BaseAgent]`. Update the `HermieAgent.run` method to retrieve 'Arch' and 'Lewis' from `self.agents` and call `await agent.receive_task(task_data)` on each. Implement basic error handling. Use the code provided in the Day 19 guide entry.
 
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
