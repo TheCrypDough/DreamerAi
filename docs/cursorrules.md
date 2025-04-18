@@ -233,7 +233,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: 2025-04-18 02:35:00 (After Day 18 Completion & Correction)
+# Last Updated: 2025-04-18 15:40:00 # Updated after Day 19 completion
 
 ## Memory Bank Structure
 
@@ -266,10 +266,10 @@ flowchart TD
    - User experience goals
 
 3. `activeContext.md`
-   - Current Work Focus: Starting Day 19 (Hermie V1 Routing Sim).
-   - Recent Changes: Corrected Day 18 scope & execution (verified Hermie V1 structure/RAG, tested via focused main.py, handled missing DB pool funcs, reverted prior incorrect changes).
-   - Next Steps: Proceed with Day 19 tasks sequentially (Modify Hermie/Arch/Lewis, update main.py, test, commit/push).
-   - Active Decisions: Strict guide adherence mandatory. Adapt Day 19+ guide code to BaseAgent V2. Defer DB Pool/Jeff n8n issues.
+   - Current Work Focus: Starting Day 20 (Dream Theatre UI Panel V1 & WS Listener).
+   - Recent Changes: Completed Day 19. Implemented Hermie V1 routing sim (Hermie calls Arch/Lewis `receive_task`). Added `receive_task` placeholders. Updated `main.py` for direct Hermie test. Resolved Pydantic/user_dir init errors.
+   - Next Steps: Proceed with Day 20 tasks sequentially (Create DreamTheatrePanel.jsx, modify App.jsx, test, commit/push).
+   - Active Decisions: Continue strict guide adherence. Continue adapting guide code to BaseAgent V2. Known issues (Redis, OpenRouter TypeError, DB Pool) are logged and monitored.
 
 4. `systemPatterns.md`
    - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
@@ -282,10 +282,11 @@ flowchart TD
    - Missing DB Pool functions handled via try/except for now.
 
 6. `progress.md`
-   - What works: BaseAgent V2 (RAG V2 ChromaDB/ST), Jeff V1, Arch V1, Nexus V1, Lewis V1, Hermie V1 placeholders functional. DreamerFlow V2 basic sequence (Jeff->Arch->Nexus). Basic UI bridge. Day 18 Hermie V1 test passed.
-   - What's left to build: Full agent implementations, DreamerFlow advanced orchestration, UI integration, n8n workflows, error handling, testing framework, etc.
-   - Current status: Completed Day 18 (Hermie V1 Placeholder Test - Corrected). Ready for Day 19 (Hermie V1 Routing Sim).
-   - Known issues: Jeff V2 n8n handoff verification needs code (Open Issue). Redis connection fails (Known Issue). DB Pool functions missing (Mitigated Issue). Intermittent OpenRouter TypeError (Monitoring Issue).
+   - What works: Day 1-19 foundations. Jeff/Arch/Lewis/Nexus/Hermie V1 structures functional. Hermie V1 routing sim tested successfully. UI shell/Chat Panel V1. UI Bridge (Port 3131).
+   - What's left: Day 20+. Full agent logic, DreamerFlow orchestration, Dream Theatre backend/UI updates, n8n, error handling, etc.
+   - Current status: Completed Day 19 (Hermie V1 Routing Sim). Ready for Day 20.
+   - Known issues: Redis connection fails. OpenRouter intermittent TypeError (#20250416234500). DB Pool functions missing (Mitigated). Jeff V2 n8n handoff verification pending.
+   - Last Updated: 2025-04-18 15:40:00 # Updated after Day 19 completion
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -432,9 +433,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 ## Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 19 - Task 1: Modify communications.py
+Task: Day 20 - Task 1: Create DreamTheatrePanel.jsx (Placeholder)
 Status: TODO
-Details: Modify `C:\DreamerAI\engine\agents\communications.py`. Update `HermieAgent.__init__` to accept and store the `agents: Dict[str, BaseAgent]`. Update the `HermieAgent.run` method to retrieve 'Arch' and 'Lewis' from `self.agents` and call `await agent.receive_task(task_data)` on each. Implement basic error handling. Use the code provided in the Day 19 guide entry.
+Details: Start Day 20 by creating the initial placeholder file C:\DreamerAI\app\components\DreamTheatrePanel.jsx and basic component structure (consult DreamerAi_Guide.md Day 20 for specific code).
 
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md

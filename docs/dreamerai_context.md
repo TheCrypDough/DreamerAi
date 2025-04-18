@@ -237,11 +237,14 @@ Template for Entries must be completed at least Daily!
 *   **Anthony's Feedback/Vibe:** Frustrated by previous deviations, emphasized strict adherence to guide tasks.
 *   **Blocking Issues:** Significant deviation from guide required manual file reversions (`planning.py`, `coding_manager.py`, `rules_nexus.md`) via `git checkout` and cleanup of migration logs.
 
-## Day 18: Hermie V1 Placeholder Test (Corrected Scope & Execution) - 2025-04-18
+## Day 18: Hermie Agent V1 Structure Setup (Corrected)
+*   Summary: Corrected scope to implement only the Hermie V1 placeholder structure using BaseAgent V2. Created `communications.py`, `rules_hermie.md`, seeded RAG DB. Tested via focused `main.py` script, verifying placeholder run and RAG interaction (seed issue resolved). Added missing DB pool functions to `db.py` with temporary mocks. Reverted incorrect Day 17 changes affecting Arch/Nexus placeholders.
+*   Key Decisions: Stick to guide for structure, test V1 placeholder functionality in isolation before proceeding to routing.
+*   Anthony's Feedback/Vibe: Emphasized strict guide adherence, confirmed Day 18 scope correction.
+*   Issues: RAG seed ValueError (fixed), ImportError for DB Pool funcs (mitigated with mocks).
 
-*   **Summary of work:** Corrected the scope for Day 18. Verified `engine/agents/communications.py` matched the target Hermie V1 placeholder code (inheriting BaseAgent V2). Updated `main.py` to solely focus on testing the Hermie V1 placeholder, including try/except blocks for potentially missing DB pool functions. Ran the final `main.py` test successfully.
-*   **Key Decisions Made:** Reverted previous incorrect Day 18 work. Focused testing solely on the Hermie V1 placeholder structure to ensure its correct integration before proceeding with routing logic.
-*   **Anthony's Feedback/Vibe:** Directed a focused correction and approved the successful test run.
-*   **Blocking Issues Encountered/Resolved:** 
-    *   Initial `ImportError` for DB pool functions in `main.py` was anticipated and handled with `try/except`.
-    *   Previously logged Jeff V2 n8n handoff verification issue remains open but did not block this specific test.
+**Day 19: Hermie Agent V1 (Basic Routing)**
+*   Summary: Implemented Hermie V1 routing simulation. Modified `HermieAgent` (`communications.py`) to accept `agents` dict and call placeholder `receive_task()` methods on Arch and Lewis. Added `receive_task()` to `PlanningAgent` (`planning.py`) and `LewisAgent` (`administrator.py`). Updated `main.py` for direct Hermie V1 test. Verified logs confirm successful routing simulation.
+*   Key Decisions: Followed guide for V1 routing logic. Used direct `main.py` test instead of full `DreamerFlow` for isolation.
+*   Anthony's Feedback/Vibe: Reiteration of strict adherence to rules and guide, including auto-update workflow.
+*   Issues: Encountered and resolved `TypeError` (missing `user_dir`), `ValueError` (missing Pydantic field `agents`), and Pydantic `ValidationError` (required `agents` field) during testing by correcting agent instantiations and `HermieAgent` class definition.

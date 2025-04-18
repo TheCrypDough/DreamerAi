@@ -344,11 +344,19 @@
 *   **Issues Encountered:** ValueError during RAG seed (resolved), ImportError for DB funcs (mitigated).
 
 **Day 19 - Hermie Agent V1 (Basic Routing)**
-*   TODO - Cursor Task: Modify `C:\DreamerAI\engine\agents\communications.py`. Update `HermieAgent.__init__` to accept and store the `agents: Dict[str, BaseAgent]`. Update the `HermieAgent.run` method to retrieve 'Arch' and 'Lewis' from `self.agents` and call `await agent.receive_task(task_data)` on each. Implement basic error handling. Use the code provided in the Day 19 guide entry.
-*   TODO - Cursor Task: Modify `C:\DreamerAI\engine\agents\planning.py`. Add the placeholder method `async def receive_task(self, task_data: Dict[str, Any]):` to the `PlanningAgent` class, as shown in the Day 19 guide entry.
-*   TODO - Cursor Task: Modify `C:\DreamerAI\engine\agents\administrator.py`. Add the placeholder method `async def receive_task(self, task_data: Dict[str, Any]):` to the `LewisAgent` class, as shown in the Day 19 guide entry.
-*   TODO - Cursor Task: Modify `C:\DreamerAI\main.py`. Update `run_dreamer_test` to: Instantiate all core agents needed (Jeff, Arch, Lewis, Hermie, Nexus). Pass the agents dictionary when instantiating Hermie. Remove the previous `dreamer_flow.execute` call. Instead, directly call `await agents['Hermie'].run(task_data=...)` with sample task data. Print the result from Hermie. Use the code provided in the Day 19 guide entry.
-*   TODO - Cursor Task: Execute `python main.py` (venv active). Verify the logs show Hermie running, retrieving Arch and Lewis, and calling their `receive_task` methods. Verify Arch and Lewis log that they received the task. Check for errors.
-*   TODO - Cursor Task: Stage changes (`communications.py`, `planning.py`, `administrator.py`, `main.py`), commit, and push.
+*   DONE - Cursor Task: Modify `C:\DreamerAI\engine\agents\communications.py`. Update `HermieAgent.__init__` to accept and store the `agents: Dict[str, BaseAgent]`. Update the `HermieAgent.run` method to retrieve 'Arch' and 'Lewis' from `self.agents` and call `await agent.receive_task(task_data)` on each. Implement basic error handling. Use the code provided in the Day 19 guide entry.
+*   DONE - Cursor Task: Modify `C:\DreamerAI\engine\agents\planning.py`. Add the placeholder method `async def receive_task(self, task_data: Dict[str, Any]):` to the `PlanningAgent` class, as shown in the Day 19 guide entry.
+*   DONE - Cursor Task: Modify `C:\DreamerAI\engine\agents\administrator.py`. Add the placeholder method `async def receive_task(self, task_data: Dict[str, Any]):` to the `LewisAgent` class, as shown in the Day 19 guide entry.
+*   DONE - Cursor Task: Modify `C:\DreamerAI\main.py`. Update `run_dreamer_test` to: Instantiate all core agents needed (Jeff, Arch, Lewis, Hermie, Nexus). Pass the agents dictionary when instantiating Hermie. Remove the previous `dreamer_flow.execute` call. Instead, directly call `await agents['Hermie'].run(task_data=...)` with sample task data. Print the result from Hermie. Use the code provided in the Day 19 guide entry.
+*   DONE - Cursor Task: Execute `python main.py` (venv active). Verify the logs show Hermie running, retrieving Arch and Lewis, and calling their `receive_task` methods. Verify Arch and Lewis log that they received the task. Check for errors.
+*   DONE - Cursor Task: Stage changes (`communications.py`, `planning.py`, `administrator.py`, `main.py`), commit, and push.
+
+## Day 20: Dream Theatre UI Panel V1 & WebSocket Listener
+*   TODO - Cursor Task: Create `C:\DreamerAI\app\components\DreamTheatrePanel.jsx` using the provided React component code. Implement the useEffect hook to establish the WebSocket connection to `ws://localhost:8081` and log events (onopen, onmessage, onerror, onclose). Include placeholder text.
+*   TODO - Cursor Task: Modify `C:\DreamerAI\app\src\App.jsx`. Import `DreamTheatrePanel`. Update the `renderTabContent` function to render `<DreamTheatrePanel />` when the corresponding tab index (likely index 2 based on previous tab order) is active.
+*   TODO - Cursor Task: Run the frontend: `cd C:\DreamerAI\app`, `npm start`.
+*   TODO - Cursor Task: Navigate to the "Dream Theatre" tab in the UI. Verify the placeholder text is displayed.
+*   TODO - Cursor Task: Open Electron DevTools (Ctrl+Shift+I) and check the Console. Verify logs showing the WebSocket attempting to connect to `ws://localhost:8081`. Expect connection errors initially ("WebSocket connection to 'ws://localhost:8081/' failed") as the server doesn't exist yet. This error confirms the client is trying to connect correctly.
+*   TODO - Cursor Task: Stage changes (`DreamTheatrePanel.jsx`, `App.jsx`), commit, and push.
 
 *(Future days/tasks will be added here)*
