@@ -311,13 +311,21 @@
 -   [x] Test: Execute `python main.py` and verify Lewis V1 functionality
 -   [x] Corrective Action: Added `rules_arch.md` (Missed Day 11)
 
-## Day 18: Hermie & UI Bridge V2 (Chat Focus) (TODO)
--   [ ] Create `engine/agents/rules_hermie.md` File
--   [ ] Implement Hermie V1 Agent (`communications.py`) placeholder
--   [ ] Refactor UI Bridge (`engine/core/bridge.py`) V2 (Dedicated Endpoints)
--   [ ] Modify Jeff (`main_chat.py`) to use Bridge V2 `/chat/message` endpoint
--   [ ] Modify React Frontend (`App.jsx` & `MainChatPanel.jsx`) for Bridge V2
--   [ ] Test Jeff -> Bridge V2 -> Frontend Chat Interaction
+## Day 18: Hermie & UI Bridge V2 (Chat Focus) (TODO) # Corrected Title from Guide
+-   [ ] Cursor Task: Create C:\DreamerAI\engine\agents\rules_hermie.md. Populate from rules template (V1 Role: Comms Hub Placeholder, Scope: Log activation, V2+ Vision: Event-driven routing Jeff<->Managers, Dream Theatre updates). Use code below.
+-   [ ] Cursor Task: Create the temporary Python script C:\DreamerAI\scripts\seed_rag_hermie.py using the V2 pattern (instantiate HermieAgent, call await agent.store_in_rag(...)). Seed with basic communication patterns or agent names. Use code below.
+-   [ ] Cursor Task: Execute the Hermie RAG seeding script: Run python scripts\seed_rag_hermie.py (venv active). Verify success log and directory creation (data/rag_dbs/rag_hermie.db/).
+-   [ ] Cursor Task: Delete the temporary seed script: del scripts\seed_rag_hermie.py.
+-   [ ] Cursor Task: Create C:\DreamerAI\engine\agents\communications.py. Implement the HermieAgent V1 placeholder class inheriting BaseAgent. Use the code provided below.
+-   [ ] Cursor Task: Modify C:\DreamerAI\main.py. Instantiate HermieAgent. Ensure the main test calls Jeff V2 (e.g., via dreamer_flow.execute if Day 16 code is used, or direct Jeff call) with input designed to trigger the task handoff keywords (e.g., "build", "plan"). Update verification instructions to check Jeff's logs for successful n8n POST attempt AND to check n8n execution logs for webhook receipt. Use code below.
+-   [ ] Cursor Task: Test the Jeff->n8n Handoff:
+    *   (Manual Prep) Start n8n start in a separate terminal. Ensure the Day 33 Task Receiver workflow is active.
+    *   Run python main.py (venv active).
+    *   Verify Logs: Check dreamerai_dev.log. Find Jeff's execution logs. Confirm the "HANDOFF (Jeff -> n8n): Attempting to trigger n8n workflow..." message appears, followed by "Successfully triggered n8n webhook..." (indicating aiohttp POST succeeded).
+    *   Verify n8n: Check the n8n console or n8n Web UI Executions list. Confirm the task_receiver_v1 workflow executed successfully around the time main.py ran, triggered by the webhook call from Jeff.
+-   [ ] Cursor Task: Present Summary for Approval: "Task 'Day 18: Hermie V1 Structure & Jeff Handoff Verification (Corrected)' complete. Implementation: Created HermieAgent V1 placeholder class/rules (inheriting BaseAgent V2), seeded Hermie RAG DB using V2 pattern. Updated main.py test to instantiate Hermie and trigger Jeff V2 handoff logic. Tests/Verification: Ran main.py, verified Jeff V2 logs show successful aiohttp POST to n8n webhook. Manually verified n8n execution logs show the webhook trigger was received successfully. Ready for Day 19. Requesting approval. (yes/no/details?)"
+-   [ ] Cursor Task: (Upon Approval): Stage changes (communications.py, rules_hermie.md, main.py), commit, push.
+-   [ ] Cursor Task: (Upon Approval): Execute Auto-Update Triggers & Workflow.
 
 ---
 *(Older tasks omitted for brevity)*
