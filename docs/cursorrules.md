@@ -440,10 +440,10 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 ## Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 16 DreamerFlow V2 (Basic Orchestration - Jeff->Arch->Nexus(V1))
+Task: Day 18: Hermie & UI Bridge V2 (Chat Focus)
 Status: TODO
-Details: Follow detailed steps in DreamerAi_Guide.md Day 16.
+Details: Follow detailed steps in DreamerAi_Guide.md Day 18, starting with creating rules_hermie.md.
 
-Daily Context Log Reference
+## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.

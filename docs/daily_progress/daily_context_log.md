@@ -53,3 +53,9 @@ Milestone Completed: Day 15 Nexus V1 Placeholder (BaseAgent V2 Fixed). Next Task
 Note: Established and documented strategy (in cursorrules.md) for adapting Days 16-71 guide code to use BaseAgent V2 capabilities, prioritizing guide intent over potentially outdated snippets. BaseAgent V2 stabilization is complete. Task: Post-Day 15 Context. Date: 2025-04-17
 
 Note: Encountered and resolved NameError in main.py (missing DreamerFlow import from guide code). Also logged recurring OpenRouter TypeError during Day 16 Task 3 testing. Task: Day 16 Task 3. Date: 2025-04-17
+
+**[2025-04-18] - End of Day 17: Lewis & Foundational Placeholders**
+*   **Milestone Completed:** Day 17: Lewis & Foundational Agent Placeholders. Implemented V1 placeholders for Lewis, Arch, and Nexus inheriting BaseAgent V2. Created/updated rules files and toolchest.json. Tested successfully via main.py.
+*   **Next Task:** Day 18: Hermie & UI Bridge V2 (Chat Focus).
+*   **Feeling:** On track. Placeholders established, ready for communication focus.
+*   **Issues:** Resolved minor logging oversight during the process.

@@ -1,0 +1,143 @@
+{
+  "tools": [
+    {
+      "name": "Python",
+      "version": "3.12",
+      "type": "Runtime/Language",
+      "description": "Core backend programming language for DreamerAI.",
+      "path_variable": "python",
+      "docs_url": "https://docs.python.org/3/",
+      "mcp_category": "CoreTech"
+    },
+    {
+      "name": "Node.js",
+      "version": "20.x+",
+      "type": "Runtime/Environment",
+      "description": "JavaScript runtime for frontend build process and Electron.",
+      "path_variable": "node",
+      "docs_url": "https://nodejs.org/en/docs/",
+      "mcp_category": "CoreTech"
+    },
+    {
+      "name": "Git",
+      "version": "2.45+",
+      "type": "VCS",
+      "description": "Version Control System used for the project.",
+      "path_variable": "git",
+      "docs_url": "https://git-scm.com/doc",
+      "mcp_category": "DevOps"
+    },
+    {
+        "name": "Ollama",
+        "version": "Latest",
+        "type": "AI/ML Tool",
+        "description": "Local LLM runner for development and testing.",
+        "path_variable": "ollama",
+        "docs_url": "https://github.com/ollama/ollama",
+        "mcp_category": "AI"
+    },
+    {
+        "name": "Docker",
+        "version": "Latest Desktop",
+        "type": "Containerization",
+        "description": "Platform for containerizing DreamerAI components (Setup Day 36+).",
+        "path_variable": "docker",
+        "docs_url": "https://docs.docker.com/",
+        "mcp_category": "DevOps"
+    },
+    {
+        "name": "FastAPI",
+        "version": "Installed",
+        "type": "Python Library",
+        "description": "Web framework for creating backend APIs.",
+        "package_name": "fastapi",
+        "docs_url": "https://fastapi.tiangolo.com/",
+        "mcp_category": "Backend"
+    },
+    {
+        "name": "Uvicorn",
+        "version": "Installed",
+        "type": "Python Library",
+        "description": "ASGI server for running FastAPI.",
+        "package_name": "uvicorn",
+        "docs_url": "https://www.uvicorn.org/",
+        "mcp_category": "Backend"
+    },
+    {
+        "name": "React",
+        "version": "Installed",
+        "type": "JavaScript Library",
+        "description": "Core UI library for the frontend.",
+        "package_name": "react",
+        "docs_url": "https://react.dev/",
+        "mcp_category": "Frontend"
+    },
+    {
+        "name": "Material-UI (MUI)",
+        "version": "Installed",
+        "type": "React Component Library",
+        "description": "Provides UI components (Tabs, Buttons, etc.).",
+        "package_name": "@mui/material",
+        "docs_url": "https://mui.com/material-ui/getting-started/",
+        "mcp_category": "Frontend"
+    },
+    {
+        "name": "Black",
+        "version": "Installed",
+        "type": "Python Linter/Formatter",
+        "description": "Enforces Python code style.",
+        "package_name": "black",
+        "docs_url": "https://black.readthedocs.io/",
+        "mcp_category": "DevTool"
+    },
+    {
+        "name": "ESLint",
+        "version": "Installed",
+        "type": "JavaScript Linter",
+        "description": "Finds and fixes problems in JavaScript code.",
+        "package_name": "eslint",
+        "docs_url": "https://eslint.org/",
+        "mcp_category": "DevTool"
+    },
+    {
+        "name": "ChromaDB",
+        "version": "Installed",
+        "type": "Vector Database Library",
+        "description": "Used for agent RAG databases (local V1).",
+        "package_name": "chromadb",
+        "docs_url": "https://docs.trychroma.com/",
+        "mcp_category": "AI"
+    },
+     {
+        "name": "SentenceTransformers",
+        "version": "Installed",
+        "type": "Python Library",
+        "description": "Used for generating embeddings for RAG.",
+        "package_name": "sentence-transformers",
+        "docs_url": "https://www.sbert.net/",
+        "mcp_category": "AI"
+    },
+    {
+      "name": "sequentialthinking",
+      "version": "MCP",
+      "type": "MCP Tool",
+      "description": "Conceptual tool for breaking down complex tasks logically.",
+      "package_name": "N/A",
+      "docs_url": "null",
+      "mcp_category": "MCPTool"
+    },
+     {
+      "name": "puppeteer",
+      "version": "MCP",
+      "type": "MCP Tool",
+      "description": "Conceptual tool for browser automation (future Riddick V2+).",
+      "package_name": "N/A",
+      "docs_url": "null",
+      "mcp_category": "MCPTool"
+    }
+  ],
+  "mcp_protocols": [
+      {"name": "SequentialThinking", "version": "1.0", "description": "Protocol for step-by-step reasoning."},
+      {"name": "Puppeteer", "version": "1.0", "description": "Protocol for browser automation commands."}
+  ]
+}

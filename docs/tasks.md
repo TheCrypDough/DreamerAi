@@ -1,5 +1,11 @@
 # DreamerAI Task List (EVERY "Cursor Task" within the daily DreamerAi_Guide.md entries MUST be performed IN ORDER as they appear and must be logged here)
 
+## Legend
+-   [ ] TODO
+-   [x] DONE
+-   [-] SKIPPED
+-   [!] BLOCKED
+
 ## Day [XX]: [Concise Day Title from Guide]
 *   **Cursor Task:** [Exact Task Description 1 from Guide Day XX]
     *   Status: [TODO | IN PROGRESS | DONE | FAILED]
@@ -282,21 +288,37 @@
 
 ## Day 16: DreamerFlow V2 (Basic Orchestration - Jeff->Arch->Nexus(V1)), The Conductor Leads the Band!
 *   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V1 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V1. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: TODO
+    *   Status: DONE
 *   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V1 made on Day 15. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V1, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V1 placeholder result. Use the full code provided below.
-    *   Status: TODO
+    *   Status: DONE
 *   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V1 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V1 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: TODO
+    *   Status: DONE
 *   **Cursor Task:** Present Summary for Approval: "Task 'Day 16: DreamerFlow V2 (Basic Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V1)->Arch(V1)->Nexus(V1 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V1 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V1 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V1 sim logs appeared. Verified Nexus V1 placeholder success dict returned. Requesting approval for Day 17. (yes/no/details?)"
-    *   Status: TODO
+    *   Status: DONE
 *   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: TODO
+    *   Status: DONE
 *   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: TODO
-*   **Overall Day Status:** TODO
+    *   Status: DONE
+*   **Overall Day Status:** DONE
 *   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V1 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** None Anticipated Yet
+*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
+
+## Day 17: Lewis & Foundational Agent Placeholders (DONE)
+-   [x] Create `tools/toolchest.json` File
+-   [x] Create `engine/agents/rules_lewis.md` File
+-   [x] Implement Lewis V1 Agent (`administrator.py`) placeholder
+-   [x] Create `rules_arch.md` File
+-   [x] Implement Arch V1 (`planning.py`) placeholder
+-   [x] Create `rules_nexus.md` File (Update if Exists)
+-   [x] Implement Nexus V1 (`coding_manager.py`) placeholder
+
+## Day 18: Hermie & UI Bridge V2 (Chat Focus) (TODO)
+-   [ ] Create `engine/agents/rules_hermie.md` File
+-   [ ] Implement Hermie V1 Agent (`communications.py`) placeholder
+-   [ ] Refactor UI Bridge (`engine/core/bridge.py`) V2 (Dedicated Endpoints)
+-   [ ] Modify Jeff (`main_chat.py`) to use Bridge V2 `/chat/message` endpoint
+-   [ ] Modify React Frontend (`App.jsx` & `MainChatPanel.jsx`) for Bridge V2
+-   [ ] Test Jeff -> Bridge V2 -> Frontend Chat Interaction
 
 ---
-
-*(Future days/tasks will be added here)*
+*(Older tasks omitted for brevity)*
