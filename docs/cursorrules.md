@@ -289,10 +289,10 @@ flowchart TD
    - ChromaDB used for RAG, accessed via BaseAgent V2.
 
 6. `progress.md`
-   - What works: Day 1-15 foundations. UI shell with working Chat Panel V1. Jeff V1 usable via UI. Arch V1. Lamar/Dudley V1. Nexus V1 (placeholder). BaseAgent V2 functional (RAG, memory, state events). UI Bridge (Port 3131).
-   - What's left: Day 16+ (Workflow integration, functional Nexus, other agents).
-   - Current status: Day 15 complete. Ready for Day 16.
-   - Known issues: Redis cache disabled. OpenRouter intermittent TypeError (#20250416234500). Temporary agent instantiation in server.py. Old BaseAgent errors resolved by V2 update.
+   - What works: BaseAgent V2 (RAG V2 ChromaDB/ST), Jeff V1, Arch V1, Nexus V1, Lewis V1, Hermie V1 placeholders functional. DreamerFlow V2 basic sequence (Jeff->Arch->Nexus). Basic UI bridge. Day 18 Hermie V1 test passed.
+   - What's left to build: Full agent implementations, DreamerFlow advanced orchestration, UI integration, n8n workflows, error handling, testing framework, etc.
+   - Current status: Completed Day 18 (Hermie V1 Placeholder Test - Corrected). Ready for Day 19 (Hermie V1 Routing Sim).
+   - Known issues: Jeff V2 n8n handoff verification needs code implementation (logged issue). Potential Redis connection issues (logged).
    - Last Updated: 2025-04-17 00:45:00 # Updated after Day 15 completion & strategy discussion
 
 ### Additional Context
@@ -440,9 +440,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 ## Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 18: Hermie & UI Bridge V2 (Chat Focus)
+Task: Day 19 - Hermie Agent V1 (Basic Routing Simulation)
 Status: TODO
-Details: Follow detailed steps in DreamerAi_Guide.md Day 18, starting with creating rules_hermie.md.
+Details: Follow detailed steps in DreamerAi_Guide.md Day 19. Modify Hermie to simulate routing tasks to Arch and Lewis. Add placeholder receive_task methods to Arch and Lewis. Update main.py for isolated Hermie V1 routing test.
 
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
