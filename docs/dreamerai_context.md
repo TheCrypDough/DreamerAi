@@ -255,3 +255,21 @@ Template for Entries must be completed at least Daily!
 *   **Key Decisions Made:** Confirmed expected WebSocket connection failure is acceptable at this stage. Verified UI rendering manually.
 *   **Anthony's Feedback/Vibe:** User emphasized 100% accuracy, leading to re-running the backend interactively to confirm clean startup. Vibe seems focused on rigor.
 *   **Blocking Issues Encountered/Resolved:** None. WebSocket errors were expected.
+
+**Day 21: Dream Theatre UI & Backend Connection V1**
+
+*   **Task 1: Create `DreamTheatrePanel.jsx` Component (UI Panel)**
+    *   Summary: Created the basic React component `DreamTheatrePanel.jsx` in `app/components/`. Included placeholder text, state for connection status and messages, and basic WebSocket connection logic using `useEffect` to attempt connection to `ws://localhost:8091/` on mount.
+    *   Key Decisions: Used standard React functional component with hooks (`useState`, `useEffect`, `useRef`). Hardcoded WebSocket URL for now.
+    *   Feedback/Vibe: Positive.
+    *   Issues: None.
+*   **Task 2: Integrate `DreamTheatrePanel.jsx` into `App.jsx`**
+    *   Summary: Imported `DreamTheatrePanel` into `app/src/App.jsx`. Added a new tab ("Dream Theatre") to the Material-UI `Tabs` component and rendered the `DreamTheatrePanel` within the corresponding `TabPanel`.
+    *   Key Decisions: Used Material-UI `Tabs` and `TabPanel` for structuring the UI panels.
+    *   Feedback/Vibe: Positive.
+    *   Issues: None.
+*   **Task 3: Test Frontend UI (with Backend Offline)**
+    *   Summary: Ran the frontend using `npm start`. Manually verified that the "Dream Theatre" tab appeared and displayed the correct placeholder text. Checked browser console logs to confirm the expected `WebSocket connection ... failed: net::ERR_CONNECTION_REFUSED` error for `ws://localhost:8091/`. Also verified the Chat panel showed "Failed to fetch" when attempting to send a message, as the backend API was offline.
+    *   Key Decisions: Manual verification based on visual UI and console logs.
+    *   Feedback/Vibe: Confident, test passed as expected.
+    *   Issues: Observed expected errors due to backend being offline.

@@ -359,19 +359,18 @@
 *   TODO - Cursor Task: Open Electron DevTools (Ctrl+Shift+I) and check the Console. Verify logs showing the WebSocket attempting to connect to `ws://localhost:8081`. Expect connection errors initially ("WebSocket connection to 'ws://localhost:8081/' failed") as the server doesn't exist yet. This error confirms the client is trying to connect correctly.
 *   TODO - Cursor Task: Stage changes (`DreamTheatrePanel.jsx`, `App.jsx`), commit, and push.
 
-## Day 21: Week 3 Review & Basic Integration Test, Checking the Foundation!
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Revert the primary test logic back to the Day 16 style (DreamerFlow.execute sequence) while keeping the Lewis V1 test calls.
-    *   Status: DONE
-*   **Cursor Task:** Perform Backend Test (`python main.py` - Verify Jeff->Arch->Nexus Flow & Lewis Test).
-    *   Status: IN PROGRESS
-*   **Cursor Task:** Perform Frontend Test (`npm start` - Verify UI Load, Chat Send/Receive, Dream Theatre WS Logs).
-    *   Status: TODO
-*   **Cursor Task:** Log overall results in `docs/daily_progress/daily_context_log.md`.
-    *   Status: TODO
-*   **Cursor Task:** Stage changes (`main.py`), commit, and push Day 21 changes.
-    *   Status: TODO
-*   **Overall Day Status:** IN PROGRESS
-*   **Summary:** Review Week 3 components (core agents V1, flow, UI panels/bridge) and run basic integration tests (backend flow via main.py, manual UI checks) in the Dev environment.
-*   **Issues Encountered:** None Yet
+## Day 21: Dream Theatre UI & Backend Connection V1
+*   [X] Task 1: Create `DreamTheatrePanel.jsx` Component (UI Panel)
+*   [X] Task 2: Integrate `DreamTheatrePanel.jsx` into `App.jsx`
+*   [X] Task 3: Test Frontend UI (with Backend Offline)
+*   [ ] Task 4: Start Backend Server (`engine/core/server.py`)
+*   [ ] Task 5: Test Frontend UI (with Backend Online)
+*   [ ] Task 6: Commit & Push Day 21 Changes
+
+## Day 22: Dream Theatre Backend - Basic Message Broadcasting
+*   [ ] Task 1: Modify Backend (`server.py`) to Broadcast Simple Messages
+*   [ ] Task 2: Test Backend WebSocket Broadcasting (Manual Trigger)
+*   [ ] Task 3: Test Frontend UI (Receiving Backend Messages)
+*   [ ] Task 4: Commit & Push Day 22 Changes
 
 *(Future days/tasks will be added here)*

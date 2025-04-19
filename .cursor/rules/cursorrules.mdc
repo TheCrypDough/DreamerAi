@@ -243,7 +243,10 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: 2025-04-18 15:40:00 # Updated after Day 19 completion
+
+*Last Updated: 2025-03-31 11:35:00*
+
+I am Cursor, an expert software engineer with a unique characteristic: my memory resets completely between sessions. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
 
 ## Memory Bank Structure
 
@@ -276,33 +279,30 @@ flowchart TD
    - User experience goals
 
 3. `activeContext.md`
-   - Current Work Focus: Starting Day 20 (Dream Theatre UI Panel V1 & WS Listener).
-   - Recent Changes: Completed Day 19. Implemented Hermie V1 routing sim (Hermie calls Arch/Lewis `receive_task`). Added `receive_task` placeholders. Updated `main.py` for direct Hermie test. Resolved Pydantic/user_dir init errors.
-   - Next Steps: Proceed with Day 20 tasks sequentially (Create DreamTheatrePanel.jsx, modify App.jsx, test, commit/push).
-   - Active Decisions: Continue strict guide adherence. Continue adapting guide code to BaseAgent V2. Known issues (Redis, OpenRouter TypeError, DB Pool) are logged and monitored.
+   - Current work focus
+   - Recent changes
+   - Next steps
+   - Active decisions and considerations
+   - *Updated: 2025-03-31 11:35:00*
 
 4. `systemPatterns.md`
    - System architecture
    - Key technical decisions
    - Design patterns in use
    - Component relationships
-   - DreamerFlow orchestrator pattern established.
-   - BaseAgent V2 provides core RAG, memory, event patterns.
 
 5. `techContext.md`
    - Technologies used
    - Development setup
    - Technical constraints
    - Dependencies
-   - asyncio used in main.py for flow execution.
-   - ChromaDB used for RAG, accessed via BaseAgent V2.
 
 6. `progress.md`
-   - What works: Day 1-19 foundations. Jeff/Arch/Lewis/Nexus/Hermie V1 structures functional. Hermie V1 routing sim tested successfully. UI shell/Chat Panel V1. UI Bridge (Port 3131).
-   - What's left: Day 20+. Full agent logic, DreamerFlow orchestration, Dream Theatre backend/UI updates, n8n, error handling, etc.
-   - Current status: Completed Day 19 (Hermie V1 Routing Sim). Ready for Day 20.
-   - Known issues: Redis connection fails. OpenRouter intermittent TypeError (#20250416234500). DB Pool functions missing (Mitigated). Jeff V2 n8n handoff verification pending.
-   - Last Updated: 2025-04-18 15:40:00 # Updated after Day 19 completion
+   - What works
+   - What's left to build
+   - Current status
+   - Known issues
+   - *Updated: 2025-03-31 11:30:00*
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -449,9 +449,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 20 - Task 1: Create DreamTheatrePanel.jsx (Placeholder)
+Task: Day 21 Task 4: Start Backend Server (`engine/core/server.py`)
 Status: TODO
-Details: Start Day 20 by creating the initial placeholder file C:\DreamerAI\app\components\DreamTheatrePanel.jsx and basic component structure (consult DreamerAi_Guide.md Day 20 for specific code).
+Details: Follow detailed steps in `DreamerAi_Guide.md` Day 21, Task 4. Launch the FastAPI server using `uvicorn` within the Python virtual environment, ensuring the Dream Theatre WebSocket endpoint is active.
 Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.

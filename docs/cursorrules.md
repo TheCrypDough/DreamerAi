@@ -233,7 +233,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: 2025-04-18 15:40:00 # Updated after Day 19 completion
+# Last Updated: 2025-04-19 10:00:00 # Updated after Day 21 Task 3 completion
 
 ## Memory Bank Structure
 
@@ -265,11 +265,11 @@ flowchart TD
    - How it should work
    - User experience goals
 
-3. `activeContext.md` // Last Updated: YYYY-MM-DD HH:MM:SS
+3. `activeContext.md` // Last Updated: 2025-04-19 10:00:00
    - **Current work focus:** Starting Day 21 Task 4 - Start Backend Server (`engine/core/server.py`).
-   - **Recent changes:** Completed Day 21 Tasks 1-3 (BaseAgent V2 adaptation, backend test `main.py`, frontend test with backend offline).
-   - **Next steps:** Start the backend server, verify its startup, then re-test the frontend with the backend online.
-   - **Active decisions:** Confirmed frontend handles backend offline state gracefully (expected errors).
+   - **Recent changes:** Completed Day 21 Tasks 1-3 (Dream Theatre panel creation, integration, and offline testing).
+   - **Next steps:** Start the backend server (`server.py`), verify its startup, then re-test the frontend with the backend online (Task 5).
+   - **Active decisions:** Confirmed frontend handles backend offline state gracefully (expected connection errors).
 
 4. `systemPatterns.md`
    - System architecture
@@ -283,11 +283,11 @@ flowchart TD
    - Technical constraints
    - Dependencies
 
-6. `progress.md` // Last Updated: YYYY-MM-DD HH:MM:SS
-   - **What works:** Backend flow (`main.py`), Lewis tests, Hermie init, Frontend load & offline behavior.
-   - **What's left:** Functional backend server, Dream Theatre WS implementation, n8n, Nexus V2+, etc.
-   - **Current status:** Ready to start backend server (`server.py`).
-   - **Known issues:** Redis connection, CSP warnings, n8n/UI Bridge failures (expected for now).
+6. `progress.md` // Last Updated: 2025-04-19 10:00:00
+   - **What works:** BaseAgent V2 core logic, Backend test script (`main.py`), Lewis agent tests, Hermie agent initialization, Frontend UI loading, Dream Theatre panel displays correctly in offline state.
+   - **What's left:** Functional backend server (`server.py`) with WebSocket, Dream Theatre online functionality, n8n integration, Nexus V2+, further agent development.
+   - **Current status:** Ready to start backend server (`server.py`) for Day 21 Task 4.
+   - **Known issues:** Expected connection errors when backend is offline. Potential Redis connection issues to monitor. CSP warnings in frontend console. Known failures in n8n/UI Bridge tests (currently expected).
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -434,9 +434,10 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 ## Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 21: Week 3 Review & Basic Integration Test - Task 1
-Status: TODO
-Details: Modify C:\DreamerAI\main.py. Revert the primary test logic back to the Day 16 style (DreamerFlow.execute sequence) while keeping the Lewis V1 test calls, per Day 21 Guide.
+
+*   **Task**: Day 21 Task 4: Start Backend Server (`engine/core/server.py`)
+*   **Status**: TODO
+*   **Details**: Follow detailed steps in `DreamerAi_Guide.md` Day 21, Task 4. Launch the FastAPI server using `uvicorn` within the Python virtual environment, ensuring the Dream Theatre WebSocket endpoint is active.
 
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
