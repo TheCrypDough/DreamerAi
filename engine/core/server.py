@@ -23,6 +23,7 @@ except ImportError as e:
      logger.error(f"Failed core imports in server.py: {e}")
      db_instance = None
      ProjectManager = None # Ensure ProjectManager is None if import fails
+     ChefJeff = None # Ensure ChefJeff is None if import fails
 
 # Import WebSocket Manager
 try:
@@ -201,6 +202,37 @@ async def create_subproject_endpoint(project_id: int, request: Request):
     except Exception as e:
         logger.exception(f"Error creating subproject for project {project_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Internal server error creating subproject: {str(e)}")
+
+# --- NEW Endpoint for GitHub Auth Token Receipt (Day 25) ---
+@app.post("/auth/github/token")
+async def receive_github_token(request: Request):
+    """
+    Endpoint to receive the GitHub access token obtained by the frontend OAuth flow.
+    V1 simply stores it in a global variable (placeholder).
+    """
+    global github_token # Allow modification of global var
+    logger.info("Received request at /auth/github/token")
+    try:
+        data = await request.json()
+        token = data.get("token")
+
+        if not token or not isinstance(token, str):
+            logger.warning("Received invalid or missing token in request body.")
+            raise HTTPException(status_code=400, detail="Valid 'token' string required in request body.")
+
+        # V1: Store globally - UNSAFE FOR PRODUCTION / MULTI-USER
+        # TODO: Implement secure, user-specific token storage (e.g., encrypted in DB linked to user session)
+        github_token = token
+        logger.info(f"Successfully received and stored GitHub access token (globally - V1). Token starts with: {token[:10]}...") # Log prefix only
+
+        return {"status": "success", "message": "GitHub token received by backend."}
+
+    except json.JSONDecodeError:
+         logger.error("Failed to decode JSON body for GitHub token.")
+         raise HTTPException(status_code=400, detail="Invalid JSON format in request body.")
+    except Exception as e:
+        logger.exception(f"Error receiving GitHub token: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal server error receiving token: {str(e)}")
 
 # --- Dream Theatre WebSocket Endpoint ---
 @app.websocket("/ws/dream-theatre/{client_id}")

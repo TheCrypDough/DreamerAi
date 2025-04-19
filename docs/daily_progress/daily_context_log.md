@@ -85,4 +85,6 @@ Milestone Completed: Day 24 Version Control Backend V1 (Local Git). Next Task: D
 
 [2025-04-19 18:21:31] - Action: Proactively added robustness checks to engine/ai/llm.py (_generate_openai_compatible) to prevent intermittent TypeError from OpenRouter responses by verifying response structure before access. Task: Day 24 (Context).
 
-Milestone Completed: Day 25 Task 3: Install httpx. Next Task: Day 25 Task 4: Modify server.py. Feeling: Proceeding smoothly after verification. Date: [AUTO_TIMESTAMP]
+Milestone Completed: Day 25 Task 3: Install httpx. Next Task: Day 25 Task 4: Modify server.py (Add GitHub token endpoint). Feeling: Proceeding smoothly after verification. Date: [AUTO_TIMESTAMP]
+
+Milestone Completed: Day 25 Task 4: Modify server.py (Add GitHub token endpoint). Next Task: Day 25 Task 5: Modify main.py (Add test). Feeling: Backend endpoint is ready. Date: [AUTO_TIMESTAMP]

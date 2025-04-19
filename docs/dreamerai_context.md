@@ -308,3 +308,10 @@ Template for Entries must be completed at least Daily!
 *   **Key Decisions:** Standard procedure for adding a Python dependency.
 *   **Anthony's Feedback/Vibe:** Approved task completion after verification of `requirements.txt`.
 *   **Blocking Issues:** None.
+
+### Day 25 Task 4: Modify server.py (Add GitHub Token Endpoint) (Completed: [AUTO_TIMESTAMP])
+
+*   **Summary:** Added a new POST endpoint `/auth/github/token` to `engine/core/server.py`. This endpoint accepts a JSON payload with a "token" field and stores it in a global variable `github_access_token` (V1 placeholder). Includes logging and error handling for invalid requests or server issues.
+*   **Key Decisions:** Used global variable for V1 simplicity, explicitly adding a TODO comment regarding the need for secure, user-specific storage later. Ensured necessary imports (`Request`, `HTTPException`, `Optional`) were present.
+*   **Anthony's Feedback/Vibe:** Approved completion.
+*   **Blocking Issues:** None.
