@@ -423,15 +423,29 @@
 *   **Cursor Task:** Test Subproject Feature (Start backend/frontend, use UI) - **DONE** (Verified manually by user)
 *   **Summary:** Implemented the core backend (DB, ProjectManager, API) and frontend UI for creating subprojects under existing projects. Required significant troubleshooting for prerequisite project creation due to terminal output issues, ultimately requiring manual script execution by the user for verification. Feature confirmed working via manual test.
 
-## Day 24: Version Control Backend V1 (Local Git) (YYYY-MM-DD) - Status: TODO
-*   **Cursor Task:** Activate venv. Install GitPython: pip install GitPython. - **TODO**
-*   **Cursor Task:** Update C:\\DreamerAI\\requirements.txt: pip freeze > requirements.txt. - **TODO**
-*   **Cursor Task:** Create C:\\DreamerAI\\engine\\core\\version_control.py with the provided VersionControl class code. Implement init_repo, stage_all_changes, commit_changes, and the placeholder remote methods. Include error handling. - **TODO**
-*   **Cursor Task:** Modify C:\\DreamerAI\\main.py. Add test logic at the end of run_dreamer_flow_and_tests: Define a test repo path (within the day's test project structure), instantiate VersionControl with that path, call init_repo, simulate file changes (e.g., create/write to test.txt), call stage_all_changes, call commit_changes. Add logs/prints to verify success/failure. Use code below. - **TODO**
-*   **Cursor Task:** Execute python main.py (venv active). Verify the main flow runs, Lewis tests run, AND the new Version Control test logs show successful repo initialization, staging, and committing. Manually inspect the test repo directory (.../Projects/Week3FlowTest_...*/vc_test_repo/) to confirm a .git directory and committed test.txt exist if possible. - **TODO**
-*   **Cursor Task:** Stage changes (version_control.py, main.py, requirements.txt), commit, and push. - **TODO**
-*   **Cursor Task:** Execute Auto-Update Triggers & Workflow (Update tasks.md for Day 24, Update cursorrules.md Current Task to Day 25, Update Memory Bank, Log progress). - **TODO**
-*   **Cursor Task:** Notify Anthony that Day 24 is complete and we are pausing for context sync as planned. - **TODO**
-*   **Summary:** TBD
+## Day 24: Version Control Backend V1 (Local Git) (Status: DONE)
+
+1.  **Task 1:** Activate venv. Install GitPython: `pip install GitPython`. (Status: DONE)
+2.  **Task 2:** Update `requirements.txt`. (Status: DONE)
+3.  **Task 3:** Create `engine/core/version_control.py`, implement `VersionControl` class (V1 Local Ops: `__init__`, `initialize_repository`, `stage_changes`, `commit_changes`, `get_status`, `get_changed_files`). (Status: DONE)
+4.  **Task 4:** Modify `main.py`: Add VC test block (local ops only). (Status: DONE)
+5.  **Task 5:** Test local VC ops via `main.py`. Debug/refine `VersionControl` methods as needed. (Status: DONE)
+6.  **Task 6:** Commit and Push Initial VC Implementation. (Status: DONE)
+7.  **Task 7:** Context Sync & Documentation Pause (Auto-Triggered). (Status: DONE)
+
+**Day 24 Overall Status:** DONE
+
+**Day 24 Summary:** Implemented the core `VersionControl` class in Python using GitPython, focusing on local operations (init, stage, commit, status). Added a test block to `main.py` to verify functionality. Debugged return value issues in staging/committing methods and resolved linter errors. Proactively addressed an intermittent OpenRouter error in the LLM module. Cleaned up `.gitignore` to exclude user-generated directories and resolved Git index inconsistencies related to previously tracked files.
+
+## Day 25: Version Control Backend V2 (Remote Placeholders & Schemas) (Status: TODO)
+
+*   **Cursor Task:** Add GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET placeholders to C:\DreamerAI\data\config\.env.development. (Remind Anthony to replace placeholders with actual values). - **TODO**
+*   **Cursor Task:** Add the [integrations.github] section to C:\DreamerAI\data\config\config.dev.toml, referencing the new environment variables. - **TODO**
+*   **Cursor Task:** Activate venv (.\venv\Scripts\activate). Install httpx: pip install httpx. Update requirements.txt: pip freeze > requirements.txt. - **TODO**
+*   **Cursor Task:** Modify C:\DreamerAI\engine\core\server.py. Import necessary modules (Request, HTTPException, Optional from typing). Add a global variable github_access_token: Optional[str] = None (with TODO comment about secure storage). Implement the async def receive_github_token(request: Request) endpoint decorated with @app.post("/auth/github/token"). Parse the JSON body, extract the token, store it in the global variable, and return success. Include error handling. - **TODO**
+*   **Cursor Task:** Modify C:\DreamerAI\main.py. Add import httpx. Add a new async test function test_github_token_endpoint(). Inside it, use httpx.AsyncClient to make a POST request to http://localhost:8000/auth/github/token with a dummy token in the JSON body. Check the response status. Call this new test function from within the main run_dreamer_flow_and_tests function (or similar test runner). - **TODO**
+*   **Cursor Task:** Test the setup: Start the backend server (python -m engine.core.server in activated venv). Run the main test script (python main.py in activated venv). Verify the "Testing GitHub Token Endpoint" logs show a successful POST (e.g., response code 200). Check backend server logs to confirm the endpoint received the token. - **TODO**
+*   **Cursor Task:** Stage changes (.env.development, config.dev.toml, server.py, main.py, requirements.txt), commit, and push (commit message handled by auto-update workflow). - **TODO**
+*   **Cursor Task:** Request Approval: "Task 'Day 25: GitHub Auth Backend Prep' complete. Implementation: Added GitHub OAuth credentials to config, created /auth/github/token backend endpoint (V1 global token storage), added httpx dependency, created/ran test for endpoint via main.py. Tests: Backend endpoint received test token successfully (Verified via logs). Deferred unrelated Old Guide Day 25 features (JetBrains, Testing, Templates, Subprojects, UX) per plan. Requesting approval to proceed to 'Day 26: GitHub Auth UI'. (yes/no/details?)" - **TODO**
 
 *(Future days/tasks will be added here)*

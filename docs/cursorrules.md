@@ -236,7 +236,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: [AUTO_TIMESTAMP]
+# Last Updated: [2025-04-19 19:00:00] # Placeholder timestamp
 
 ## Memory Bank Structure
 
@@ -252,7 +252,7 @@ flowchart TD
     SP --> AC
     TC --> AC
     
-    AC --> P[progress.md] // Last Updated: [AUTO_TIMESTAMP]
+    AC --> P[progress.md] // Last Updated: [2025-04-19 19:00:00] # Placeholder timestamp
 ```
 
 ### Core Files (Required)
@@ -268,11 +268,11 @@ flowchart TD
    - How it should work
    - User experience goals
 
-3. `activeContext.md` // Last Updated: [AUTO_TIMESTAMP]
-   - **Current work focus:** Starting Day 24 Task 1 - Activate venv & Install GitPython.
-   - **Recent changes:** Completed Day 23 (Subproject Management V1 Backend & UI). Ensured Project ID 1 exists via manual script execution after significant verification issues.
-   - **Next steps:** Proceed with Day 24 tasks sequentially (Install GitPython, update reqs, create VersionControl class, modify main.py for testing, test, commit, context sync pause).
-   - **Active decisions:** Confirmed manual test of subproject creation passed. Logged terminal output issues and resolved logging module conflict.
+3. `activeContext.md` // Last Updated: [2025-04-19 19:00:00] # Placeholder timestamp
+   - **Current work focus:** Starting Day 25 Task 1 - Define Pydantic models (Details Pending Guide Input).
+   - **Recent changes:** Completed Day 24 (VC Local Ops), including testing, debugging return values, fixing linter errors, proactive LLM fix, and extensive `.gitignore`/Git index cleanup related to `/Users` directory.
+   - **Next steps:** Proceed with Day 25 tasks sequentially once provided.
+   - **Active decisions:** Confirmed local VC operations pass test. Cleaned Git history to remove unwanted `/Users` tracking.
 
 4. `systemPatterns.md` // Last Updated: [AUTO_TIMESTAMP]
    - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
@@ -289,11 +289,11 @@ flowchart TD
    - FastAPI `WebSocket` used for Dream Theatre endpoint.
    - Electron `session.defaultSession.webRequest.onHeadersReceived` was attempted for CSP but caused issues; reverted.
 
-6. `progress.md` // Last Updated: [AUTO_TIMESTAMP]
-   - **What works:** Day 1-23 foundations. Subproject creation backend/UI functional. Dream Theatre backend/frontend functional. Project Manager & Settings panels exist as placeholders in UI. Basic chat loop functional. Git workflow refined.
-   - **What's left:** Implementing actual content/features in Project/Settings/etc. panels. Version control backend (Day 24+). Version control UI integration. Remaining agents.
-   - **Current status:** Completed Day 23. Ready for Day 24 Task 1.
-   - **Known issues:** Redis connection fails. OpenRouter intermittent TypeError. DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval' in frontend console. Terminal output capture unreliable for Python scripts (Blocking verification). Linter error for relative import in project_manager.py (Non-blocking).
+6. `progress.md` // Last Updated: [2025-04-19 19:00:00] # Placeholder timestamp
+   - **What works:** Day 1-24 foundations. Subproject creation backend/UI functional. Dream Theatre backend/frontend functional. Project Manager & Settings panels placeholders integrated. Basic chat loop functional. Local Git operations (init, stage, commit, status) implemented in `VersionControl` class and tested. `.gitignore` updated and cleaned.
+   - **What's left:** Version Control schemas & remote ops (Day 25+). Version control UI integration. Implementing actual content/features in Project/Settings/etc. panels. Remaining agents.
+   - **Current status:** Completed Day 24. Ready for Day 25 Task 1.
+   - **Known issues:** Redis connection fails. OpenRouter intermittent TypeError (mitigated with robust handling). DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval' in frontend console. Terminal output capture unreliable for Python scripts (Blocking verification - requires monitoring/alternative). Lewis test failure (`AttributeError: 'str' object has no attribute 'get'`) needs investigation.
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -444,9 +444,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 ## Current Task (Cursor Updates This Automatically After Approval)
 
-**Task:** Day 24 Task 1: Activate venv. Install GitPython: pip install GitPython.
+**Task:** Day 25 Task 1: Define Pydantic models (Placeholder - Awaiting Guide Input)
 **Status:** TODO
-**Details:** Activate the virtual environment and install the GitPython library using pip.
+**Details:** Define Pydantic models (`CommitInfo`, `RepoStatus`, `ChangedFiles`) in `engine/core/schemas/version_control.py` (Create directory if needed).
 
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
