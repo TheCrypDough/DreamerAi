@@ -233,7 +233,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: 2025-04-19 10:00:00 # Updated after Day 21 Task 3 completion
+# Last Updated: [AUTO_TIMESTAMP]
 
 ## Memory Bank Structure
 
@@ -249,7 +249,7 @@ flowchart TD
     SP --> AC
     TC --> AC
     
-    AC --> P[progress.md] // Last Updated: 2025-04-19 10:00:00
+    AC --> P[progress.md] // Last Updated: [AUTO_TIMESTAMP]
 ```
 
 ### Core Files (Required)
@@ -265,27 +265,32 @@ flowchart TD
    - How it should work
    - User experience goals
 
-3. `activeContext.md` // Last Updated: 2025-04-19 10:00:00
-   - **Current work focus:** Starting Day 21 Task 4 - Start Backend Server (`engine/core/server.py`).
-   - **Recent changes:** Completed Day 21 Tasks 1-3 (Backend flow test via `main.py`, Frontend offline test). Fixed Pydantic/import issues in `main.py` and `communications.py`. Fixed Lewis test print statement.
-   - **Next steps:** Start backend server (`server.py`), verify startup, test frontend online (Task 5).
-   - **Active decisions:** Confirmed frontend handles backend offline state gracefully. Continue strict guide adherence.
+3. `activeContext.md` // Last Updated: [AUTO_TIMESTAMP]
+   - **Current work focus:** Starting Day 22 Task 1 - Create ProjectManagerPanel.jsx.
+   - **Recent changes:** Completed Day 21 (Dream Theatre backend service, WebSocket endpoint, CSP fixes, broadcast implementation & test). Resolved NameError in broadcast logic.
+   - **Next steps:** Proceed with Day 22 tasks sequentially (Create placeholder UI panels, integrate into App.jsx, test).
+   - **Active decisions:** Stuck to guide, deferred WebSocket refactoring. Acknowledged tab-switching limitation for WS messages.
 
-4. `systemPatterns.md`
+4. `systemPatterns.md` // Last Updated: [AUTO_TIMESTAMP]
    - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
    - BaseAgent V2 provides core RAG (ChromaDB/ST), memory, event patterns.
    - Agent communication currently direct calls (main.py test), Hermie V1 aims to centralize this.
+   - Backend WebSocket service (`dream_theatre_service.py`) handles connections via singleton `ConnectionManager`.
+   - Backend agents (`main_chat.py`) can broadcast JSON messages via the `ws_manager`.
+   - Electron CSP configured via `forge.config.js` (`devContentSecurityPolicy`).
 
-5. `techContext.md`
+5. `techContext.md` // Last Updated: [AUTO_TIMESTAMP]
    - asyncio used for main flow/agent execution.
    - ChromaDB/SentenceTransformer used for RAG (via BaseAgent V2).
    - Missing DB Pool functions handled via try/except for now.
+   - FastAPI `WebSocket` used for Dream Theatre endpoint.
+   - Electron `session.defaultSession.webRequest.onHeadersReceived` was attempted for CSP but caused issues; reverted.
 
-6. `progress.md` // Last Updated: 2025-04-19 10:00:00
-   - **What works:** Day 1-20 foundations. Backend flow (`main.py`) including Jeff->Arch->Nexus(V1 Sim) and Lewis tests now complete successfully. Frontend loads and handles offline backend state correctly (Chat/Dream Theatre). Hermie init fixed.
-   - **What's left:** Functional backend server (`server.py`), Dream Theatre online functionality, n8n, Nexus V2+, etc.
-   - **Current status:** Ready to start backend server (`server.py`) for Day 21 Task 4.
-   - **Known issues:** Redis connection fails. OpenRouter intermittent TypeError logged previously. DB Pool functions missing (Mitigated). n8n/UI Bridge connection errors (expected when offline). CSP warnings in frontend console.
+6. `progress.md` // Last Updated: [AUTO_TIMESTAMP]
+   - **What works:** Day 1-21 foundations. Dream Theatre backend service, WebSocket endpoint, and frontend panel are functional. Jeff can broadcast messages via WebSocket. API/WebSocket connection issues (CSP, Imports, NameError) resolved.
+   - **What's left:** Implementing actual content/features in Dream Theatre, Project Manager, Settings panels. Addressing WS tab-switching limitation (deferred). Day 22+ tasks.
+   - **Current status:** Completed Day 21. Ready for Day 22 Task 1.
+   - **Known issues:** Redis connection fails. OpenRouter intermittent TypeError. DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval' in frontend console.
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -433,9 +438,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 ## Current Task (Cursor Updates This Automatically After Approval)
 
-*   **Task**: Day 21 Task 4: Start Backend Server (`engine/core/server.py`)
-*   **Status**: TODO
-*   **Details**: Follow detailed steps in `DreamerAi_Guide.md` Day 21, Task 4. Launch the FastAPI server using `uvicorn` within the Python virtual environment, ensuring the Dream Theatre WebSocket endpoint is active.
+**Task:** Day 22 Task 1: Create C:\DreamerAI\app\components\ProjectManagerPanel.jsx
+**Status:** TODO
+**Details:** Create the ProjectManagerPanel.jsx file with basic placeholder component code as per Day 22 guide.
 
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md

@@ -17,6 +17,8 @@ const Snackbar = require('@mui/material/Snackbar').default;
 // Import Panels
 const MainChatPanel = require('../components/MainChatPanel').default;
 const DreamTheatrePanel = require('../components/DreamTheatrePanel').default;
+const ProjectManagerPanel = require('../components/ProjectManagerPanel').default;
+const SettingsPanel = require('../components/SettingsPanel').default;
 
 // --- App Component ---
 
@@ -176,9 +178,11 @@ function App() {
                 return React.createElement(MainChatPanel, { messages: chatMessages, onSendMessage: handleSendMessage });
             case 1: return React.createElement(Typography, null, "Plan/Build Panel Placeholder");
             case 2: // Dream Theatre Panel
-                return React.createElement(DreamTheatrePanel); // Render the new panel
-            case 3: return React.createElement(Typography, null, "Project Manager Placeholder");
-            case 4: return React.createElement(Typography, null, "Settings Panel Placeholder");
+                return React.createElement(DreamTheatrePanel);
+            case 3: // Project Manager Panel
+                return React.createElement(ProjectManagerPanel);
+            case 4: // Settings Panel
+                return React.createElement(SettingsPanel);
             default: return React.createElement(Typography, null, "Unknown Tab");
         }
     };

@@ -273,3 +273,13 @@ Template for Entries must be completed at least Daily!
     *   Key Decisions: Manual verification based on visual UI and console logs.
     *   Feedback/Vibe: Confident, test passed as expected.
     *   Issues: Observed expected errors due to backend being offline.
+
+---
+**Day 21 Summary (End of Day)**
+*   **Task:** Implemented Dream Theatre WebSocket backend service (`dream_theatre_service.py`) and endpoint (`server.py`).
+*   **Task:** Resolved Content Security Policy (CSP) errors in Electron (`forge.config.js`) preventing API/WebSocket connections.
+*   **Task:** Implemented WebSocket broadcast mechanism in Jeff (`main_chat.py`) to send activity updates to Dream Theatre.
+*   **Task:** Tested and verified API connectivity, chat functionality, and WebSocket connection/broadcast (noting tab-switching limitation).
+*   **Key Decisions:** Stuck to guide, deferred WebSocket refactoring to later date.
+*   **Anthony's Vibe:** Initially frustrated by errors/blank screen/missed steps, but confirmed functionality after fixes.
+*   **Blockers Resolved:** CSP errors, backend WebSocket ImportError, NameError in broadcast logic.

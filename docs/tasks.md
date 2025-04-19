@@ -374,4 +374,12 @@
 *   **Summary:** Review Week 3 components (core agents V1, flow, UI panels/bridge) and run basic integration tests (backend flow via main.py, manual UI checks) in the Dev environment.
 *   **Issues Encountered:** None Yet
 
+## Day 22: UI Panels V1 (Project Manager & Settings)
+*   **Task:** Create C:\DreamerAI\app\components\ProjectManagerPanel.jsx with basic placeholder component code. (Status: TODO)
+*   **Task:** Create C:\DreamerAI\app\components\SettingsPanel.jsx with basic placeholder component code. (Status: TODO)
+*   **Task:** Modify C:\DreamerAI\app\src\App.jsx (Import new components, update `renderTabContent`). (Status: TODO)
+*   **Task:** Run the frontend: `cd C:\DreamerAI\app`, `npm start`. (Status: TODO)
+*   **Task:** Verify UI Tabs: Click through all tabs and verify correct content/placeholders display. (Status: TODO)
+*   **Task:** Stage changes (`ProjectManagerPanel.jsx`, `SettingsPanel.jsx`, `App.jsx`), commit, and push. (Status: TODO)
+
 *(Future days/tasks will be added here)*
