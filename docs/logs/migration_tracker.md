@@ -167,3 +167,10 @@ This log automatically records all file system structure changes (creations, ren
 [2025-04-18 15:45:00] - CREATE - Path: C:\DreamerAI\app\components\DreamTheatrePanel.jsx - Details: Created Dream Theatre UI Panel with WebSocket client listener (Day 20 Task 1).
 [2025-04-18 15:50:00] - MODIFY - Path: C:\DreamerAI\app\src\App.jsx - Details: Imported and rendered DreamTheatrePanel in tab content (Day 20 Task 2).
 [AUTO_TIMESTAMP] - CREATE - Path: C:\DreamerAI\engine\core\dream_theatre_service.py - Details: Created WebSocket connection manager service file.
+[AUTO_TIMESTAMP] - CREATE - Path: C:\DreamerAI\app\components\ProjectManagerPanel.jsx - Details: Created placeholder React component as per Day 22 Task 1.
+[AUTO_TIMESTAMP] - CREATE - Path: C:\DreamerAI\app\components\SettingsPanel.jsx - Details: Created placeholder React component as per Day 22 Task 2.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\src\App.jsx - Details: Verified imports, tabLabels, and renderTabContent are already correct for Day 22 Task 3.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\engine\core\db.py - Details: Added subprojects table schema and add_subproject method (Day 23 Task 1).
+[AUTO_TIMESTAMP] - CREATE - Path: C:\DreamerAI\engine\core\project_manager.py - Details: Created ProjectManager class for subproject structure creation (Day 23 Task 2).
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\engine\core\server.py - Details: Imported ProjectManager, added /projects/{id}/subprojects POST endpoint (Day 23 Task 3).
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\components\ProjectManagerPanel.jsx - Details: Added state, inputs, button, and fetch handler for subproject creation (Day 23 Task 4).

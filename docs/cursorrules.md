@@ -266,10 +266,10 @@ flowchart TD
    - User experience goals
 
 3. `activeContext.md` // Last Updated: [AUTO_TIMESTAMP]
-   - **Current work focus:** Starting Day 23 Task 1 - Modify C:\\DreamerAI\\engine\\core\\db.py (Add subprojects table and method).
-   - **Recent changes:** Completed Day 22 (Project Manager & Settings Panel placeholders created and integrated).
-   - **Next steps:** Proceed with Day 23 tasks sequentially (Modify db.py, create project_manager.py, modify server.py, modify ProjectManagerPanel.jsx, test).
-   - **Active decisions:** Verified existing App.jsx state was sufficient for Day 22. Confirmed UI rendering.
+   - **Current work focus:** Starting Day 24 Task 1 - Activate venv & Install GitPython.
+   - **Recent changes:** Completed Day 23 (Subproject Management V1 Backend & UI). Ensured Project ID 1 exists via manual script execution after significant verification issues.
+   - **Next steps:** Proceed with Day 24 tasks sequentially (Install GitPython, update reqs, create VersionControl class, modify main.py for testing, test, commit, context sync pause).
+   - **Active decisions:** Confirmed manual test of subproject creation passed. Logged terminal output issues and resolved logging module conflict.
 
 4. `systemPatterns.md` // Last Updated: [AUTO_TIMESTAMP]
    - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
@@ -287,10 +287,10 @@ flowchart TD
    - Electron `session.defaultSession.webRequest.onHeadersReceived` was attempted for CSP but caused issues; reverted.
 
 6. `progress.md` // Last Updated: [AUTO_TIMESTAMP]
-   - **What works:** Day 1-22 foundations. Dream Theatre backend/frontend functional. Project Manager & Settings panels exist as placeholders in UI. Basic chat loop functional. Git workflow refined.
-   - **What's left:** Implementing actual content/features in Project/Settings/etc. panels. Subproject management logic (Day 23). Version control integration (Day 24+). Remaining agents.
-   - **Current status:** Completed Day 22. Ready for Day 23 Task 1.
-   - **Known issues:** Redis connection fails. OpenRouter intermittent TypeError. DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval' in frontend console.
+   - **What works:** Day 1-23 foundations. Subproject creation backend/UI functional. Dream Theatre backend/frontend functional. Project Manager & Settings panels exist as placeholders in UI. Basic chat loop functional. Git workflow refined.
+   - **What's left:** Implementing actual content/features in Project/Settings/etc. panels. Version control backend (Day 24+). Version control UI integration. Remaining agents.
+   - **Current status:** Completed Day 23. Ready for Day 24 Task 1.
+   - **Known issues:** Redis connection fails. OpenRouter intermittent TypeError. DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval' in frontend console. Terminal output capture unreliable for Python scripts (Blocking verification). Linter error for relative import in project_manager.py (Non-blocking).
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -399,6 +399,8 @@ File Handling: Avoid overwriting. Suggest merges or renames (e.g., main_chat_v2.
 
 Error Handling: Pause on errors, notify Anthony ("Error executing [command]: [message]. Suggest fix: [idea]?"), log details per Logging Protocol, await guidance.
 
+**Verification Mandate (CRITICAL): Assumptions are FORBIDDEN.** Before marking any task (especially prerequisites) as complete or proceeding to dependent steps: 1) Perform ALL verification steps detailed in the Guide or necessary checks (e.g., DB checks, file existence, command output analysis). 2) If automated checks fail or provide ambiguous/unreliable output (e.g., truncated logs, tool errors), **DO NOT ASSUME SUCCESS**. 3) Explicitly request manual verification steps from Anthony. 4) Only proceed once successful verification (automated or manual) is confirmed. Failure to verify WILL lead to cascading errors.
+
 Admin Privileges: If a command requires Administrator privileges (e.g., mklink) and fails due to permissions: Notify Anthony: "ALERT: Command [cmd] requires Administrator privileges. Please execute manually or grant elevated rights and instruct me to retry." Halt the specific action requiring elevation until resolved.
 
 Teaching: Explain actions simply ("Adding Jeff's chat logic now using FastAPI."). Use clear code comments as guided.
@@ -438,9 +440,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 ## Current Task (Cursor Updates This Automatically After Approval)
 
-**Task:** Day 23 Task 1: Modify C:\\DreamerAI\\engine\\core\\db.py (Add subprojects table and method)
+**Task:** Day 24 Task 1: Activate venv. Install GitPython: pip install GitPython.
 **Status:** TODO
-**Details:** Add the subprojects table schema (with project_id foreign key) to the _initialize_tables method and add an add_subproject method to the DreamerDB class as per Day 23 guide.
+**Details:** Activate the virtual environment and install the GitPython library using pip.
 
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md

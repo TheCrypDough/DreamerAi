@@ -15,19 +15,14 @@ if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
 try:
-    from engine.core.logger import logger_instance as logger
-except ImportError:
-    import logging
-    logger = logging.getLogger(__name__)
-    logging.basicConfig(level=logging.INFO)
-    logger.warning("Could not import logger_instance, using basic logging.")
-
-# NEW: Import ChefJeff
-try:
-    from engine.agents.main_chat import ChefJeff
-except ImportError:
-    logger.error("Failed to import ChefJeff agent in server.py!")
-    ChefJeff = None # Allow server to start but endpoint will fail
+    from .logger import logger_instance as logger
+    from .db import db_instance # Use the initialized DB instance from db.py
+    from .project_manager import ProjectManager # NEW import
+    from engine.agents.main_chat import ChefJeff # Keep Jeff import for its endpoint
+except ImportError as e:
+     logger.error(f"Failed core imports in server.py: {e}")
+     db_instance = None
+     ProjectManager = None # Ensure ProjectManager is None if import fails
 
 # Import WebSocket Manager
 try:
@@ -69,6 +64,10 @@ DEFAULT_USER_DIR_SERVER = r"C:\DreamerAI\Users\Example User"
 # Ensure default dir exists for the agent run
 os.makedirs(os.path.join(DEFAULT_USER_DIR_SERVER, "Projects"), exist_ok=True)
 os.makedirs(os.path.join(DEFAULT_USER_DIR_SERVER, "Chats", "Jeff"), exist_ok=True)
+
+# --- Instantiate Core Services ---
+# TODO: Replace with proper dependency injection later
+project_manager_instance = ProjectManager() if ProjectManager else None
 
 # --- API Endpoints ---
 
@@ -132,6 +131,76 @@ async def handle_jeff_chat(request: Request):
     except Exception as e:
         logger.exception(f"Error handling Jeff chat request: {e}") # Log full traceback
         raise HTTPException(status_code=500, detail=f"Internal server error processing chat: {str(e)}")
+
+# --- NEW Endpoint for Subprojects --- # Placed before WebSocket for logical grouping
+@app.post("/projects/{project_id}/subprojects", status_code=201)
+async def create_subproject_endpoint(project_id: int, request: Request):
+    """Endpoint to create a new subproject under a given parent project."""
+    logger.info(f"Received request to create subproject for parent project ID: {project_id}")
+
+    if not db_instance:
+         logger.error("Subproject creation failed: Database service unavailable.")
+         raise HTTPException(status_code=503, detail="Database service unavailable.")
+    if not project_manager_instance:
+         logger.error("Subproject creation failed: Project manager service unavailable.")
+         raise HTTPException(status_code=503, detail="Project manager service unavailable.")
+
+    try:
+        data = await request.json()
+        subproject_name = data.get("subproject_name")
+        # user_id_from_request = data.get("user_id", "Example User") # TODO: Get from auth later
+
+        if not subproject_name:
+            logger.warning("Subproject creation failed: subproject_name missing.")
+            raise HTTPException(status_code=400, detail="subproject_name is required.")
+
+        # 1. Verify parent project exists and get its path
+        parent_project = db_instance.get_project(project_id)
+        if not parent_project:
+            logger.warning(f"Subproject creation failed: Parent project ID {project_id} not found.")
+            raise HTTPException(status_code=404, detail=f"Parent project with ID {project_id} not found.")
+
+        parent_project_path = Path(parent_project["project_path"])
+        logger.debug(f"Found parent project path: {parent_project_path}")
+
+        # 2. Create directory structure using ProjectManager
+        subproject_dir_path = project_manager_instance.create_subproject_structure(
+            parent_project_path=parent_project_path,
+            subproject_name=subproject_name
+        )
+
+        if not subproject_dir_path:
+            # Error already logged by project_manager
+            raise HTTPException(status_code=500, detail="Failed to create subproject directory structure.")
+
+        # 3. Add subproject record to database
+        # Store relative path for portability
+        relative_subproject_path = subproject_dir_path.relative_to(parent_project_path)
+        subproject_id = db_instance.add_subproject(
+            parent_project_id=project_id,
+            name=subproject_name,
+            subproject_path=str(relative_subproject_path)
+        )
+
+        if not subproject_id:
+            # Error already logged by db
+            # Optional: Attempt to clean up created directory if DB fails? Complex.
+            raise HTTPException(status_code=500, detail="Failed to save subproject record to database.")
+
+        logger.info(f"Subproject '{subproject_name}' (ID: {subproject_id}) created successfully for project {project_id}.")
+        return {
+            "status": "success",
+            "message": f"Subproject '{subproject_name}' created successfully.",
+            "subproject_id": subproject_id,
+            "path": str(subproject_dir_path) # Return absolute path for confirmation
+        }
+
+    except json.JSONDecodeError:
+         logger.error("Subproject creation failed: Invalid JSON format in request body.")
+         raise HTTPException(status_code=400, detail="Invalid JSON format in request body.")
+    except Exception as e:
+        logger.exception(f"Error creating subproject for project {project_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Internal server error creating subproject: {str(e)}")
 
 # --- Dream Theatre WebSocket Endpoint ---
 @app.websocket("/ws/dream-theatre/{client_id}")

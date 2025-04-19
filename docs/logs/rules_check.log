@@ -361,3 +361,15 @@ Action: Loading rules for Jeff, Rules reviewed: Yes, Timestamp: 2025-04-19 14:19
 Action: LLM generate called by: Jeff, Rules reviewed: Yes, Timestamp: 2025-04-19 14:19:56
 Action: Loading rules for Jeff, Rules reviewed: Yes, Timestamp: 2025-04-19 14:24:17
 Action: LLM generate called by: Jeff, Rules reviewed: Yes, Timestamp: 2025-04-19 14:24:31
+
+Action: Starting Task: Day 22 Task 1: Create C:\DreamerAI\app\components\ProjectManagerPanel.jsx, Rules reviewed: Yes, Guide consulted: Yes, Env verified: NA, Timestamp: [AUTO_TIMESTAMP]
+Action: Starting Task: Day 22 Task 2: Create C:\DreamerAI\app\components\SettingsPanel.jsx, Rules reviewed: Yes, Guide consulted: Yes, Env verified: NA, Timestamp: [AUTO_TIMESTAMP]
+Action: Starting Task: Day 22 Task 3: Modify C:\DreamerAI\app\src\App.jsx, Rules reviewed: Yes, Guide consulted: Yes, Env verified: NA, Timestamp: [AUTO_TIMESTAMP]
+Action: Starting Task: Day 22 Task 4: Run Frontend (npm start), Rules reviewed: Yes, Guide consulted: Yes, Env verified: Node (Implicit via cd/npm), Timestamp: [AUTO_TIMESTAMP]
+Action: Starting Task: Day 22 Task 6: Git Commit & Push UI Panels, Rules reviewed: Yes, Guide consulted: Yes, Env verified: Git, Timestamp: [AUTO_TIMESTAMP]
+
+Action: Starting Task: Day 23 Task 1: Modify engine/core/db.py (Add Subprojects Table/Method), Rules reviewed: Yes, Guide consulted: Yes, Env verified: NA, Timestamp: [AUTO_TIMESTAMP]
+Action: Starting Task: Day 23 Task 2: Create engine/core/project_manager.py, Rules reviewed: Yes, Guide consulted: Yes, Env verified: NA, Timestamp: [AUTO_TIMESTAMP]
+Action: Starting Task: Day 23 Task 4: Modify ProjectManagerPanel.jsx (Add Subproject UI), Rules reviewed: Yes, Guide consulted: Yes, Env verified: NA, Timestamp: [AUTO_TIMESTAMP]
+Action: Starting Task: Day 23 Task 5: Setup Test Data (Verify Parent Project Exists), Rules reviewed: Yes, Guide consulted: Yes, Env verified: NA (Assumption based), Timestamp: [AUTO_TIMESTAMP]
+Action: Starting Task: Day 23 Task 6: Test Subproject Feature, Rules reviewed: Yes, Guide consulted: Yes, Env verified: Python/Node, Timestamp: [AUTO_TIMESTAMP]

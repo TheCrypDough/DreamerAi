@@ -414,25 +414,24 @@
 *   **Summary:** Expanding the UI structure by creating the V1 placeholder components for Project Manager and Settings panels and integrating them into the main App navigation.
 *   **Issues Encountered:** None.
 
-## Day 23: Subproject Management V1 & Project Panel Update, Organizing the Workshop!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\db.py (Add subprojects table and method)
-    *   Status: TODO
-*   **Cursor Task:** Create C:\DreamerAI\engine\core\project_manager.py (Implement ProjectManager class)
-    *   Status: TODO
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\server.py (Add subproject endpoint)
-    *   Status: TODO
-*   **Cursor Task:** Modify C:\DreamerAI\app\components\ProjectManagerPanel.jsx (Add UI for subproject creation)
-    *   Status: TODO
-*   **Cursor Task:** Setup Test Data (Ensure parent project exists)
-    *   Status: TODO
-*   **Cursor Task:** Test the Subproject Creation Feature
-    *   Status: TODO
-*   **Cursor Task:** Stage, commit, and push subproject management changes.
-    *   Status: TODO
-*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
-    *   Status: TODO
-*   **Overall Day Status:** TODO
-*   **Summary:** Add backend/UI foundations for subproject creation within user projects.
-*   **Issues Encountered:** None Anticipated Yet.
+## Day 23: Subproject Management V1 & Project Panel Update (2025-04-19) - Status: DONE
+*   **Cursor Task:** Modify C:\\DreamerAI\\engine\\core\\db.py (Add subprojects table and method) - **DONE**
+*   **Cursor Task:** Create C:\\DreamerAI\\engine\\core\\project_manager.py (Implement ProjectManager class) - **DONE**
+*   **Cursor Task:** Modify C:\\DreamerAI\\engine\\core\\server.py (Add POST /projects/{id}/subprojects endpoint) - **DONE**
+*   **Cursor Task:** Modify C:\\DreamerAI\\app\\components\\ProjectManagerPanel.jsx (Add UI elements and fetch handler) - **DONE**
+*   **Cursor Task:** Setup Test Data (Ensure Parent Project ID 1 exists) - **DONE** (Requires manual execution of db.py main block due to tool limitations)
+*   **Cursor Task:** Test Subproject Feature (Start backend/frontend, use UI) - **DONE** (Verified manually by user)
+*   **Summary:** Implemented the core backend (DB, ProjectManager, API) and frontend UI for creating subprojects under existing projects. Required significant troubleshooting for prerequisite project creation due to terminal output issues, ultimately requiring manual script execution by the user for verification. Feature confirmed working via manual test.
+
+## Day 24: Version Control Backend V1 (Local Git) (YYYY-MM-DD) - Status: TODO
+*   **Cursor Task:** Activate venv. Install GitPython: pip install GitPython. - **TODO**
+*   **Cursor Task:** Update C:\\DreamerAI\\requirements.txt: pip freeze > requirements.txt. - **TODO**
+*   **Cursor Task:** Create C:\\DreamerAI\\engine\\core\\version_control.py with the provided VersionControl class code. Implement init_repo, stage_all_changes, commit_changes, and the placeholder remote methods. Include error handling. - **TODO**
+*   **Cursor Task:** Modify C:\\DreamerAI\\main.py. Add test logic at the end of run_dreamer_flow_and_tests: Define a test repo path (within the day's test project structure), instantiate VersionControl with that path, call init_repo, simulate file changes (e.g., create/write to test.txt), call stage_all_changes, call commit_changes. Add logs/prints to verify success/failure. Use code below. - **TODO**
+*   **Cursor Task:** Execute python main.py (venv active). Verify the main flow runs, Lewis tests run, AND the new Version Control test logs show successful repo initialization, staging, and committing. Manually inspect the test repo directory (.../Projects/Week3FlowTest_...*/vc_test_repo/) to confirm a .git directory and committed test.txt exist if possible. - **TODO**
+*   **Cursor Task:** Stage changes (version_control.py, main.py, requirements.txt), commit, and push. - **TODO**
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow (Update tasks.md for Day 24, Update cursorrules.md Current Task to Day 25, Update Memory Bank, Log progress). - **TODO**
+*   **Cursor Task:** Notify Anthony that Day 24 is complete and we are pausing for context sync as planned. - **TODO**
+*   **Summary:** TBD
 
 *(Future days/tasks will be added here)*

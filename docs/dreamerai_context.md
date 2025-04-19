@@ -289,3 +289,9 @@ Template for Entries must be completed at least Daily!
 **Key Decisions:** Followed guide structure, verified existing `App.jsx` state was correct.
 **Anthony's Feedback/Vibe:** Approved completion via 'yes looks good'.
 **Blocking Issues:** None.
+
+**Day 23: Subproject Management V1 & Project Panel Update (Completed: [AUTO_TIMESTAMP])**
+*   **Summary:** Implemented backend (DB schema/methods in `db.py`, `ProjectManager` class in `project_manager.py`, FastAPI endpoint in `server.py`) and frontend (`ProjectManagerPanel.jsx`) for creating subprojects under a parent project. V1 includes basic directory structure creation (`Subprojects/[Name]/Chats`) and database record insertion.
+*   **Key Decisions:** Standardized on using the existing `Example User` directory for testing. Used manual script execution (`python -m engine.core.db`) to reliably ensure the prerequisite parent Project ID 1 existed after automated checks failed due to terminal output issues.
+*   **Anthony's Feedback/Vibe:** Emphasized strict adherence to verification and avoiding assumptions, especially when tool limitations (like terminal output) hinder automated checks. Frustration noted regarding debugging prerequisite issues.
+*   **Blocking Issues:** Resolved `AttributeError: module 'logging' has no attribute 'getLogger'` by deleting a conflicting `logging.py` file. Identified and logged a persistent issue with `run_terminal_cmd` failing to reliably capture Python script stdout.

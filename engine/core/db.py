@@ -3,7 +3,7 @@ import sqlite3
 import os
 from pathlib import Path
 from datetime import datetime
-from typing import Optional, Tuple, Any
+from typing import Optional, Tuple, Any, Dict
 # Assuming logger_instance is globally available after Day 3 setup
 try:
     from engine.core.logger import logger_instance as logger
@@ -76,9 +76,26 @@ class DreamerDB:
                     FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE
                 )
             """)
-            # Add more tables later as needed (e.g., subprojects, tasks, agent_memory)
+
+            # --- NEW: Subprojects Table ---
+            self.cursor.execute("""
+                CREATE TABLE IF NOT EXISTS subprojects (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    parent_project_id INTEGER NOT NULL,
+                    name TEXT NOT NULL,
+                    subproject_path TEXT NOT NULL UNIQUE, -- Path within parent project dir
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (parent_project_id) REFERENCES projects (id) ON DELETE CASCADE
+                )
+            """)
+            # Index for faster lookup by parent project
+            self.cursor.execute("""
+                CREATE INDEX IF NOT EXISTS idx_subproj_parent ON subprojects (parent_project_id);
+            """)
+
             self.conn.commit()
-            logger.info("Core database tables initialized successfully.")
+            logger.info("Core database tables initialized successfully (incl. subprojects).")
         except sqlite3.Error as e:
             logger.error(f"Failed to initialize tables: {e}")
             raise
@@ -128,6 +145,29 @@ class DreamerDB:
         except sqlite3.Error as e:
             logger.error(f"Failed to add chat message for project {project_id}: {e}")
 
+    # --- NEW: Add Subproject Method ---
+    def add_subproject(self, parent_project_id: int, name: str, subproject_path: str) -> Optional[int]:
+        """Adds a new subproject linked to a parent project."""
+        if not self.cursor or not self.conn:
+            logger.error("Database not connected, cannot add subproject.")
+            return None
+        try:
+            timestamp = datetime.now()
+            self.cursor.execute("""
+                INSERT INTO subprojects (parent_project_id, name, subproject_path, created_at, last_modified)
+                VALUES (?, ?, ?, ?, ?)
+            """, (parent_project_id, name, subproject_path, timestamp, timestamp))
+            self.conn.commit()
+            subproject_id = self.cursor.lastrowid
+            logger.info(f"Subproject '{name}' (ID: {subproject_id}) added for Parent Project ID {parent_project_id}.")
+            return subproject_id
+        except sqlite3.IntegrityError as e:
+            # Could be UNIQUE constraint on path, or foreign key issue
+            logger.error(f"Failed to add subproject '{name}'. Integrity error: {e}")
+            return None
+        except sqlite3.Error as e:
+            logger.error(f"Failed to add subproject '{name}': {e}")
+            return None
 
     def close(self):
         """Closes the database connection."""
@@ -146,25 +186,77 @@ db_instance = DreamerDB()
 
 # Example Usage
 if __name__ == "__main__":
-    logger.info("Testing DreamerDB...")
-    test_db = DreamerDB(db_path=r"C:\DreamerAI\data\db\test_dreamer.db") # Use a test DB
-    project_id = test_db.add_project("TestProject1", "user123", "C:/DreamerAI/Users/TestUser/Projects/TestProject1")
-    if project_id:
-        logger.info(f"Added project with ID: {project_id}")
-        project_data = test_db.get_project(project_id)
-        if project_data:
-            logger.info(f"Retrieved project: {dict(project_data)}")
-            test_db.add_chat_message(project_id, "Jeff", "user", "Build me a website")
-            test_db.add_chat_message(project_id, "Jeff", "assistant", "Sure, what kind?")
-            logger.info("Added test chat messages.")
-        else:
-            logger.error("Failed to retrieve test project.")
-    else:
-        logger.error("Failed to add test project.")
-    test_db.close()
-    # Clean up test db file
+    # Ensure necessary imports for standalone execution
+    import os
+    from pathlib import Path
+    # Ensure logger is available if needed within this block
     try:
-        os.remove(r"C:\DreamerAI\data\db\test_dreamer.db")
-        logger.info("Cleaned up test database file.")
-    except OSError as e:
-        logger.error(f"Error removing test database: {e}") 
+        from engine.core.logger import logger_instance as logger
+    except ImportError:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.addHandler(logging.StreamHandler()) # Ensure output goes to console
+        logger.setLevel(logging.INFO)
+
+    logger.info("Running db.py main block to ensure Project ID 1 exists...")
+
+    # Use the main DB instance directly
+    # db_instance is created when the module is imported
+    from engine.core.db import db_instance
+
+    target_project_id = 1
+    project_name = "TestProject1"
+    user_id = "Example User"
+    # Construct the standard project path
+    # Need ProjectManager temporarily for path construction consistency
+    try:
+        from engine.core.project_manager import ProjectManager
+        pm = ProjectManager()
+        project_path = pm.get_project_path(user_id, project_name)
+    except ImportError:
+        logger.error("Could not import ProjectManager. Cannot reliably determine project path.")
+        project_path = Path(f"C:/DreamerAI/Users/{user_id}/Projects/{project_name}") # Fallback path
+        logger.warning(f"Using fallback project path: {project_path}")
+
+    logger.info(f"Target Project: '{project_name}' (ID: {target_project_id}) for User: '{user_id}'")
+    logger.info(f"Expected Path: {project_path}")
+
+    # Check if project already exists
+    existing_project = db_instance.get_project(target_project_id)
+
+    if existing_project:
+        logger.info(f"Project ID {target_project_id} ('{existing_project['name']}') already exists. Path: {existing_project['project_path']}")
+        # Optional: Verify path matches expected path?
+        if Path(existing_project['project_path']) != project_path:
+             logger.warning(f"Existing project path {existing_project['project_path']} does not match expected {project_path}")
+    else:
+        logger.info(f"Project ID {target_project_id} not found. Attempting to create...")
+        # Ensure directory structure exists first
+        try:
+            overview_path = project_path / "Overview"
+            overview_path.mkdir(parents=True, exist_ok=True)
+            logger.info(f"Ensured directory structure exists: {overview_path}")
+        except Exception as e:
+            logger.error(f"FAILED to create directory structure at {project_path}: {e}", exc_info=True)
+            # Optionally exit or just log and try DB add anyway?
+            # Forcing DB add attempt even if dir fails, to see if DB itself works.
+
+        # Add the project to the database
+        added_id = db_instance.add_project(name=project_name, user_id=user_id, project_path=str(project_path))
+
+        if added_id == target_project_id:
+            logger.info(f"Successfully added project '{project_name}' with ID: {added_id}")
+            # Add initial chat messages if needed
+            db_instance.add_chat_message(added_id, 'Jeff', 'user', 'Initial setup message via db.py main.')
+            db_instance.add_chat_message(added_id, 'Jeff', 'assistant', 'Acknowledged setup via db.py main.')
+            logger.info("Added initial chat messages.")
+        elif added_id:
+            logger.warning(f"Added project '{project_name}' but received ID {added_id} instead of expected {target_project_id}. This might cause issues.")
+        else:
+            logger.error(f"FAILED to add project '{project_name}' to the database.")
+
+    # Close the connection if this script opened it (db_instance handles its own)
+    # No, db_instance is shared, don't close it here.
+    logger.info("db.py main block finished.")
+
+# Consider adding subproject creation/retrieval test to __main__ 
