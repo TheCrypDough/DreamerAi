@@ -3,17 +3,15 @@ const Box = require('@mui/material/Box').default;
 const Typography = require('@mui/material/Typography').default;
 
 function ProjectManagerPanel() {
-    // Basic placeholder content for V1
-    return (
-        <Box sx={{ p: 2 }}>
-            <Typography variant="h5" gutterBottom>
-                Project Manager
-            </Typography>
-            <Typography variant="body1">
-                Project listing, subproject creation, and version control integration will appear here. (V1 Placeholder)
-            </Typography>
-            {/* Future content: Project list, create/open buttons, Git status etc. */}
-        </Box>
+    return React.createElement(Box, { sx: { p: 2 } },
+        React.createElement(Typography, { variant: 'h5', gutterBottom: true }, "Project Manager"),
+        React.createElement(Typography, { variant: 'body1' },
+            "This panel will contain tools for creating, opening, and managing your DreamerAI projects and subprojects."
+        ),
+        React.createElement(Typography, { variant: 'body2', sx:{mt: 2, color: 'grey.500'} },
+            "(Functionality like subproject creation, renaming, deleting, etc., will be added here later based on the guide's plan)."
+        )
+        // Placeholder for project list, create/open buttons, etc.
     );
 }
 
