@@ -135,6 +135,7 @@ python-dotenv==1.1.0
 python-jose==3.4.0
 pytz==2025.2
 PyYAML==6.0.2
+ragstack==0.0.1
 redis==5.2.1
 referencing==0.36.2
 regex==2024.11.6

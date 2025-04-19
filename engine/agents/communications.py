@@ -35,27 +35,34 @@ except ImportError as e:
 
 HERMIE_AGENT_NAME = "Hermie"
 
-# --- Define DEFAULT_USER_DIR if potentially used in __main__ later ---
-# DEFAULT_USER_DIR = r"C:\DreamerAI\Users\TestUserMain" # Or get from config?
+# --- Define DEFAULT_USER_DIR mirroring main.py --- # ADDED
+DEFAULT_USER_DIR = r"C:\DreamerAI\Users\Example User"
 
 class HermieAgent(BaseAgent):
     """
     Hermie: The Communications Agent V1.
     Simulates routing tasks from Jeff (via run input) to Arch and Lewis.
     """
-    # Re-add agents field definition for Pydantic, mark as Optional
-    agents: Optional[Dict[str, BaseAgent]]
+    # agents field definition already Optional via BaseAgent inheritance or explicit Optional
+    # (Assuming BaseAgent or this class marks it appropriately for Pydantic)
+    agents: Optional[Dict[str, BaseAgent]] = Field(default=None, init=False) # Ensure pydantic knows it's not part of initial data
 
-    # Modified __init__ to require agents dictionary (logically)
-    def __init__(self, agents: Dict[str, BaseAgent], user_dir: str, **kwargs): # Add agents dict
-        super().__init__(name=HERMIE_AGENT_NAME, user_dir=user_dir, **kwargs)
-        if not agents: # Check if agents dict is provided and not empty
-            logger.error("HermieAgent initialized without a valid agents dictionary!")
-            # Consider raising an error or handling appropriately
-        self.agents = agents # Store the dictionary of all agent instances
+    # Modified __init__ to accept Optional agents, assign after super
+    def __init__(self, agents: Optional[Dict[str, BaseAgent]] = None, user_dir: str = DEFAULT_USER_DIR, **kwargs):
+        # Set name and user_dir first for BaseAgent's Pydantic validation
+        kwargs['name'] = HERMIE_AGENT_NAME
+        kwargs['user_dir'] = user_dir
+        super().__init__(**kwargs) # Pass only kwargs recognized by BaseAgent/Pydantic model
+
+        # Now assign the agents dictionary after BaseAgent init is complete
+        if agents:
+            self.agents = agents
+            logger.info(f"HermieAgent '{self.name}' V1 initialized with agent references: {list(self.agents.keys())}")
+        else:
+            self.agents = {}
+            logger.warning(f"HermieAgent '{self.name}' V1 initialized WITHOUT agent references!")
         # self.rules_file = os.path.join(r"C:\DreamerAI\engine\agents", f"rules_{self.name.lower()}.md") # BaseAgent V2 handles this
         # self._load_rules() # BaseAgent V2 handles this
-        logger.info(f"HermieAgent '{self.name}' V1 initialized with agent references: {list(self.agents.keys())}")
 
     # BaseAgent V2 handles _load_rules etc.
 

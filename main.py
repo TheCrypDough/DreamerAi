@@ -23,6 +23,8 @@ try:
     from engine.core.logger import logger_instance as logger
     # Import DB Pool functions if needed for BaseAgent V2
     # from engine.core.db import initialize_db_pool, close_db_pool
+    from engine.core.workflow import DreamerFlow
+    from engine.core.version_control import VersionControl # <-- Import VersionControl
 except ImportError as e:
     print(f"CRITICAL ERROR importing modules in main.py: {e}")
     traceback.print_exc()
@@ -108,14 +110,50 @@ async def run_dreamer_flow_and_tests(): # Renamed function
         print("ERROR: Lewis agent not found for testing.")
     print("-----------------------------------------")
 
-    # --- Agent Shutdown (Optional but good practice) ---
-    logger.info("\n--- Shutting Down Agents (Placeholder) ---")
-    # Implement graceful shutdown if agents have resources to release
-    # for agent_name, agent_instance in agents.items():
-    #      if hasattr(agent_instance, 'shutdown'):
-    #          logger.debug(f"Shutting down {agent_name}...")
-    #          try: await agent_instance.shutdown()
-    #          except Exception as shut_e: logger.error(f"Error shutting down {agent_name}: {shut_e}")
+    # --- NEW: Test Version Control V1 (Local Ops) ---
+    print("\n--- Testing VersionControl V1 Local Ops ---")
+    # Use a subfolder within the test project's context path for the VC repo
+    # This ensures cleanup is tied to the project test
+    # Define path using variables from above
+    # Need to generate a unique name here or reuse one consistently
+    # Using a fixed name for simplicity, ensure cleanup if rerunning manually
+    test_project_name = "FlowV2_LewisV1_VC_Test_D24" # Fixed name for test consistency
+    user_workspace_dir = Path(DEFAULT_USER_DIR)
+    test_project_context_path = user_workspace_dir / "Projects" / test_project_name
+    # Create the base project dir if it doesn't exist for the test
+    test_project_context_path.mkdir(parents=True, exist_ok=True)
+
+    vc_test_repo_path = test_project_context_path / "vc_test_repo" # Subdir for VC test
+    # Ensure the specific repo subdir exists before VC init
+    vc_test_repo_path.mkdir(parents=True, exist_ok=True)
+    logger.info(f"VC Test Repo Path: {vc_test_repo_path}")
+
+    try:
+        vc = VersionControl(str(vc_test_repo_path))
+        # 1. Init
+        if vc.init_repo():
+            logger.info("VC Test: Init OK.")
+            # 2. Create file & stage
+            (vc_test_repo_path / "sample.txt").write_text("Hello GitPython from DreamerAI")
+            if vc.stage_all_changes():
+                logger.info("VC Test: Stage OK.")
+                # 3. Commit
+                if vc.commit_changes("Test commit via DreamerAI VC - Day 24"):
+                    logger.info("VC Test: Commit OK.")
+                    print("VC Test: Local Init, Stage, Commit SUCCESSFUL.")
+                else: logger.error("VC Test: Commit FAILED.")
+            else: logger.error("VC Test: Stage FAILED.")
+        else: logger.error("VC Test: Init FAILED.")
+
+        # 4. Test placeholders (optional, just confirms they run without error)
+        await vc.push_to_remote() # Placeholder push
+
+    except Exception as e:
+        logger.exception("VC Test: Unexpected error during test.")
+        print(f"ERROR during VC Test: {e}")
+
+    print("-----------------------------------------")
+    logger.info("run_dreamer_flow_and_tests finished.") # Added final log
 
 if __name__ == "__main__":
     # Ensure all prerequisites are met (venv, Ollama/Keys, DB seeds if needed, toolchest.json)
