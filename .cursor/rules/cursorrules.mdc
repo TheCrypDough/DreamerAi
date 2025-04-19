@@ -243,10 +243,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-
-*Last Updated: 2025-03-31 11:35:00*
-
-I am Cursor, an expert software engineer with a unique characteristic: my memory resets completely between sessions. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
+# Last Updated: 2025-04-18 15:40:00 # Updated after Day 19 completion
 
 ## Memory Bank Structure
 
@@ -279,30 +276,27 @@ flowchart TD
    - User experience goals
 
 3. `activeContext.md`
-   - Current work focus
-   - Recent changes
-   - Next steps
-   - Active decisions and considerations
-   - *Updated: 2025-03-31 11:35:00*
+   - Current Work Focus: Starting Day 21 Task 4 - Start Backend Server (`engine/core/server.py`).
+   - Recent Changes: Completed Day 21 Tasks 1-3 (Backend flow test via `main.py`, Frontend offline test). Fixed Pydantic/import issues in `main.py` and `communications.py`. Fixed Lewis test print statement.
+   - Next Steps: Start backend server (`server.py`), verify startup, test frontend online (Task 5).
+   - Active Decisions: Confirmed frontend handles backend offline state gracefully. Continue strict guide adherence.
 
 4. `systemPatterns.md`
-   - System architecture
-   - Key technical decisions
-   - Design patterns in use
-   - Component relationships
+   - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
+   - BaseAgent V2 provides core RAG (ChromaDB/ST), memory, event patterns.
+   - Agent communication currently direct calls (main.py test), Hermie V1 aims to centralize this.
 
 5. `techContext.md`
-   - Technologies used
-   - Development setup
-   - Technical constraints
-   - Dependencies
+   - asyncio used for main flow/agent execution.
+   - ChromaDB/SentenceTransformer used for RAG (via BaseAgent V2).
+   - Missing DB Pool functions handled via try/except for now.
 
 6. `progress.md`
-   - What works
-   - What's left to build
-   - Current status
-   - Known issues
-   - *Updated: 2025-03-31 11:30:00*
+   - What works: Day 1-20 foundations. Backend flow (`main.py`) including Jeff->Arch->Nexus(V1 Sim) and Lewis tests now complete successfully. Frontend loads and handles offline backend state correctly (Chat/Dream Theatre). Hermie init fixed.
+   - What's left: Functional backend server (`server.py`), Dream Theatre online functionality, n8n, Nexus V2+, etc.
+   - Current status: Ready to start backend server (`server.py`) for Day 21 Task 4.
+   - Known issues: Redis connection fails. OpenRouter intermittent TypeError logged previously. DB Pool functions missing (Mitigated). n8n/UI Bridge connection errors (expected when offline). CSP warnings in frontend console.
+   - Last Updated: 2025-04-19 10:00:00 # Updated after Day 21 Task 3 completion
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:

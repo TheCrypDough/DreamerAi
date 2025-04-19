@@ -249,7 +249,7 @@ flowchart TD
     SP --> AC
     TC --> AC
     
-    AC --> P[progress.md] // Last Updated: YYYY-MM-DD HH:MM:SS
+    AC --> P[progress.md] // Last Updated: 2025-04-19 10:00:00
 ```
 
 ### Core Files (Required)
@@ -267,27 +267,25 @@ flowchart TD
 
 3. `activeContext.md` // Last Updated: 2025-04-19 10:00:00
    - **Current work focus:** Starting Day 21 Task 4 - Start Backend Server (`engine/core/server.py`).
-   - **Recent changes:** Completed Day 21 Tasks 1-3 (Dream Theatre panel creation, integration, and offline testing).
-   - **Next steps:** Start the backend server (`server.py`), verify its startup, then re-test the frontend with the backend online (Task 5).
-   - **Active decisions:** Confirmed frontend handles backend offline state gracefully (expected connection errors).
+   - **Recent changes:** Completed Day 21 Tasks 1-3 (Backend flow test via `main.py`, Frontend offline test). Fixed Pydantic/import issues in `main.py` and `communications.py`. Fixed Lewis test print statement.
+   - **Next steps:** Start backend server (`server.py`), verify startup, test frontend online (Task 5).
+   - **Active decisions:** Confirmed frontend handles backend offline state gracefully. Continue strict guide adherence.
 
 4. `systemPatterns.md`
-   - System architecture
-   - Key technical decisions
-   - Design patterns in use
-   - Component relationships
+   - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
+   - BaseAgent V2 provides core RAG (ChromaDB/ST), memory, event patterns.
+   - Agent communication currently direct calls (main.py test), Hermie V1 aims to centralize this.
 
 5. `techContext.md`
-   - Technologies used
-   - Development setup
-   - Technical constraints
-   - Dependencies
+   - asyncio used for main flow/agent execution.
+   - ChromaDB/SentenceTransformer used for RAG (via BaseAgent V2).
+   - Missing DB Pool functions handled via try/except for now.
 
 6. `progress.md` // Last Updated: 2025-04-19 10:00:00
-   - **What works:** BaseAgent V2 core logic, Backend test script (`main.py`), Lewis agent tests, Hermie agent initialization, Frontend UI loading, Dream Theatre panel displays correctly in offline state.
-   - **What's left:** Functional backend server (`server.py`) with WebSocket, Dream Theatre online functionality, n8n integration, Nexus V2+, further agent development.
+   - **What works:** Day 1-20 foundations. Backend flow (`main.py`) including Jeff->Arch->Nexus(V1 Sim) and Lewis tests now complete successfully. Frontend loads and handles offline backend state correctly (Chat/Dream Theatre). Hermie init fixed.
+   - **What's left:** Functional backend server (`server.py`), Dream Theatre online functionality, n8n, Nexus V2+, etc.
    - **Current status:** Ready to start backend server (`server.py`) for Day 21 Task 4.
-   - **Known issues:** Expected connection errors when backend is offline. Potential Redis connection issues to monitor. CSP warnings in frontend console. Known failures in n8n/UI Bridge tests (currently expected).
+   - **Known issues:** Redis connection fails. OpenRouter intermittent TypeError logged previously. DB Pool functions missing (Mitigated). n8n/UI Bridge connection errors (expected when offline). CSP warnings in frontend console.
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:

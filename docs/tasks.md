@@ -183,194 +183,25 @@
 *   [X] Cursor Task: Execute Auto-Update Triggers & Workflow. - Status: DONE
 *   **Overall Day Status:** DONE
 *   **Summary:** Implemented the initial `DreamerFlow` class and a `main.py` test script to verify basic orchestration (calling Jeff V1).
-*   **Issues Encountered:** n8n connection failure during `main.py` test (Expected if server not running). RAG query failure persisted (Expected).
+*   **Issues Encountered:** None specific to Day 9 tasks. n8n connection error logged during test run (expected).
 
-## Day 10: Electron Frontend Enhancements
-- [x] Day 10 - Task 1: Create app/src/ directory
-- [x] Day 10 - Task 2: Create and populate app/src/App.jsx
-- [x] Day 10 - Task 3: Replace content of app/renderer.js
-- [x] Day 10 - Task 4: Run npm start and verify UI/listener (Includes deviation: Implement electron-forge build process)
-- [x] Day 10 - Task 5: Stage changes, commit, and push
-- [ ] Day 11 - Task 1: # Placeholder - Get from Guide
-
-## Day 11 - Planning Agent V1 (Arch)
-- [X] Cursor Task: Modify the file C:\DreamerAI\engine\agents\planning.py (created as placeholder Day 7). Implement the PlanningAgent (or Arch) class using the code provided below. Ensure it inherits BaseAgent.
-- [X] Cursor Task: Implement the run (or step) method. It should accept the project_idea string and optionally a project_output_path string. Construct a detailed prompt for the LLM asking for a project blueprint in Markdown format. Call await self.llm.generate(prompt).
-- [X] Cursor Task: Add logic to save the returned Markdown string to a file named blueprint.md within the provided project_output_path (creating subdirs like Overview if needed). Use pathlib for robust path handling. Add error handling for file I/O.
-- [X] Cursor Task: Modify C:\DreamerAI\main.py. Instantiate the PlanningAgent. Modify the run_dreamer_flow function: after getting Jeff's response, pass Jeff's response (or the original input) to await agents['Arch'].run(project_idea=..., project_output_path=...). Define a specific test project path for output. Print or log the result of Arch's run.
-- [X] Cursor Task: Execute python main.py (after activating venv). Verify output shows Arch being called and completing. Check the specified test project output directory (e.g., C:\DreamerAI\Users\Example User\Projects\ArchTestProj\Overview\) for the created blueprint.md file and review its contents. Check logs.
-- [X] Cursor Task: Stage changes (planning.py, main.py, base.py), commit, and push.
-*   **Overall Day Status:** DONE
-*   **Summary:** Implemented PlanningAgent (Arch) V1. Arch generates a project blueprint from text input using LLM and saves it to the project's Overview directory. Tested via direct call from main.py.
-*   **Issues Encountered:** ValueError during Arch instantiation (PlanningAgent has no field 'llm') - resolved by using PrivateAttr _llm. Expected Redis/n8n/RAG failures logged during main.py test.
-
-## Day 12 - Coding Agents V1 (Lamar & Dudley), The Forge Ignites!
-- [X] Cursor Task: Create C:\DreamerAI\engine\agents\agent_utils.py and implement the `save_code_to_file` helper function.
-- [X] Cursor Task: Create C:\DreamerAI\engine\agents\frontend_agent.py and implement the LamarAgent class using the code provided below (derived from ShakAgent code, renamed). Ensure it inherits BaseAgent.
-- [X] Cursor Task: Create C:\DreamerAI\engine\agents\backend_agent.py and implement the DudleyAgent class using the code provided below (derived from RakAgent code, renamed). Ensure it inherits BaseAgent.
-- [X] Cursor Task: Implement their respective run methods. They should accept blueprint_content: str and project_output_path: str. Construct prompts asking the LLM for React/JS frontend code (Lamar) and Python/FastAPI backend code (Dudley) based on the blueprint. Call await self._llm.generate(prompt). # Corrected to _llm
-- [X] Cursor Task: Add logic using the save_code_to_file helper (imported from agent_utils) to save generated code to [project_output_path]/frontend/src/App.jsx (Lamar) and [project_output_path]/backend/main.py (Dudley). Include error handling.
-- [X] Cursor Task: Modify C:\DreamerAI\main.py. After Arch runs and generates/reads the blueprint.md:
-    - Import LamarAgent and DudleyAgent (from frontend_agent and backend_agent).
-    - Instantiate LamarAgent and DudleyAgent.
-    - Define the project_output_path (e.g., C:\DreamerAI\Users\Example User\Projects\CodeGenProjectDay12\output). Ensure this directory exists.
-    - Call await agents['Lamar'].run(blueprint_content=..., project_output_path=...). 
-    - Call await agents['Dudley'].run(blueprint_content=..., project_output_path=...). 
-    - Print/log the results.
-- [X] Cursor Task: Execute python main.py (after activating venv). Verify output shows Lamar and Dudley running. Check the specified project_output_path subdirectories (frontend/src/ and backend/) for App.jsx and main.py. Briefly inspect generated code. Check logs.
-- [X] Cursor Task: Stage changes (agent_utils.py, frontend_agent.py, backend_agent.py, main.py), commit, and push.
-*   **Overall Day Status:** DONE
-*   **Summary:** Implemented V1 coding agents (Lamar/Frontend, Dudley/Backend) and utils helper. Agents generate initial code from Arch's blueprint and save to project output dirs. Tested flow via main.py.
-*   **Issues Encountered:** Minor linter errors in dummy classes fixed. Expected Redis/OpenRouter failures during main.py test. Git commit/push commands required retries due to tool issues.
-
-## Day 13 - UI Bridge Implementation, Connecting the Two Worlds!
-*   **Cursor Task:** Activate venv (.\venv\Scripts\activate). Install aiohttp: pip install aiohttp.
+## Day 21: Week 3 Review & Basic Integration Test, Checking the Foundation!
+*   **Cursor Task:** Modify C:\DreamerAI\main.py. Revert the primary test logic back to the Day 16 style (DreamerFlow.execute sequence) while keeping the Lewis V1 test calls.
     *   Status: DONE
-*   **Cursor Task:** Update C:\DreamerAI\requirements.txt: run pip freeze > requirements.txt.
+*   **Cursor Task:** Perform Backend Test (`python main.py` - Verify Jeff->Arch->Nexus Flow & Lewis Test).
     *   Status: DONE
-*   **Cursor Task:** Create C:\DreamerAI\engine\core\bridge.py with the provided send_to_ui function code.
+*   **Cursor Task:** Perform Frontend Test (`npm start` - Verify UI Load, Chat Send/Receive, Dream Theatre WS Logs - Offline Backend).
     *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\engine\agents\base.py. Import send_to_ui from engine.core.bridge. Replace the placeholder send_update_to_ui method with the new implementation calling bridge.send_to_ui.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\engine\agents\main_chat.py. Ensure the ChefJeff.run method calls await self.send_update_to_ui(response_content, update_type="chat_response") using the final response_content before returning.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\app\src\App.jsx. Update the useEffect listener's req.on('end', ...) handler to parse the body as JSON (JSON.parse(body)) and log the structured payload (e.g., console.log('Received structured backend message:', JSON.parse(body));). Include a try...catch around JSON.parse.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Ensure the run_dreamer_flow test function actually awaits and gets a response from Jeff that will be sent via the bridge (no code change likely needed from Day 12 version, just ensuring it runs Jeff).
-    *   Status: DONE
-*   **Cursor Task:** Test the full flow:
-    *   Status: DONE
-*   **Cursor Task:** Stage changes (bridge.py, base.py, main_chat.py, App.jsx, requirements.txt, main.py, logs), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Implement the UI Bridge using aiohttp to allow backend agents to send messages to the Electron frontend listener.
-*   **Issues Encountered:** UI Bridge errors (404, Connection Refused - resolved by port change to 3131), OpenRouter intermittent TypeError (#20250416234500).
-
-## Day 14 - UI Panel Integration (Chat Panel V1), Jeff Takes the Mic!
-*   **Cursor Task:** Create C:\DreamerAI\app\components\MainChatPanel.jsx with the provided React component code.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\app\src\App.jsx: Add chatMessages state, modify listener, create handleSendMessage, render MainChatPanel.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\server.py: Add /agents/jeff/chat POST endpoint.
-    *   Status: DONE
-*   **Cursor Task:** Test the full loop: Start backend, start frontend, send message, verify UI and logs.
-    *   Status: DONE
-*   **Cursor Task:** Stage changes (MainChatPanel.jsx, App.jsx, server.py, forge.config.js, logs), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Integrated the first functional UI panel (MainChatPanel) into the Dreamer Desktop, allowing users to interact with the Jeff agent via a dedicated UI.
-*   **Issues Encountered:** Content Security Policy (CSP) blocked fetch; resolved by modifying forge.config.js. Git commit commands unreliable via tool.
-
-## Day 15 - Nexus Agent V1 (Placeholder Structure) - Completed 2025-04-17
-*   **Cursor Task:** Create C:\DreamerAI\engine\agents\rules_nexus.md. Populate from rules template, defining Nexus's V1 Role ("Coding Manager"), Scope ("Delegates to Lamar/Dudley V1 sequentially"), and basic Rules.
+*   **Cursor Task:** Start Backend Server (`engine/core/server.py`).
     *   Status: TODO
-*   **Cursor Task:** Create and execute a temporary Python script C:\DreamerAI\scripts\seed_rag_nexus.py to initialize and seed C:\DreamerAI\data\rag_dbs\rag_nexus.db.
+*   **Cursor Task:** Perform Frontend Test (`npm start` - Verify UI Load, Chat Send/Receive, Dream Theatre WS Logs - Online Backend).
     *   Status: TODO
-*   **Cursor Task:** Implement the NexusAgent class in C:\DreamerAI\engine\agents\coding_manager.py.
+*   **Cursor Task:** Log overall results in `docs/daily_progress/daily_context_log.md`.
     *   Status: TODO
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Remove direct Lamar/Dudley calls. Instantiate NexusAgent. Call NexusAgent.run after Arch.
+*   **Cursor Task:** Stage changes (`main.py`), commit, and push Day 21 changes.
     *   Status: TODO
-*   **Cursor Task:** Execute python main.py. Verify Nexus runs, calls Lamar/Dudley, check logs and output files.
-    *   Status: TODO
-*   **Cursor Task:** Delete the temporary seed script (seed_rag_nexus.py).
-    *   Status: TODO
-*   **Cursor Task:** Stage changes (coding_manager.py, rules_nexus.md, rag_nexus.db, main.py), commit, and push.
-    *   Status: TODO
-*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
-    *   Status: TODO
-*   **Overall Day Status:** TODO
-*   **Summary:** Implement Nexus Agent V1 (Coding Manager) to orchestrate initial code generation by delegating to Lamar and Dudley based on Arch's blueprint.
-*   **Issues Encountered:** None Anticipated Yet
-
-## Day 16: DreamerFlow V2 (Basic Orchestration - Jeff->Arch->Nexus(V1)), The Conductor Leads the Band!
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\workflow.py. Update the DreamerFlow.execute method with the new sequential logic (Jeff -> Arch -> Nexus V1 Sim). Include logic to check Arch's result, read the blueprint file, and pass relevant context to Nexus V1. Use await for agent run calls. Add error handling. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Simplify the run_dreamer_flow_and_tests function. Remove the direct calls to Arch and Nexus V1 made on Day 15. The function should now primarily instantiate all necessary agents (Jeff, Arch, Nexus V1, plus others for later tests), instantiate DreamerFlow, and make a single call to await dreamer_flow.execute(initial_user_input=...). Update verification instructions to check logs for the full Jeff->Arch->Nexus(Sim) sequence and the final Nexus V1 placeholder result. Use the full code provided below.
-    *   Status: DONE
-*   **Cursor Task:** Test the updated flow: Execute python main.py (venv active). Verify the logs show the sequential execution: Jeff runs -> Arch runs (creates blueprint.md) -> Nexus V1 runs (logs simulation messages). Confirm the final output printed is the simple success dictionary from the Nexus V1 placeholder. Check dreamerai_dev.log and errors.log for issues.
-    *   Status: DONE
-*   **Cursor Task:** Present Summary for Approval: "Task 'Day 16: DreamerFlow V2 (Basic Orchestration)' complete. Implementation: Modified DreamerFlow.execute to orchestrate sequence Jeff(V1)->Arch(V1)->Nexus(V1 Sim), using BaseAgent V2 async run methods. Reads Arch's blueprint output file, passes context to Nexus V1 sim. Updated main.py test to call flow.execute only and verify sequence/Nexus V1 sim result. Tests/Verification: Ran main.py, checked logs for correct Jeff->Arch->Nexus(Sim) execution sequence. Verified Arch created blueprint file. Verified Nexus V1 sim logs appeared. Verified Nexus V1 placeholder success dict returned. Requesting approval for Day 17. (yes/no/details?)"
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Stage changes (workflow.py, main.py), commit, and push.
-    *   Status: DONE
-*   **Cursor Task:** (Upon Approval): Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Upgrade DreamerFlow to orchestrate Jeff -> Arch -> Nexus(V1 Sim) sequence, ensuring BaseAgent V2 usage and correct context passing.
-*   **Issues Encountered:** NameError in main.py (resolved), Recurring OpenRouter TypeError.
-
-## Day 17: Lewis Agent V1 & Toolchest Setup, The Administrator Takes Inventory!
-*   **Cursor Task:** Create `tools/toolchest.json` File
-    *   Status: DONE
-*   **Cursor Task:** Create `engine/agents/rules_lewis.md` File
-    *   Status: DONE
-*   **Cursor Task:** Implement Lewis V1 Agent (`administrator.py`) placeholder
-    *   Status: DONE
-*   **Cursor Task:** Modify `main.py` to test Lewis V1
-    *   Status: DONE
-*   **Cursor Task:** Test: Execute `python main.py` and verify Lewis V1 functionality
-    *   Status: DONE
-*   **Cursor Task:** Corrective Action: Added `rules_arch.md` (Missed Day 11)
-    *   Status: DONE
-*   **Cursor Task:** Corrective Action: Revert incorrect Arch/Nexus placeholder changes (Git)
-    *   Status: DONE
-*   **Cursor Task:** Stage changes, commit, push.
-    *   Status: DONE
-*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Implemented Lewis V1 placeholder, created toolchest JSON, added missing Arch rules, reverted incorrect changes.
-*   **Issues Encountered:** Major deviation from guide required manual Git reversion.
-
-## Day 18: Hermie Agent V1 Structure Setup (Corrected Scope & Execution), The Messenger Gets His Desk!
-*   **Cursor Task:** Verify `engine/agents/communications.py` matches target Hermie V1 code.
-    *   Status: DONE
-*   **Cursor Task:** Replace `main.py` content with focused Hermie V1 test code.
-    *   Status: DONE
-*   **Cursor Task:** Execute `python main.py` (venv active).
-    *   Status: DONE
-*   **Cursor Task:** Log changes to migration tracker.
-    *   Status: DONE (Implicitly done via file edits)
-*   **Cursor Task:** Request approval.
-    *   Status: DONE
-*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
-    *   Status: DONE
-*   **Overall Day Status:** DONE
-*   **Summary:** Corrected Day 18 scope, implemented and tested Hermie V1 placeholder structure using BaseAgent V2 and focused test script.
-*   **Issues Encountered:** ValueError during RAG seed (resolved), ImportError for DB funcs (mitigated).
-
-**Day 19 - Hermie Agent V1 (Basic Routing)**
-*   DONE - Cursor Task: Modify `C:\DreamerAI\engine\agents\communications.py`. Update `HermieAgent.__init__` to accept and store the `agents: Dict[str, BaseAgent]`. Update the `HermieAgent.run` method to retrieve 'Arch' and 'Lewis' from `self.agents` and call `await agent.receive_task(task_data)` on each. Implement basic error handling. Use the code provided in the Day 19 guide entry.
-*   DONE - Cursor Task: Modify `C:\DreamerAI\engine\agents\planning.py`. Add the placeholder method `async def receive_task(self, task_data: Dict[str, Any]):` to the `PlanningAgent` class, as shown in the Day 19 guide entry.
-*   DONE - Cursor Task: Modify `C:\DreamerAI\engine\agents\administrator.py`. Add the placeholder method `async def receive_task(self, task_data: Dict[str, Any]):` to the `LewisAgent` class, as shown in the Day 19 guide entry.
-*   DONE - Cursor Task: Modify `C:\DreamerAI\main.py`. Update `run_dreamer_test` to: Instantiate all core agents needed (Jeff, Arch, Lewis, Hermie, Nexus). Pass the agents dictionary when instantiating Hermie. Remove the previous `dreamer_flow.execute` call. Instead, directly call `await agents['Hermie'].run(task_data=...)` with sample task data. Print the result from Hermie. Use the code provided in the Day 19 guide entry.
-*   DONE - Cursor Task: Execute `python main.py` (venv active). Verify the logs show Hermie running, retrieving Arch and Lewis, and calling their `receive_task` methods. Verify Arch and Lewis log that they received the task. Check for errors.
-*   DONE - Cursor Task: Stage changes (`communications.py`, `planning.py`, `administrator.py`, `main.py`), commit, and push.
-
-## Day 20: Dream Theatre UI Panel V1 & WebSocket Listener
-*   TODO - Cursor Task: Create `C:\DreamerAI\app\components\DreamTheatrePanel.jsx` using the provided React component code. Implement the useEffect hook to establish the WebSocket connection to `ws://localhost:8081` and log events (onopen, onmessage, onerror, onclose). Include placeholder text.
-*   TODO - Cursor Task: Modify `C:\DreamerAI\app\src\App.jsx`. Import `DreamTheatrePanel`. Update the `renderTabContent` function to render `<DreamTheatrePanel />` when the corresponding tab index (likely index 2 based on previous tab order) is active.
-*   TODO - Cursor Task: Run the frontend: `cd C:\DreamerAI\app`, `npm start`.
-*   TODO - Cursor Task: Navigate to the "Dream Theatre" tab in the UI. Verify the placeholder text is displayed.
-*   TODO - Cursor Task: Open Electron DevTools (Ctrl+Shift+I) and check the Console. Verify logs showing the WebSocket attempting to connect to `ws://localhost:8081`. Expect connection errors initially ("WebSocket connection to 'ws://localhost:8081/' failed") as the server doesn't exist yet. This error confirms the client is trying to connect correctly.
-*   TODO - Cursor Task: Stage changes (`DreamTheatrePanel.jsx`, `App.jsx`), commit, and push.
-
-## Day 21: Dream Theatre UI & Backend Connection V1
-*   [X] Task 1: Create `DreamTheatrePanel.jsx` Component (UI Panel)
-*   [X] Task 2: Integrate `DreamTheatrePanel.jsx` into `App.jsx`
-*   [X] Task 3: Test Frontend UI (with Backend Offline)
-*   [ ] Task 4: Start Backend Server (`engine/core/server.py`)
-*   [ ] Task 5: Test Frontend UI (with Backend Online)
-*   [ ] Task 6: Commit & Push Day 21 Changes
-
-## Day 22: Dream Theatre Backend - Basic Message Broadcasting
-*   [ ] Task 1: Modify Backend (`server.py`) to Broadcast Simple Messages
-*   [ ] Task 2: Test Backend WebSocket Broadcasting (Manual Trigger)
-*   [ ] Task 3: Test Frontend UI (Receiving Backend Messages)
-*   [ ] Task 4: Commit & Push Day 22 Changes
+*   **Overall Day Status:** IN PROGRESS
+*   **Summary:** Review Week 3 components (core agents V1, flow, UI panels/bridge) and run basic integration tests (backend flow via main.py, manual UI checks) in the Dev environment.
+*   **Issues Encountered:** Initial `HermieAgent` Pydantic initialization errors (resolved). `NameError` for `DreamerFlow` import (resolved). Expected n8n/bridge connection errors. Expected Redis errors.
 
 *(Future days/tasks will be added here)*
