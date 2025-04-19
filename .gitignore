@@ -69,22 +69,16 @@ pnpm-debug.log*
 yarn-debug.log* 
 yarn-error.log* 
  
-# Log files
-# Ignore all logs initially
-*.log
-logs/
-
-# Ignore the contents of docs/logs, but not the directory itself if needed
-docs/logs/*
-
-# Explicitly UN-ignore specific required log/tracking files within docs/logs
-!docs/logs/rules_check.log
-!docs/logs/issues.log
-!docs/logs/errors.log # Added errors.log as well
-!docs/logs/migration_tracker.md
-!docs/logs/.gitkeep # Optional: If you want to keep the dir structure
-
-*.log.[0-9]
+# User Workspace & Generated Projects (DO NOT COMMIT)
++/Users/
++/projects/
+ 
+# Root Logs directory
+/logs/
+ 
+# Specific unwanted doc logs
+/docs/logs/dev_logs/
+/docs/logs/raw_error_logs/
  
 # Electron 
 .electron/ 
@@ -98,3 +92,7 @@ docs/logs/*
 node_modules/
 app/node_modules/
 .eslintcache
+
+# Optional: Editor/IDE specific files
+.vscode/
+.idea/
