@@ -351,7 +351,26 @@
 *   DONE - Cursor Task: Execute `python main.py` (venv active). Verify the logs show Hermie running, retrieving Arch and Lewis, and calling their `receive_task` methods. Verify Arch and Lewis log that they received the task. Check for errors.
 *   DONE - Cursor Task: Stage changes (`communications.py`, `planning.py`, `administrator.py`, `main.py`), commit, and push.
 
-## Day 20: Dream Theatre UI & Backend Connection V1 (Corrected Scope)
+## Day 20: Dream Theatre UI Panel V1 & WebSocket Listener
+*   Cursor Task: Create `C:\DreamerAI\app\components\DreamTheatrePanel.jsx` using the provided React component code. Implement the useEffect hook to establish the WebSocket connection to `ws://localhost:8081` and log events (onopen, onmessage, onerror, onclose). Include placeholder text.
+    *   Status: DONE
+*   Cursor Task: Modify `C:\DreamerAI\app\src\App.jsx`. Import `DreamTheatrePanel`. Update the `renderTabContent` function to render `<DreamTheatrePanel />` when the corresponding tab index (likely index 2 based on previous tab order) is active.
+    *   Status: DONE
+*   Cursor Task: Run the frontend: `cd C:\DreamerAI\app`, `npm start`.
+    *   Status: DONE
+*   Cursor Task: Navigate to the "Dream Theatre" tab in the UI. Verify the placeholder text is displayed.
+    *   Status: DONE
+*   Cursor Task: Open Electron DevTools (Ctrl+Shift+I) and check the Console. Verify logs showing the WebSocket attempting to connect to `ws://localhost:8081`. Expect connection errors initially ("WebSocket connection to 'ws://localhost:8081/' failed") as the server doesn't exist yet. This error confirms the client is trying to connect correctly.
+    *   Status: DONE
+*   Cursor Task: Stage changes (`DreamTheatrePanel.jsx`, `App.jsx`), commit, and push.
+    *   Status: DONE
+*   Cursor Task: Execute Auto-Update Triggers & Workflow.
+    *   Status: DONE
+*   Overall Day Status: DONE
+*   Summary: Created the Dream Theatre UI panel placeholder and integrated it into the main application tabs.
+*   Issues Encountered: Expected WebSocket connection errors (Backend not yet implemented).
+
+## Day 21: Dream Theatre UI & Backend Connection V1 (Corrected Scope)
 *   **Cursor Task:** Create `C:\DreamerAI\app\components\DreamTheatrePanel.jsx` (Day 20 Task 1 - done previously).
     *   Status: DONE
 *   **Cursor Task:** Integrate `DreamTheatrePanel.jsx` into `App.jsx` (Day 20 Task 2 - done previously).
@@ -370,13 +389,13 @@
     *   Status: DONE
 *   **Cursor Task:** Update Logs (Migration, Issues, Errors).
     *   Status: DONE
-*   **Cursor Task:** Execute Auto-Update Workflow (Incl. Memory Bank, Context, Rules, Commit).
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow (Incl. Memory Bank, Context, Rules, Commit).
     *   Status: DONE
 *   **Overall Day Status:** DONE
 *   **Summary:** Implemented Dream Theatre WebSocket backend, frontend client logic, broadcast mechanism, and fixed related connection/CSP/import errors.
 *   **Issues Encountered:** CSP errors, ImportError, NameError, Blank Screen issue, WebSocket timing limitation noted.
 
-## Day 21: UI Panels V1 (Project Manager & Settings), Expanding the Dreamer Desktop!
+## Day 22: UI Panels V1 (Project Manager & Settings), Expanding the Dreamer Desktop!
 *   **Cursor Task:** Create C:\DreamerAI\app\components\ProjectManagerPanel.jsx with the basic placeholder component code provided below.
     *   Status: TODO
 *   **Cursor Task:** Create C:\DreamerAI\app\components\SettingsPanel.jsx with the basic placeholder component code provided below.
