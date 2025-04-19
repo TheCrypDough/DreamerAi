@@ -15,25 +15,38 @@ from pathlib import Path
 import sys # Import sys module
 from pydantic import PrivateAttr # Import PrivateAttr
 
-# Core Imports (Leveraging BaseAgent V2)
+# --- Core Imports --- 
+# Add project root to sys.path if necessary (should be handled globally but good practice)
+project_root_mc = Path(__file__).resolve().parent.parent.parent
+if str(project_root_mc) not in sys.path:
+    sys.path.insert(0, str(project_root_mc))
+
+# Import WebSocket Manager for Dream Theatre broadcast (moved to top level)
 try:
-    # Add project root to sys.path if necessary (should be handled globally but good practice)
-    project_root_mc = Path(__file__).resolve().parent.parent.parent
-    if str(project_root_mc) not in sys.path:
-        sys.path.insert(0, str(project_root_mc))
-        
+    from engine.core.dream_theatre_service import manager as ws_manager
+except ImportError:
+    ws_manager = None
+    # logger not available yet to log this
+
+# Continue other core imports within a try block for robustness
+try:
     from engine.agents.base import BaseAgent, AgentState, Message # Use V2 BaseAgent
     from engine.core.logger import logger_instance as logger, log_rules_check
-    # Temporarily comment out event manager import as it doesn't exist yet (Day 62)
-    # from engine.core.event_manager import event_manager 
-    # EVENT_MANAGER_AVAILABLE = True
-    EVENT_MANAGER_AVAILABLE = False # Assume not available for now
+    # Attempt to import Event Manager (for progress sim)
+    try:
+        from engine.core.event_manager import event_manager # Adjust path if needed
+        EVENT_MANAGER_AVAILABLE = True
+    except ImportError:
+        event_manager = None
+        EVENT_MANAGER_AVAILABLE = False
+        # No logger available here yet
+
     # LLM import for type hint
     from engine.ai.llm import LLM 
 except ImportError as e:
+    # Fallback logging if core logger fails
     import logging
     logger = logging.getLogger(__name__)
-    # Log the original import error more clearly
     logger.error(f"Jeff V1 Critical Error: Could not import core dependencies (BaseAgent, logger, event_manager?): {e}", exc_info=True)
     # Define Dummy classes if core imports fail
     class BaseAgent: 
@@ -47,6 +60,8 @@ except ImportError as e:
         async def publish(*args, **kwargs): pass
     EVENT_MANAGER_AVAILABLE = False
     LLM = type(None) # Dummy type for Optional hint if import fails
+    if ws_manager is None: # Log if WS manager failed earlier
+        logger.warning("WebSocket manager (ws_manager) import failed at top level.")
 
 # n8n/Comms Imports
 try:
@@ -54,7 +69,11 @@ try:
     from engine.ai.llm import CONFIG # For n8n config
 except ImportError:
     aiohttp = None; CONFIG = {}; 
-    logger.error("Jeff V1 Error: Cannot import aiohttp/CONFIG. n8n trigger disabled.")
+    # Use logger if available, otherwise print
+    if 'logger' in globals():
+        logger.error("Jeff V1 Error: Cannot import aiohttp/CONFIG. n8n trigger disabled.")
+    else:
+        print("ERROR: Jeff V1 Error: Cannot import aiohttp/CONFIG. n8n trigger disabled.")
 
 class ChefJeff(BaseAgent):
     """ V1: Chat, uses BaseAgent V2 (ChromaDB RAG), functional n8n handoff, progress sim. """
@@ -201,6 +220,23 @@ class ChefJeff(BaseAgent):
             await self.send_update_to_ui(response_content, update_type="chat_response")
             self.logger.info("Jeff V1 generated response and sent update to UI.")
             # -----------------------------------------------------------------------------------
+
+            # --- Broadcast to Dream Theatre (Day 21 Task 6) ---
+            if ws_manager:
+                try:
+                    broadcast_payload = {
+                        "type": "agent_activity",
+                        "agent": self.name,
+                        "action": "processed_chat",
+                        "details": f"Successfully processed input: {user_input[:30]}..."
+                    }
+                    await ws_manager.broadcast_json(broadcast_payload)
+                    self.logger.info(f"Broadcasted agent activity to Dream Theatre via WebSocket.")
+                except Exception as ws_err:
+                    self.logger.error(f"Failed to broadcast to Dream Theatre WebSocket: {ws_err}")
+            else:
+                self.logger.warning("WebSocket manager (ws_manager) not available, skipping Dream Theatre broadcast.")
+            # ---------------------------------------------------
 
             # 5. Identify Task & Trigger Handoff/Progress Sim (Keep V1 keyword logic)
             task_keywords = ["build", "create", "plan", "generate", "make", "develop", "code"]

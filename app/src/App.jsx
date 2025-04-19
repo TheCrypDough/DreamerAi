@@ -57,7 +57,7 @@ function App() {
         setChatMessages(prev => [...prev, { role: 'user', content: message }]);
 
         try {
-            const response = await fetch('http://localhost:8000/agents/jeff/chat', {
+            const response = await fetch('http://localhost:8090/agents/jeff/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_input: message })

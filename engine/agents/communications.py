@@ -43,18 +43,18 @@ class HermieAgent(BaseAgent):
     Hermie: The Communications Agent V1.
     Simulates routing tasks from Jeff (via run input) to Arch and Lewis.
     """
-    # Remove the Pydantic field definition for agents
-    # agents: Dict[str, BaseAgent] = Field(default=None, exclude=True)
+    # Re-add agents field definition for Pydantic, mark as Optional
+    agents: Optional[Dict[str, BaseAgent]]
 
-    def __init__(self, agents: Dict[str, BaseAgent], user_dir: str, **kwargs):
-        # Initialize BaseAgent (Pydantic model) first
+    # Modified __init__ to require agents dictionary (logically)
+    def __init__(self, agents: Dict[str, BaseAgent], user_dir: str, **kwargs): # Add agents dict
         super().__init__(name=HERMIE_AGENT_NAME, user_dir=user_dir, **kwargs)
-
-        # Set the agents attribute *after* Pydantic init, bypassing its __setattr__
-        if not agents:
-            raise ValueError("HermieAgent requires a valid 'agents' dictionary during initialization.")
-        object.__setattr__(self, 'agents', agents)
-
+        if not agents: # Check if agents dict is provided and not empty
+            logger.error("HermieAgent initialized without a valid agents dictionary!")
+            # Consider raising an error or handling appropriately
+        self.agents = agents # Store the dictionary of all agent instances
+        # self.rules_file = os.path.join(r"C:\DreamerAI\engine\agents", f"rules_{self.name.lower()}.md") # BaseAgent V2 handles this
+        # self._load_rules() # BaseAgent V2 handles this
         logger.info(f"HermieAgent '{self.name}' V1 initialized with agent references: {list(self.agents.keys())}")
 
     # BaseAgent V2 handles _load_rules etc.

@@ -1009,7 +1009,7 @@ var __webpack_exports__ = {};
 /*!*****************!*\
   !*** ./main.js ***!
   \*****************/
-const { app, BrowserWindow } = __webpack_require__(/*! electron */ "electron");
+const { app, BrowserWindow, session } = __webpack_require__(/*! electron */ "electron");
 const path = __webpack_require__(/*! path */ "path");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -1042,7 +1042,9 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  createWindow();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

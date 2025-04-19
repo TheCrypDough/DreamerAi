@@ -28,7 +28,7 @@ module.exports = {
     {
       name: '@electron-forge/plugin-webpack',
       config: {
-        devContentSecurityPolicy: `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' http://localhost:8000 http://localhost:3131`,
+        devContentSecurityPolicy: `default-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-eval' 'unsafe-inline' data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' http://localhost:8090 http://localhost:3131 ws://localhost:8090`,
         mainConfig: './webpack.main.config.js',
         renderer: {
           config: './webpack.renderer.config.js',
@@ -39,7 +39,8 @@ module.exports = {
               name: 'main_window',
               preload: {
                 js: './preload.js'
-              }
+              },
+              csp: `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' http://localhost:8090 http://localhost:3131 ws://localhost:8090`
             },
           ],
         },

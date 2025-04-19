@@ -25102,6 +25102,404 @@ exports.default = DreamTheatrePanel;
 **(End of COMPLETE Guide Entry for Day 62)**
 
 
+(Start of COMPLETE Guide Entry for Day 62.1)
+Day 62.1 - WebSocket Refactor (Persistent Connection), Taming the Timing!
+Anthony's vision: "Hermie... keeps the user up to date through his own UI window... see exactly what is happening behind the scenes, all the agents processes percentage finished... Dream Theatre" / "yeah that works but is this really how it is going to react during runtime, its bad if thats the case" Your feedback highlighted a critical flaw: the initial Dream Theatre updates were missed if the user wasn't actively viewing that specific panel. For a truly reliable, "bulletproof" experience where the user is always informed and never feels like they're "waiting around," the backend communication needs to be persistent and independent of UI navigation state. This refactor ensures the Dream Theatre's window always reflects the current reality.
+Description:
+This essential refactoring step addresses the timing issue identified on Day 62 where WebSocket messages were missed by the Dream Theatre if its panel wasn't active. We move the WebSocket connection management logic entirely out of the DreamTheatrePanel.jsx component and into the main App.jsx component. App.jsx now establishes and maintains a single, persistent WebSocket connection (to ws://localhost:8000/ws/dreamtheatre) for the duration the application is running. It manages the connection status and incoming message data (agent statuses, workflow progress) in its own state. The DreamTheatrePanel.jsx component is significantly simplified to be purely presentational, receiving the relevant status and progress data as props from App.jsx and rendering it. This architectural change ensures real-time updates are always received and processed, making the Dream Theatre display accurate and reliable irrespective of tab navigation.
+Relevant Context:
+This refactor directly modifies the way frontend components interact with the WebSocket backend established functionally on Day 62.
+Technical Analysis: Removes the useEffect hook responsible for WebSocket creation, event handling (onopen, onmessage, etc.), and cleanup from DreamTheatrePanel.jsx. Removes WebSocket-related state (connectionStatus, agentStatuses, progress, ws ref) from DreamTheatrePanel.jsx. Adds new state variables (wsConnectionStatus, agentStatuses, workflowProgress) to App.jsx. Adds a useEffect hook (with useCallback for stability) in App.jsx that initializes and manages the WebSocket connection. Updates received via onmessage are now stored in App.jsx's state. Ensures this hook handles connection, receiving messages, errors, basic reconnection attempts, and cleanup on app close. Modifies App.jsx's renderTabContent function to pass the relevant state (wsConnectionStatus, agentStatuses, workflowProgress) down as props to the DreamTheatrePanel when it's rendered. Updates DreamTheatrePanel.jsx to be a stateless functional component receiving and displaying data purely from these props.
+Layman's Terms: We fixed the Dream Theatre's radio! Before, the radio receiver (WebSocket Client) in the Dream Theatre panel turned off whenever you left that tab, causing missed updates. Now, we moved the main radio receiver into the application's central control room (App.jsx), where it stays powered on constantly while the app is open. The control room listens for all broadcasts ("Jeff started", "Planning 15%", "Arch finished") and keeps track of the latest status for every agent and the overall workflow progress. The Dream Theatre panel itself is now just a simple screen that displays whatever information the control room passes down to it. This means even if you switch tabs and come back, the Dream Theatre will always show the most current status because the central receiver never stopped listening.
+Groks Thought Input:
+This is the architecturally correct solution and mandatory for the desired UX. Lifting state and persistent connection logic to the common ancestor (App.jsx) is the standard React pattern. It eliminates the lifecycle-based race condition perfectly. This ensures the Dream Theatre is truly a reliable 'live broadcast' system, which is critical for user trust and engagement when background tasks are running. Simplifying the DreamTheatrePanel also makes the codebase cleaner. Good catch and necessary correction.
+My thought input:
+Anthony's feedback was spot-on; the previous behavior was unacceptable. Moving the WS logic to App.jsx is the clean fix. Need to be meticulous in transferring the state management (wsConnectionStatus, agentStatuses, workflowProgress) and the useEffect logic (connection, handlers, cleanup, reconnection V1) to App.jsx. Passing the state down as props to DreamTheatrePanel is straightforward. Simplifying DreamTheatrePanel to just receive and render props makes it much easier to reason about. This fixes a core flaw in the V1 real-time update mechanism before we build more complex features on top of it.
+Additional Files, Documentation, Tools, Programs etc needed:
+None new. Modifies existing frontend files.
+Any Additional updates needed to the project due to this implementation?
+Prior: Functional WS Backend & Event Publishing (Day 62). DreamTheatrePanel V2 trying to manage its own WS connection (Day 62 implementation state).
+Post: Persistent WebSocket connection managed centrally in App.jsx. DreamTheatrePanel receives state via props. Real-time updates are now reliably captured regardless of active UI tab.
+Project/File Structure Update Needed:
+Yes: Modify app/src/App.jsx (Add state, useEffect for WS management).
+Yes: Modify app/components/DreamTheatrePanel.jsx (Remove WS logic, accept/render props).
+Any additional updates needed to the guide for changes or explanation due to this implementation:
+Yes: Insert this Day 62.1 guide entry immediately following Day 62.
+Yes: Update Day 62 guide entry's "Explanation" and "Code" sections to reflect that the initial implementation is refactored here. Note the timing issue and link to Day 62.1 for the fix.
+Subsequent guide days referencing Dream Theatre updates should assume the App.jsx-managed state/props pattern.
+Any removals from the guide needed due to this implementation (detailed):
+Removes the flawed WebSocket state/effect management logic from the description/code example previously associated with Day 62's DreamTheatrePanel.jsx. Replaces it with this corrected, centralized approach in App.jsx.
+Effect on Project Timeline: Day 62.1 of ~80+ days. Minimal delay, adds fraction of a day for critical refactoring identified during testing.
+Integration Plan:
+When: Day 62.1 (Post-V1 Launch / Week 9) – Immediately following identification of the Day 62 WS timing issue during testing/review.
+Where: Frontend code: app/src/App.jsx and app/components/DreamTheatrePanel.jsx.
+Dependencies: React state/hooks (useState, useEffect, useCallback), running backend WebSocket server from Day 62.
+Setup Instructions: None beyond having the Day 62 backend functional.
+Recommended Tools:
+VS Code/CursorAI Editor
+Electron App + DevTools (Console, Network->WS tab, React DevTools)
+Terminal for running backend server (python -m engine.core.server)
+Tasks:
+Cursor Task: Modify C:\DreamerAI\app\src\App.jsx.
+Add new state variables using useState: wsConnectionStatus, agentStatuses, workflowProgress.
+Implement the connectWebSocket callback function containing the complete WebSocket setup (new WebSocket, onopen, onmessage updating the new states, onerror, onclose with basic setTimeout reconnect logic).
+Implement a useEffect hook that calls connectWebSocket on mount and returns a cleanup function to close the WebSocket when App.jsx unmounts (i.e., app closes).
+Modify renderTabContent to pass wsConnectionStatus, agentStatuses, workflowProgress down as props to the <DreamTheatrePanel /> element when the Dream Theatre tab is active.
+Use the FULL code provided below.
+Cursor Task: Modify C:\DreamerAI\app\components\DreamTheatrePanel.jsx.
+Remove the useEffect hook that previously managed the WebSocket connection.
+Remove the internal state variables: connectionStatus, agentStatuses, progress, ws ref.
+Update the component function signature to accept { wsConnectionStatus, agentStatuses, workflowProgress } as props.
+Update the rendering logic (including renderStatusList and the progress display) to read directly from these props instead of internal state.
+Use the FULL code provided below.
+Cursor Task: Test the Refactored Flow:
+Start Backend Server (python -m engine.core.server). Check logs for WebSocket setup confirmation.
+Start Frontend (npm start in app/).
+Navigate to "Dream Theatre" tab. Verify WebSocket connects (Connected status appears). Verify initial state (e.g., "Idle" progress, empty agent list) renders correctly from props passed by App.jsx. Check DevTools Console for WS connection logs from App.jsx's useEffect.
+Navigate to the "Chat" tab.
+Trigger a workflow via chat (e.g., "Create a basic project called WS_Test").
+Wait ~5-10 seconds (allow backend agents to run and publish events).
+Navigate BACK to the "Dream Theatre" tab.
+Verification: Verify the panel IMMEDIATELY displays the latest agent statuses and workflow progress that occurred while the tab was inactive. The agentStatuses list should be populated, and the workflowProgress should reflect later stages (e.g., "Building", "Testing (Sim)", etc.).
+Navigate away and back again. Verify the state persists correctly.
+Cursor Task: Present Summary for Approval: "Task 'Day 62.1: WebSocket Refactor (Persistent Connection)' complete. Implementation: Moved WebSocket connection management (state & useEffect) from DreamTheatrePanel.jsx to App.jsx. DreamTheatrePanel now receives status/progress via props. Tested persistence by switching tabs during workflow - verified updates now appear correctly when returning to Dream Theatre panel. Requesting approval. (yes/no/details?)"
+Cursor Task: (Upon Approval) Stage changes (App.jsx, DreamTheatrePanel.jsx), commit, push.
+Cursor Task: (Upon Approval) Execute Auto-Update Triggers & Workflow.
+Code:
+(Complete Overwrite for App.jsx - Integrating WS Management)
+// C:\DreamerAI\app\src\App.jsx
+const React = require('react');
+const { useState, useEffect, useCallback, useMemo } = React;
+const http = require('http'); // Keep V1 Bridge listener for now
+
+// MUI Imports...
+const { createTheme, ThemeProvider } = require('@mui/material/styles');
+const CssBaseline = require('@mui/material/CssBaseline').default;
+const Box = require('@mui/material/Box').default;
+const Tabs = require('@mui/material/Tabs').default;
+const Tab = require('@mui/material/Tab').default;
+const Switch = require('@mui/material/Switch').default;
+const FormControlLabel = require('@mui/material/FormControlLabel').default;
+const Typography = require('@mui/material/Typography').default;
+const Alert = require('@mui/material/Alert').default;
+const Snackbar = require('@mui/material/Snackbar').default;
+const IconButton = require('@mui/material/IconButton').default;
+// MUI Icons ...
+
+// i18next Imports ...
+require('../i18n');
+const { useTranslation } = require('react-i18next');
+
+// analytics Import ...
+import analytics from './analytics';
+
+// Panel Imports ...
+const MainChatPanel = require('../components/MainChatPanel').default;
+const DreamTheatrePanel = require('../components/DreamTheatrePanel').default;
+// ... ProjectManagerPanel, SettingsPanel, SparkPanel, ToolExplorerPanel, MarketplacePanel ...
+
+// --- Constants ---
+const API_URL = 'http://localhost:8000'; // Backend API server
+const WEBSOCKET_URL = 'ws://localhost:8000/ws/dreamtheatre'; // Backend WS endpoint
+const BRIDGE_LISTENER_PORT = 3131; // Keep consistent V1 port
+
+// --- App Component ---
+function App() {
+    const { t } = useTranslation();
+    // --- Existing State ---
+    const [activeTab, setActiveTab] = useState(0);
+    const [beginnerMode, setBeginnerMode] = useState(false);
+    const [chatMessages, setChatMessages] = useState([{ role: 'assistant', content: "Welcome! Let's build." }]);
+    const [uiError, setUiError] = useState(null);
+    const [isDarkMode, setIsDarkMode] = useState(true);
+    const [points, setPoints] = useState(0);
+    const [currentUser, setCurrentUser] = useState(null); // Assume Firebase Auth logic exists D56
+
+    // --- NEW: State for Persistent WebSocket Management ---
+    const [wsConnectionStatus, setWsConnectionStatus] = useState('Initializing...');
+    const [agentStatuses, setAgentStatuses] = useState({}); // { agentName: statusString }
+    const [workflowProgress, setWorkflowProgress] = useState({ step: 'Idle', percent: 0, detail: '' }); // { step, percent, detail }
+    const ws = useRef(null); // Ref to hold the WebSocket instance
+    const reconnectTimeoutRef = useRef(null); // Ref for reconnect timer ID
+    // ----------------------------------------------------
+
+    // --- Theme ---
+    const theme = useMemo(() => createTheme({ palette: { mode: isDarkMode ? 'dark' : 'light' } }), [isDarkMode]);
+    const toggleColorMode = () => setIsDarkMode((prev) => !prev);
+
+    // --- Existing Handlers ---
+    const handleTabChange = (event, newValue) => setActiveTab(newValue);
+    const handleBeginnerModeChange = (event) => setBeginnerMode(event.target.checked);
+    const handleCloseError = (event, reason) => { if (reason === 'clickaway') return; setUiError(null); };
+    const handleSendMessage = useCallback(async (message) => {
+        analytics.trackEvent('ChatMessage Sent'); // Keep tracking
+        setChatMessages(prev => [...prev, { role: 'user', content: message }]);
+        try { // Call Jeff's backend endpoint
+            const response = await fetch(`${API_URL}/agents/jeff/chat`, {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json',
+                     'Authorization': `Bearer ${localStorage.getItem('dreamerai_jwt') || ''}` // Use JWT from D105
+                 },
+                 body: JSON.stringify({ user_input: message })
+            });
+            if (!response.ok) { const err = await response.json(); throw new Error(err.detail || `HTTP ${response.status}`); }
+            setPoints(prev => prev + 10); // Keep gamification V1
+        } catch (error) { console.error("Send Message failed:", error); setUiError(`Failed to send message: ${error.message}`); }
+    }, []);
+
+    // --- V1 Bridge Listener (Keep for direct Jeff -> UI Chat responses V1) ---
+    useEffect(() => {
+        const server = http.createServer((req, res) => {
+             if (req.method === 'POST' && req.url === '/update') { // Still listen on /update path
+                let body = ''; req.on('data', chunk => { body += chunk; });
+                req.on('end', () => {
+                     try { // Parse JSON, update chatMessages for Jeff responses, handle other types/errors
+                         const receivedData = JSON.parse(body);
+                         if (receivedData.agent === 'Jeff' && receivedData.type === 'chat_response') {
+                            setChatMessages(prev => [...prev, { role: 'assistant', content: receivedData.payload }]);
+                         } else if (receivedData.type === 'error') { setUiError(...) }
+                     } catch (e) { /*...*/ }
+                     res.writeHead(200,{'Content-Type': 'application/json'});res.end(JSON.stringify({status:'OK'}));
+                 });
+                  req.on('error', (err) => console.error('Bridge Listener request error:', err));
+             } else { res.writeHead(404); res.end('Not Found'); }
+        });
+        server.listen(BRIDGE_LISTENER_PORT, '127.0.0.1', () => console.log(`UI Bridge Listener ready on port ${BRIDGE_LISTENER_PORT}`));
+        server.on('error', (err) => { setUiError(`UI Listener failed: ${err.message}`); });
+        return () => server.close();
+    }, []);
+
+    // --- NEW: Persistent WebSocket Management ---
+    const connectWebSocket = useCallback(() => {
+        if (ws.current && (ws.current.readyState === WebSocket.OPEN || ws.current.readyState === WebSocket.CONNECTING)) {
+             console.log("App WS: Already connected or connecting."); return;
+        }
+        clearTimeout(reconnectTimeoutRef.current);
+        console.log(`App WS: Attempting connection to ${WEBSOCKET_URL}...`);
+        setWsConnectionStatus('Connecting...');
+        // Optionally reset state on new attempt? Maybe not agentStatuses
+        // setAgentStatuses({}); setWorkflowProgress({ step: 'Idle', percent: 0, detail: '' });
+
+        ws.current = new WebSocket(WEBSOCKET_URL);
+
+        ws.current.onopen = () => {
+            console.log('App WS: WebSocket Connected');
+            setWsConnectionStatus('Connected');
+        };
+
+        ws.current.onmessage = (event) => {
+            try {
+                const message = JSON.parse(event.data);
+                // console.debug('App WS Msg Received:', message); // Debug log
+
+                if (message && message.agent && message.status) { // Agent Status Update (D62)
+                    setAgentStatuses(prev => ({ ...prev, [message.agent]: message.status }));
+                } else if (message && message.type === 'progress') { // Workflow Progress Update (D73)
+                    setWorkflowProgress({
+                        step: message.step || 'Unknown',
+                        percent: message.percent || 0,
+                        detail: message.detail || ''
+                    });
+                } else if (message && message.type === 'cloudsync_status') { // Cloud Sync Status (D104)
+                    // TODO V2+: Maybe show this in settings panel directly via context? V1 just log.
+                    console.log(`Cloud Sync Update: Project ${message.payload?.projectId} - ${message.payload?.status} - ${message.payload?.message}`);
+                } else {
+                     console.warn("App WS: Received message with unknown format:", message);
+                 }
+            } catch (error) {
+                 console.error('App WS: Failed to parse message:', event.data, error);
+             }
+        };
+
+        ws.current.onerror = (error) => {
+            console.error('App WS: WebSocket Error:', error);
+            setWsConnectionStatus('Error');
+            // Don't clear ref here, onclose handles reconnect attempt
+        };
+
+        ws.current.onclose = (event) => {
+            console.log('App WS: WebSocket Closed:', event.code, event.reason);
+            setWsConnectionStatus(`Disconnected (Code: ${event.code})`);
+            ws.current = null; // Clear the ref
+            // Simple reconnect attempt after delay
+            reconnectTimeoutRef.current = setTimeout(connectWebSocket, 5000); // Try again in 5s
+        };
+
+    }, []); // useCallback dependency
+
+    // Effect to connect WebSocket on mount and clean up
+    useEffect(() => {
+        connectWebSocket(); // Initial connection attempt
+        // Cleanup function
+        return () => {
+             console.log('App closing: Cleaning up WebSocket connection.');
+             clearTimeout(reconnectTimeoutRef.current);
+             if (ws.current) {
+                 ws.current.onclose = null; // Prevent reconnect attempts on manual close
+                 ws.current.onerror = null;
+                 ws.current.close();
+                 ws.current = null;
+             }
+        };
+    }, [connectWebSocket]); // Depend on the connection function
+
+    // --- Tab Definitions & Rendering ---
+    const tabKeys = ["tabChat", "tabPlanBuild", "tabDreamTheatre", "tabProjectManager", "tabSettings", "tabSpark", "tabTools", "tabMarketplace"];
+    const renderTabContent = (tabIndex) => {
+        switch (tabIndex) {
+            case 0: return React.createElement(MainChatPanel, { messages: chatMessages, onSendMessage: handleSendMessage });
+            // Pass WS data down to Dream Theatre Panel
+            case 2: return React.createElement(DreamTheatrePanel, {
+                        wsConnectionStatus: wsConnectionStatus, // Pass state down
+                        agentStatuses: agentStatuses,
+                        workflowProgress: workflowProgress
+                     });
+            // Pass active project ID down to Settings/Project Manager for Sync/Subproject Create actions
+            case 3: return React.createElement(ProjectManagerPanel, { /* activeProjectId: selectedProjectId */ }); // TODO: Add active project state V1.1+ D108/109
+            case 4: return React.createElement(SettingsPanel, { startTutorial: startTutorial, /* activeProjectId: selectedProjectId */ });
+            // ... Keep other cases (Plan/Build, Spark, Tools, Marketplace) ...
+            default: return React.createElement(Typography, null, `Unknown Tab`);
+        }
+    };
+    // --- Keep Tutorial Logic (startTutorial) ---
+    const startTutorial = useCallback(() => { /* ... */ }, [t]);
+
+
+    // --- Main Render ---
+    return React.createElement(ThemeProvider, { theme: theme },
+        React.createElement(CssBaseline),
+        React.createElement(Box, { /* ... main box ... */ },
+            // ... Keep Header (Points, Beginner Mode, Theme Toggle) ...
+            // ... Keep Tabs Navigation using t(key) ...
+            // ... Keep Main Content Area ...
+            React.createElement(Box, { sx: { /* ... main content styles ... */ } },
+                 React.createElement(Box, { /* ... inner scrollable ... */ }, renderTabContent(activeTab))
+             ),
+            // Keep Centralized Error Snackbar ...
+        )
+    );
+}
+exports.default = App;
+Use code with caution.
+Jsx
+(Complete Overwrite for DreamTheatrePanel.jsx - Simplified Presentational)
+// C:\DreamerAI\app\components\DreamTheatrePanel.jsx
+const React = require('react');
+const { useMemo } = React; // Only need useMemo if keeping sorting
+const Box = require('@mui/material/Box').default;
+const Typography = require('@mui/material/Typography').default;
+const List = require('@mui/material/List').default;
+const ListItem = require('@mui/material/ListItem').default;
+const ListItemText = require('@mui/material/ListItemText').default;
+const Chip = require('@mui/material/Chip').default;
+const LinearProgress = require('@mui/material/LinearProgress').default;
+const CircularProgress = require('@mui/material/CircularProgress').default; // Keep for loading state
+
+// Make this a presentational component receiving state via props
+function DreamTheatrePanel({ wsConnectionStatus, agentStatuses, workflowProgress }) {
+
+    // Helper to render status chips (keep from Day 62)
+    const getStatusChip = (status) => {
+        let color = 'default';
+        if (!status) return null;
+        const lowerStatus = status.toLowerCase();
+        if (lowerStatus === 'running') color = 'success';
+        else if (lowerStatus === 'finished' || lowerStatus === 'idle') color = 'info'; // Use info for Idle maybe?
+        else if (lowerStatus === 'error') color = 'error';
+        else if (lowerStatus === 'waiting_user' || lowerStatus === 'waiting_subagent') color = 'warning';
+        return React.createElement(Chip, { label: status.toUpperCase(), color: color, size: "small", variant: "outlined"});
+    };
+
+    // Memoize sorted agent names (keep from Day 62)
+    const sortedAgentNames = useMemo(() => Object.keys(agentStatuses || {}).sort(), [agentStatuses]);
+
+    // --- Render Logic (Now uses props) ---
+    const renderStatusList = () => {
+        const statuses = agentStatuses || {}; // Default to empty object
+        const names = Object.keys(statuses).sort(); // Get sorted names
+
+        if (names.length === 0) {
+            return React.createElement(Typography, {variant:'caption', sx:{fontStyle:'italic'}}, '(Awaiting agent activity...)');
+        }
+        return React.createElement(List, { dense: true },
+            names.map(agentName => (
+                React.createElement(ListItem, { key: agentName, disablePadding: true},
+                    React.createElement(ListItemText, {
+                        primary: agentName,
+                        secondary: getStatusChip(statuses[agentName]) // Get status from prop
+                    })
+                )
+            ))
+        );
+    };
+
+    return React.createElement(Box, { sx: { p: 2, height:'100%', display:'flex', flexDirection:'column'} },
+        React.createElement(Typography, { variant: 'h6', gutterBottom: true }, "Dream Theatre - Live Workflow"),
+        // Display connection status from prop
+        React.createElement(Typography, { variant: 'caption', gutterBottom: true }, `WebSocket: ${wsConnectionStatus}`),
+
+        // Display Progress from prop
+        React.createElement(Box, { sx: { my: 2 } },
+             React.createElement(Typography, { variant: 'body1', gutterBottom: true }, `Current Stage: ${workflowProgress?.step || 'Idle'} (${workflowProgress?.percent || 0}%)`),
+             React.createElement(LinearProgress, { variant: "determinate", value: workflowProgress?.percent || 0 }),
+             React.createElement(Typography, { variant: 'caption', sx:{mt:0.5, color: 'text.secondary'} }, workflowProgress?.detail || '')
+        ),
+
+        // Display Agent Statuses List from prop
+        React.createElement(Typography, { variant: 'subtitle1', sx:{mt:1} }, "Agent Statuses:"),
+        React.createElement(Box, { sx: { flexGrow: 1, overflowY: 'auto', border: '1px solid grey', p: 1 } },
+             // Show loading spinner if connected but no agent status received yet? Optional.
+             wsConnectionStatus === 'Connected' && sortedAgentNames.length === 0
+                ? React.createElement(CircularProgress, {size: 20})
+                : renderStatusList() // Use prop agentStatuses via helper
+        )
+    );
+}
+
+exports.default = DreamTheatrePanel;
+Use code with caution.
+Jsx
+Explanation:
+App.jsx:
+Now holds state for wsConnectionStatus, agentStatuses, workflowProgress.
+Includes connectWebSocket function (useCallback) managing the full lifecycle of the WebSocket instance stored in ws.current. Handles onopen, onmessage (parsing JSON and updating the appropriate state based on message content like agent status or workflow progress), onerror, and onclose (with a simple setTimeout based reconnection attempt).
+Uses useEffect to call connectWebSocket on initial mount and return a cleanup function that closes the WebSocket and clears the reconnect timer.
+Passes wsConnectionStatus, agentStatuses, workflowProgress down as props to DreamTheatrePanel.
+Keeps the Day 13 HTTP Bridge Listener on port 3131 active V1 to handle Jeff's direct chat responses.
+DreamTheatrePanel.jsx:
+Becomes a much simpler, presentational component.
+Receives wsConnectionStatus, agentStatuses, workflowProgress via props.
+Removes its internal WebSocket management logic (useEffect, state, ref).
+Renders the connection status, progress bar/text, and the agent status list directly from the passed props.
+Troubleshooting:
+WebSocket Not Connecting in App.jsx: Check WEBSOCKET_URL. Ensure backend server (server.py) is running and the /ws/dreamtheatre endpoint is functional. Check App.jsx console logs for connection errors.
+App.jsx State Not Updating: Check onmessage handler logic. Ensure incoming WebSocket JSON messages have the expected structure (agent/status or type/payload). Use React DevTools to inspect App.jsx state.
+DreamTheatrePanel Not Displaying Updates: Verify props (wsConnectionStatus, etc.) are being passed correctly from App.jsx's renderTabContent. Verify DreamTheatrePanel is using the props correctly in its rendering logic.
+Infinite Reconnect Loop: If the server is down or constantly rejecting connections, the basic setTimeout reconnect logic might loop excessively. More robust backoff strategies can be added later.
+Advice for implementation:
+This refactor is critical for reliable real-time updates. Test the tab-switching scenario thoroughly.
+Consider error handling for the WebSocket connection more deeply (e.g., displaying clearer error messages to the user via setUiError in App.jsx).
+The simple reconnection logic is basic; libraries like reconnecting-websocket could be used later for more robust handling.
+Advice for CursorAI:
+Carefully replace the relevant state variables and useEffect hooks in App.jsx with the new WebSocket management logic. Ensure prop passing to DreamTheatrePanel is correct.
+Gut the DreamTheatrePanel.jsx component, removing its WebSocket state/effects and updating it to use the props for rendering.
+Test requires starting backend server (server.py), then frontend (npm start), then triggering backend agent activity (via Chat UI -> main.py flow), and verifying Dream Theatre updates persisted after switching tabs away and back.
+Test: Follow the specific Test steps outlined in the "Tasks" section to confirm the refactor correctly addresses the timing/unmounting issue.
+Backup Plans: If the refactor in App.jsx causes major issues, revert both files to the Day 62 state and log the issue to be addressed differently (e.g., using React Context or Zustand for state management V2+). The timing bug would persist temporarily.
+Challenges: Managing potentially complex state (agentStatuses, workflowProgress) within the top-level App.jsx. Passing state down reliably (prop drilling V1 vs. Context V2+).
+Out of the box ideas: Create a dedicated WebSocketProvider using React Context to manage the connection and distribute data more cleanly than prop drilling from App.jsx.
+Logs:
+“Action: Refactored WebSocket mgmt from DreamTheatrePanel to App.jsx, Rules reviewed: Yes, Timestamp: [YYYY-MM-DD HH:MM:SS]”
+Commits:
+git commit -m "Refactor(WS): Move WebSocket logic to App.jsx for persistence (Fix D62 timing)"
+Use code with caution.
+Bash
+Motivation:
+“Broadcasting Loud and Clear! We've fixed the Dream Theatre's reception, ensuring the WebSocket connection is persistent and updates are always received, no matter which panel you're viewing. Reliability++!”
+(End of COMPLETE Guide Entry for Day 62.1)
+
+
 
 (Start of COMPLETE Guide Entry for Day 63)
 

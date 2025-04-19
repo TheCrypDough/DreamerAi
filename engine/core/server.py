@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, Request, HTTPException # Removed WebSocket import
+from fastapi import FastAPI, Request, HTTPException, WebSocket, WebSocketDisconnect # Added WebSocket imports
 from fastapi.middleware.cors import CORSMiddleware # To allow frontend requests
 import sys
 import os
@@ -29,6 +29,13 @@ except ImportError:
     logger.error("Failed to import ChefJeff agent in server.py!")
     ChefJeff = None # Allow server to start but endpoint will fail
 
+# Import WebSocket Manager
+try:
+    from engine.core.dream_theatre_service import manager # Use the singleton manager instance
+except ImportError:
+    logger.error("Failed to import ConnectionManager for Dream Theatre!")
+    manager = None # Allow server to start but WS will fail
+
 # --- FastAPI App Initialization ---
 app = FastAPI(title="DreamerAI Backend API", version="0.1.0")
 
@@ -36,17 +43,18 @@ app = FastAPI(title="DreamerAI Backend API", version="0.1.0")
 # Allow requests from the Electron frontend (adjust origin if different)
 # For development, allowing all origins might be okay, but restrict in production.
 origins = [
-    "http://localhost", # Base domain
-    "http://localhost:3000", # Default React dev server port (if used)
-    "http://localhost:3131",  # UI Bridge listener port
-    "app://.", # Allow Electron app origin
+    "*" # Allow all origins for development testing (including WebSockets)
+    # "http://localhost", # Base domain
+    # "http://localhost:3000", # Default React dev server port (if used)
+    # "http://localhost:3131",  # UI Bridge listener port
+    # "app://.", # Allow Electron app origin
     # Add other origins if needed
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=origins, # Use the updated origins list
+    allow_credentials=True, # Keep this True if you need cookies/auth headers
     allow_methods=["*"], # Allows all methods (GET, POST, etc.)
     allow_headers=["*"], # Allows all headers
 )
@@ -125,7 +133,29 @@ async def handle_jeff_chat(request: Request):
         logger.exception(f"Error handling Jeff chat request: {e}") # Log full traceback
         raise HTTPException(status_code=500, detail=f"Internal server error processing chat: {str(e)}")
 
-# WebSocket endpoint removed - Reverted to end of Day 20 state
+# --- Dream Theatre WebSocket Endpoint ---
+@app.websocket("/ws/dream-theatre/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: str):
+    if not manager:
+        logger.error("ConnectionManager not available. Cannot handle WebSocket connection.")
+        await websocket.close(code=1008) # Policy Violation
+        return
+
+    await manager.connect(websocket, client_id)
+    try:
+        while True:
+            # Keep connection open, listen for messages (if frontend needs to send any)
+            # For V1, we mostly broadcast FROM server, so listening might be minimal.
+            data = await websocket.receive_text()
+            logger.info(f"Dream Theatre WS received from {client_id}: {data}")
+            # Example broadcast:
+            # await manager.broadcast(f"Client #{client_id} says: {data}")
+    except WebSocketDisconnect:
+        logger.info(f"Dream Theatre WebSocket client {client_id} disconnected.")
+    except Exception as e:
+        logger.error(f"Error in Dream Theatre WebSocket for {client_id}: {e}", exc_info=True)
+    finally:
+        manager.disconnect(websocket, client_id)
 
 # Add more endpoints here later for:
 # - /create-project, /create-subproject (Day 25)
@@ -141,6 +171,6 @@ async def handle_jeff_chat(request: Request):
 # --- Main Execution ---
 if __name__ == "__main__":
     logger.info("Starting DreamerAI Backend Server...")
-    # Use port 8000 for the backend API server
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
-    # Note: Running directly might differ from deployment (e.g., using Gunicorn) 
+    # Use port 8090 for consistency with launch command
+    uvicorn.run(app, host="127.0.0.1", port=8090, log_level="info")
+    # Note: Running directly might differ from deployment (e.g., using Gunicorn)

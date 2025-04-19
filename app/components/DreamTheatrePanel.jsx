@@ -3,7 +3,8 @@ const { useEffect, useState, useRef } = React;
 const Box = require('@mui/material/Box').default;
 const Typography = require('@mui/material/Typography').default;
 
-const WEBSOCKET_URL = 'ws://localhost:8081'; // Dedicated port for Dream Theatre updates
+// Corrected WebSocket URL - Use the same port as FastAPI (8090) and the correct endpoint path
+const WEBSOCKET_URL = 'ws://localhost:8090/ws/dream-theatre/frontend-client'; // Use a fixed client ID for now
 
 function DreamTheatrePanel() {
     const [connectionStatus, setConnectionStatus] = useState('Connecting...');

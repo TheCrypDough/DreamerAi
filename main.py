@@ -19,7 +19,6 @@ try:
     from engine.agents.coding_manager import NexusAgent
     from engine.agents.administrator import LewisAgent
     from engine.agents.communications import HermieAgent # <-- Import Hermie
-    from engine.core.workflow import DreamerFlow # <-- ADD THIS IMPORT
     # Don't need Lamar/Dudley imports here if Nexus V1 instantiates them
     from engine.core.logger import logger_instance as logger
     # Import DB Pool functions if needed for BaseAgent V2
@@ -101,7 +100,7 @@ async def run_dreamer_flow_and_tests(): # Renamed function
             tool_info = lewis_agent.get_tool_info("Ollama")
             print(f"Lewis info for 'Ollama': {tool_info}")
             frontend_tools = lewis_agent.list_tools_by_category("Frontend")
-            print(f"Lewis 'Frontend' tools: {frontend_tools}")
+            print(f"Lewis 'Frontend' tools: {[t.get('name') for t in frontend_tools]}")
         except Exception as lewis_e:
              logger.error(f"Error during Lewis V1 test: {lewis_e}")
              print(f"ERROR testing Lewis: {lewis_e}")
