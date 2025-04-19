@@ -19,6 +19,7 @@ try:
     from engine.agents.coding_manager import NexusAgent
     from engine.agents.administrator import LewisAgent
     from engine.agents.communications import HermieAgent # <-- Import Hermie
+    from engine.core.workflow import DreamerFlow # <-- ADD THIS IMPORT
     # Don't need Lamar/Dudley imports here if Nexus V1 instantiates them
     from engine.core.logger import logger_instance as logger
     # Import DB Pool functions if needed for BaseAgent V2
@@ -32,89 +33,103 @@ except Exception as e:
      traceback.print_exc()
      sys.exit(1)
 
-DEFAULT_USER_DIR = r"C:\DreamerAI\Users\TestUserMain_D19" # Re-introduce for clarity
+DEFAULT_USER_DIR = r"C:\DreamerAI\Users\Example User"
 
-async def run_dreamer_test(): # Rename function for clarity
-    logger.info("--- Initializing DreamerAI Backend (for Hermie V1 Direct Routing Test) ---")
-    # DB Pool Initialization (Optional - depends if BaseAgent V2 needs it)
-    # if initialize_db_pool:
-    #     await initialize_db_pool()
-
-    # BaseAgent V2 handles user dir creation within its init
+async def run_dreamer_flow_and_tests(): # Renamed function
+    logger.info("--- Initializing DreamerAI Backend (Week 3 Review Test) ---")
+    # Use a fresh project name for this full flow test
+    test_project_name = f"Week3FlowTest_{int(asyncio.get_event_loop().time())}"
     user_workspace_dir = Path(DEFAULT_USER_DIR)
-    user_workspace_dir.mkdir(parents=True, exist_ok=True) # Ensure base user dir exists
+    # Directory creation should happen within agents/flow as needed, not duplicated here
+    # Example: user_workspace_dir / "Projects" / test_project_name
 
-    # --- Agent Initialization --- #
+    logger.info(f"Using Project Name: {test_project_name}")
+
+    # --- Agent Initialization ---
     agents: Dict[str, BaseAgent] = {}
     try:
-        # Instantiate all agents needed for Hermie's test context
-        # Pass user_dir EXPLICITLY to all agents
+        # Instantiate all agents required by DreamerFlow V2 and Lewis test
+        # BaseAgent V2 handles user_dir creation
         agents["Jeff"] = ChefJeff(user_dir=str(user_workspace_dir))
         agents["Arch"] = PlanningAgent(user_dir=str(user_workspace_dir))
-        agents["Lewis"] = LewisAgent(user_dir=str(user_workspace_dir))
         agents["Nexus"] = NexusAgent(user_dir=str(user_workspace_dir))
-        # Instantiate Hermie *passing the agents dictionary* AND user_dir
+        agents["Lewis"] = LewisAgent(user_dir=str(user_workspace_dir))
+        # Hermie is created but not called by flow.execute V2
+        # Need to pass agents dict here if Hermie's init requires it (potential fix for prior error)
         agents["Hermie"] = HermieAgent(agents=agents, user_dir=str(user_workspace_dir))
-        logger.info("Jeff, Arch, Lewis, Nexus, Hermie agents instantiated.")
-
+        logger.info("Jeff, Arch, Nexus, Lewis, Hermie agents instantiated.")
     except Exception as e:
-        logger.exception(f"Agent initialization failed: {e}")
-        # if close_db_pool:
-        #     await close_db_pool()
-        return
+        logger.exception(f"Failed to initialize agents: {e}")
+        print(f"ERROR: Failed to initialize agents: {e}. Exiting.")
+        # Consider more graceful shutdown or error handling
+        sys.exit(1) # Exit if core agents fail
 
-    # --- Test Hermie V1 Directly --- #
-    # Simulate the task description that Jeff's handoff would generate
-    simulated_task_data = {
-        "task_description": "User wants to plan a new project: 'SolarSystemVisualizer'",
-        "source": "Jeff",
-        "project_id": "placeholder_123" # Example extra context
-    }
-    logger.info(f"\n--- Directly Calling Hermie V1 Run with Task Data ---")
+    # --- Workflow Initialization ---
+    try:
+        dreamer_flow = DreamerFlow(agents=agents, user_dir=str(user_workspace_dir))
+        logger.info("DreamerFlow instantiated.")
+    except Exception as e:
+        logger.exception(f"Failed to initialize DreamerFlow: {e}")
+        print(f"ERROR: Failed to initialize DreamerFlow: {e}. Exiting.")
+        sys.exit(1)
 
-    hermie_agent = agents.get("Hermie")
-    if hermie_agent:
+    # --- Execute Core Workflow (Jeff -> Arch -> Nexus) ---
+    test_input = f"Plan and build V1 for project '{test_project_name}' - a simple Python CLI tool that counts words in a file."
+    logger.info(f"\n--- Running DreamerFlow V2 Execute with Input: '{test_input}' ---")
+
+    # Use the DreamerFlow V2 execute method from Day 16
+    # Ensure DreamerFlow.execute handles project path creation internally now
+    final_flow_result = await dreamer_flow.execute(
+        initial_user_input=test_input,
+        test_project_name=test_project_name # Pass project name for path generation
+        )
+
+    logger.info("--- DreamerFlow V2 Execution Finished (from main.py) ---")
+    print("\n--- Final Workflow Result (from Nexus via Flow) ---")
+    print(json.dumps(final_flow_result, indent=2))
+    print("-----------------------------------------")
+    print("\nACTION REQUIRED: Check corresponding project folders for blueprint and code files.")
+    # Construct expected path for user verification
+    expected_project_path = user_workspace_dir / 'Projects' / test_project_name
+    print(f"Look in: {expected_project_path}")
+
+    # --- Test Lewis V1 Directly (Keep this test) ---
+    print("\n--- Testing Lewis V1 Info Retrieval ---")
+    lewis_agent = agents.get("Lewis")
+    if lewis_agent:
         try:
-            hermie_result = await hermie_agent.run(task_data=simulated_task_data)
-
-            print("\n--- Hermie V1 Final Results ---")
-            print(json.dumps(hermie_result, indent=2))
-            print("\nACTION REQUIRED: Check logs to verify Arch and Lewis logged task receipt.")
-
-            # Basic Verification based on Hermie's V1 run logic
-            if hermie_result.get("status") == "success":
-                print("\n -> Hermie V1 Routing Test PASSED (Reported Success).")
-            elif hermie_result.get("status") == "partial_success":
-                print("\n -> Hermie V1 Routing Test PARTIALLY PASSED (Reported Partial Success - Check errors).")
-                print(f"   Errors: {hermie_result.get('errors')}")
-            else:
-                print("\n -> Hermie V1 Routing Test FAILED (Reported Failure - Check errors).")
-                print(f"   Errors: {hermie_result.get('errors')}")
-
-        except Exception as hermie_e:
-             print(f"ERROR running Hermie V1 test: {hermie_e}")
-             logger.exception("Hermie V1 direct run test block failed.")
+            tool_info = lewis_agent.get_tool_info("Ollama")
+            print(f"Lewis info for 'Ollama': {tool_info}")
+            frontend_tools = lewis_agent.list_tools_by_category("Frontend")
+            print(f"Lewis 'Frontend' tools: {frontend_tools}")
+        except Exception as lewis_e:
+             logger.error(f"Error during Lewis V1 test: {lewis_e}")
+             print(f"ERROR testing Lewis: {lewis_e}")
     else:
-        print("ERROR: Hermie agent not found in dictionary!")
+        print("ERROR: Lewis agent not found for testing.")
+    print("-----------------------------------------")
 
-    # --- Agent Shutdown --- #
-    logger.info("\n--- Shutting Down Agents ---")
-    for agent_name, agent_instance in agents.items():
-         if hasattr(agent_instance, 'shutdown'):
-             logger.debug(f"Shutting down {agent_name}...")
-             try: await agent_instance.shutdown()
-             except Exception as shut_e: logger.error(f"Error shutting down {agent_name}: {shut_e}")
-
-    # DB Pool Closure (Optional)
-    # if close_db_pool:
-    #     await close_db_pool()
-    #     logger.info("DB Pool closed.")
-
-    logger.info("--- Hermie V1 Direct Routing Test Execution Finished ---")
-    print("-"*40)
-
+    # --- Agent Shutdown (Optional but good practice) ---
+    logger.info("\n--- Shutting Down Agents (Placeholder) ---")
+    # Implement graceful shutdown if agents have resources to release
+    # for agent_name, agent_instance in agents.items():
+    #      if hasattr(agent_instance, 'shutdown'):
+    #          logger.debug(f"Shutting down {agent_name}...")
+    #          try: await agent_instance.shutdown()
+    #          except Exception as shut_e: logger.error(f"Error shutting down {agent_name}: {shut_e}")
 
 if __name__ == "__main__":
-    # Ensure Rules files exist for Arch, Lewis, Hermie (BaseAgent should handle this)
-    # Ensure venv active.
-    asyncio.run(run_dreamer_test()) # Call the renamed test function 
+    # Ensure all prerequisites are met (venv, Ollama/Keys, DB seeds if needed, toolchest.json)
+    logger.info("Starting Week 3 Integration Test...")
+    try:
+        asyncio.run(run_dreamer_flow_and_tests()) # Call the test function
+        logger.info("Week 3 Integration Test Completed Successfully.")
+    except Exception as main_e:
+        logger.exception("Critical error during main execution.")
+        print(f"CRITICAL ERROR: {main_e}")
+        sys.exit(1)
+
+    # The uvicorn server runs the app defined in server.py, not this main.py directly.
+    # main.py is primarily for testing or utility scripts now.
+    # We will run the server via: python engine/core/server.py
+    logger.info("main.py executed. Note: Backend server should be started via 'python engine/core/server.py'") 

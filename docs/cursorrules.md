@@ -249,7 +249,7 @@ flowchart TD
     SP --> AC
     TC --> AC
     
-    AC --> P[progress.md]
+    AC --> P[progress.md] // Last Updated: YYYY-MM-DD HH:MM:SS
 ```
 
 ### Core Files (Required)
@@ -265,28 +265,29 @@ flowchart TD
    - How it should work
    - User experience goals
 
-3. `activeContext.md`
-   - Current Work Focus: Starting Day 20 (Dream Theatre UI Panel V1 & WS Listener).
-   - Recent Changes: Completed Day 19. Implemented Hermie V1 routing sim (Hermie calls Arch/Lewis `receive_task`). Added `receive_task` placeholders. Updated `main.py` for direct Hermie test. Resolved Pydantic/user_dir init errors.
-   - Next Steps: Proceed with Day 20 tasks sequentially (Create DreamTheatrePanel.jsx, modify App.jsx, test, commit/push).
-   - Active Decisions: Continue strict guide adherence. Continue adapting guide code to BaseAgent V2. Known issues (Redis, OpenRouter TypeError, DB Pool) are logged and monitored.
+3. `activeContext.md` // Last Updated: YYYY-MM-DD HH:MM:SS
+   - **Current work focus:** Starting Day 21 Task 4 - Start Backend Server (`engine/core/server.py`).
+   - **Recent changes:** Completed Day 21 Tasks 1-3 (BaseAgent V2 adaptation, backend test `main.py`, frontend test with backend offline).
+   - **Next steps:** Start the backend server, verify its startup, then re-test the frontend with the backend online.
+   - **Active decisions:** Confirmed frontend handles backend offline state gracefully (expected errors).
 
 4. `systemPatterns.md`
-   - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
-   - BaseAgent V2 provides core RAG (ChromaDB/ST), memory, event patterns.
-   - Agent communication currently direct calls (main.py test), Hermie V1 aims to centralize this.
+   - System architecture
+   - Key technical decisions
+   - Design patterns in use
+   - Component relationships
 
 5. `techContext.md`
-   - asyncio used for main flow/agent execution.
-   - ChromaDB/SentenceTransformer used for RAG (via BaseAgent V2).
-   - Missing DB Pool functions handled via try/except for now.
+   - Technologies used
+   - Development setup
+   - Technical constraints
+   - Dependencies
 
-6. `progress.md`
-   - What works: Day 1-19 foundations. Jeff/Arch/Lewis/Nexus/Hermie V1 structures functional. Hermie V1 routing sim tested successfully. UI shell/Chat Panel V1. UI Bridge (Port 3131).
-   - What's left: Day 20+. Full agent logic, DreamerFlow orchestration, Dream Theatre backend/UI updates, n8n, error handling, etc.
-   - Current status: Completed Day 19 (Hermie V1 Routing Sim). Ready for Day 20.
-   - Known issues: Redis connection fails. OpenRouter intermittent TypeError (#20250416234500). DB Pool functions missing (Mitigated). Jeff V2 n8n handoff verification pending.
-   - Last Updated: 2025-04-18 15:40:00 # Updated after Day 19 completion
+6. `progress.md` // Last Updated: YYYY-MM-DD HH:MM:SS
+   - **What works:** Backend flow (`main.py`), Lewis tests, Hermie init, Frontend load & offline behavior.
+   - **What's left:** Functional backend server, Dream Theatre WS implementation, n8n, Nexus V2+, etc.
+   - **Current status:** Ready to start backend server (`server.py`).
+   - **Known issues:** Redis connection, CSP warnings, n8n/UI Bridge failures (expected for now).
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -433,9 +434,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 
 ## Current Task (Cursor Updates This Automatically After Approval)
-Task: Day 20 - Task 1: Create DreamTheatrePanel.jsx (Placeholder)
+Task: Day 21: Week 3 Review & Basic Integration Test - Task 1
 Status: TODO
-Details: Start Day 20 by creating the initial placeholder file C:\DreamerAI\app\components\DreamTheatrePanel.jsx and basic component structure (consult DreamerAi_Guide.md Day 20 for specific code).
+Details: Modify C:\DreamerAI\main.py. Revert the primary test logic back to the Day 16 style (DreamerFlow.execute sequence) while keeping the Lewis V1 test calls, per Day 21 Guide.
 
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md

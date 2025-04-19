@@ -1,5 +1,5 @@
 import uvicorn
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException # Removed WebSocket import
 from fastapi.middleware.cors import CORSMiddleware # To allow frontend requests
 import sys
 import os
@@ -103,7 +103,7 @@ async def handle_jeff_chat(request: Request):
             logger.warning("Received chat request with empty input.")
             raise HTTPException(status_code=400, detail="User input cannot be empty.")
 
-        logger.debug(f"Received user input for Jeff: '{user_input[:50]}...'")
+        logger.debug(f"Received user input for Jeff: '{user_input[:50]}...'" )
 
         # TODO: TEMPORARY - Instantiate Jeff per request. Need proper agent lifecycle mgmt later.
         # Use the default user dir for now. Future requires user context.
@@ -124,6 +124,8 @@ async def handle_jeff_chat(request: Request):
     except Exception as e:
         logger.exception(f"Error handling Jeff chat request: {e}") # Log full traceback
         raise HTTPException(status_code=500, detail=f"Internal server error processing chat: {str(e)}")
+
+# WebSocket endpoint removed - Reverted to end of Day 20 state
 
 # Add more endpoints here later for:
 # - /create-project, /create-subproject (Day 25)
