@@ -397,21 +397,42 @@
 
 ## Day 22: UI Panels V1 (Project Manager & Settings), Expanding the Dreamer Desktop!
 *   **Cursor Task:** Create C:\DreamerAI\app\components\ProjectManagerPanel.jsx with the basic placeholder component code provided below.
-    *   Status: TODO
+    *   Status: DONE
 *   **Cursor Task:** Create C:\DreamerAI\app\components\SettingsPanel.jsx with the basic placeholder component code provided below.
-    *   Status: TODO
-*   **Cursor Task:** Modify C:\DreamerAI\app\src\App.jsx.
-    *   Status: TODO
+    *   Status: DONE
+*   **Cursor Task:** Modify C:\DreamerAI\app\src\App.jsx (Import/Integrate Panels).
+    *   Status: DONE
 *   **Cursor Task:** Run the frontend: cd C:\DreamerAI\app, npm start.
-    *   Status: TODO
+    *   Status: DONE
 *   **Cursor Task:** Click through all the tabs. Verify the "Chat" tab shows the chat panel. Verify the "Project Manager" and "Settings" tabs show their respective placeholder text. Verify the other tabs ("Plan/Build", "Dream Theatre") show their existing placeholders/content.
-    *   Status: TODO
+    *   Status: DONE
 *   **Cursor Task:** Stage changes (ProjectManagerPanel.jsx, SettingsPanel.jsx, App.jsx), commit, and push.
+    *   Status: DONE
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
+    *   Status: DONE
+*   **Overall Day Status:** DONE
+*   **Summary:** Expanding the UI structure by creating the V1 placeholder components for Project Manager and Settings panels and integrating them into the main App navigation.
+*   **Issues Encountered:** None.
+
+## Day 23: Subproject Management V1 & Project Panel Update, Organizing the Workshop!
+*   **Cursor Task:** Modify C:\DreamerAI\engine\core\db.py (Add subprojects table and method)
+    *   Status: TODO
+*   **Cursor Task:** Create C:\DreamerAI\engine\core\project_manager.py (Implement ProjectManager class)
+    *   Status: TODO
+*   **Cursor Task:** Modify C:\DreamerAI\engine\core\server.py (Add subproject endpoint)
+    *   Status: TODO
+*   **Cursor Task:** Modify C:\DreamerAI\app\components\ProjectManagerPanel.jsx (Add UI for subproject creation)
+    *   Status: TODO
+*   **Cursor Task:** Setup Test Data (Ensure parent project exists)
+    *   Status: TODO
+*   **Cursor Task:** Test the Subproject Creation Feature
+    *   Status: TODO
+*   **Cursor Task:** Stage, commit, and push subproject management changes.
     *   Status: TODO
 *   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
     *   Status: TODO
 *   **Overall Day Status:** TODO
-*   **Summary:** Expanding the UI structure by creating the V1 placeholder components for Project Manager and Settings panels and integrating them into the main App navigation.
-*   **Issues Encountered:** None Anticipated Yet
+*   **Summary:** Add backend/UI foundations for subproject creation within user projects.
+*   **Issues Encountered:** None Anticipated Yet.
 
 *(Future days/tasks will be added here)*

@@ -266,10 +266,10 @@ flowchart TD
    - User experience goals
 
 3. `activeContext.md` // Last Updated: [AUTO_TIMESTAMP]
-   - **Current work focus:** Starting Day 22 Task 1 - Create ProjectManagerPanel.jsx.
-   - **Recent changes:** Completed Day 21 (Dream Theatre backend service, WebSocket endpoint, CSP fixes, broadcast implementation & test). Resolved NameError in broadcast logic.
-   - **Next steps:** Proceed with Day 22 tasks sequentially (Create placeholder UI panels, integrate into App.jsx, test).
-   - **Active decisions:** Stuck to guide, deferred WebSocket refactoring. Acknowledged tab-switching limitation for WS messages.
+   - **Current work focus:** Starting Day 23 Task 1 - Modify C:\\DreamerAI\\engine\\core\\db.py (Add subprojects table and method).
+   - **Recent changes:** Completed Day 22 (Project Manager & Settings Panel placeholders created and integrated).
+   - **Next steps:** Proceed with Day 23 tasks sequentially (Modify db.py, create project_manager.py, modify server.py, modify ProjectManagerPanel.jsx, test).
+   - **Active decisions:** Verified existing App.jsx state was sufficient for Day 22. Confirmed UI rendering.
 
 4. `systemPatterns.md` // Last Updated: [AUTO_TIMESTAMP]
    - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
@@ -287,9 +287,9 @@ flowchart TD
    - Electron `session.defaultSession.webRequest.onHeadersReceived` was attempted for CSP but caused issues; reverted.
 
 6. `progress.md` // Last Updated: [AUTO_TIMESTAMP]
-   - **What works:** Day 1-21 foundations. Dream Theatre backend service, WebSocket endpoint, and frontend panel are functional. Jeff can broadcast messages via WebSocket. API/WebSocket connection issues (CSP, Imports, NameError) resolved.
-   - **What's left:** Implementing actual content/features in Dream Theatre, Project Manager, Settings panels. Addressing WS tab-switching limitation (deferred). Day 22+ tasks.
-   - **Current status:** Completed Day 21. Ready for Day 22 Task 1.
+   - **What works:** Day 1-22 foundations. Dream Theatre backend/frontend functional. Project Manager & Settings panels exist as placeholders in UI. Basic chat loop functional. Git workflow refined.
+   - **What's left:** Implementing actual content/features in Project/Settings/etc. panels. Subproject management logic (Day 23). Version control integration (Day 24+). Remaining agents.
+   - **Current status:** Completed Day 22. Ready for Day 23 Task 1.
    - **Known issues:** Redis connection fails. OpenRouter intermittent TypeError. DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval' in frontend console.
 
 ### Additional Context
@@ -438,9 +438,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 ## Current Task (Cursor Updates This Automatically After Approval)
 
-**Task:** Day 22 Task 1: Create C:\DreamerAI\app\components\ProjectManagerPanel.jsx
+**Task:** Day 23 Task 1: Modify C:\\DreamerAI\\engine\\core\\db.py (Add subprojects table and method)
 **Status:** TODO
-**Details:** Create the ProjectManagerPanel.jsx file with basic placeholder component code as per Day 22 guide.
+**Details:** Add the subprojects table schema (with project_id foreign key) to the _initialize_tables method and add an add_subproject method to the DreamerDB class as per Day 23 guide.
 
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md

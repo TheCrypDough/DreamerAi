@@ -283,3 +283,9 @@ Template for Entries must be completed at least Daily!
 *   **Key Decisions:** Stuck to guide, deferred WebSocket refactoring to later date.
 *   **Anthony's Vibe:** Initially frustrated by errors/blank screen/missed steps, but confirmed functionality after fixes.
 *   **Blockers Resolved:** CSP errors, backend WebSocket ImportError, NameError in broadcast logic.
+
+### Day 22: UI Panels V1 (Project Manager & Settings)
+**Task Summary:** Created placeholder React components `ProjectManagerPanel.jsx` and `SettingsPanel.jsx` in `app/components/`. Verified existing `App.jsx` already correctly imported and integrated these panels into the tab navigation (indices 3 & 4). Ran frontend and manually verified placeholder rendering.
+**Key Decisions:** Followed guide structure, verified existing `App.jsx` state was correct.
+**Anthony's Feedback/Vibe:** Approved completion via 'yes looks good'.
+**Blocking Issues:** None.

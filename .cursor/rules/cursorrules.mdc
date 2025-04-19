@@ -6,6 +6,11 @@ alwaysApply: false
 ---
 description: 
 globs: 
+alwaysApply: false
+---
+---
+description: 
+globs: 
 alwaysApply: true
 ---
 # Rules For CursorAI: Building DreamerAI (Version: Finalized 2025-03-31 - Rev 2)
