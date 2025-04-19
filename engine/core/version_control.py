@@ -4,161 +4,226 @@ import traceback
 from pathlib import Path
 from typing import Optional
 import asyncio # Added for async placeholders
+import git
+import logging
+from engine.core.logger import logger_instance # Correct import
 
 # Import GitPython - raises ImportError if not installed
 try:
-    import git
     from git import Repo, GitCommandError
     GITPYTHON_INSTALLED = True
 except ImportError:
-    git = None
-    Repo = None
-    GitCommandError = Exception # Define dummy exception
+    git = None  # type: ignore
+    Repo = None  # type: ignore
+    GitCommandError = Exception  # type: ignore
     GITPYTHON_INSTALLED = False
 
-try:
-    from .logger import logger_instance as logger
-except ImportError:
-    import logging
-    logger = logging.getLogger(__name__)
+# Setup logging
+logger = logger_instance # Use the imported instance
 
 class VersionControl:
-    """Handles Git operations for user projects."""
+    """Manages Git operations for project versioning within DreamerAI."""
 
-    def __init__(self, repo_path: str):
+    def __init__(self, project_path: str):
         """
-        Initializes the VersionControl manager for a specific repository path.
+        Initializes the VersionControl system for a given project path.
 
         Args:
-            repo_path: The absolute path to the local Git repository.
+            project_path (str): The absolute path to the project directory.
         """
-        self.repo_path = Path(repo_path)
-        self.repo: Optional[Repo] = None
+        self.project_path = project_path
+        self.repo = None
+        try:
+            if os.path.exists(os.path.join(project_path, '.git')):
+                self.repo = git.Repo(self.project_path)
+                logger.info(f"Existing Git repository loaded for project: {project_path}")
+            else:
+                self.repo = self.initialize_repository()
+        except git.InvalidGitRepositoryError:
+            logger.warning(f"Invalid Git repository detected at {project_path}. Attempting re-initialization.")
+            self.repo = self.initialize_repository()
+        except Exception as e:
+            logger.error(f"Failed to initialize or load repository at {project_path}: {e}", exc_info=True)
+            raise  # Re-raise critical errors
 
-        if not GITPYTHON_INSTALLED:
-            logger.error("GitPython library is not installed. Version control features disabled.")
-            # Optionally raise error or just disable functionality
+    def initialize_repository(self) -> git.Repo | None:
+        """
+        Initializes a new Git repository in the project path if one doesn't exist.
+
+        Returns:
+            git.Repo | None: The initialized Repo object or None if initialization failed.
+        """
+        try:
+            repo = git.Repo.init(self.project_path)
+            # Create initial .gitignore
+            gitignore_path = os.path.join(self.project_path, '.gitignore')
+            if not os.path.exists(gitignore_path):
+                with open(gitignore_path, 'w') as f:
+                    f.write("# DreamerAI Generated Files\n")
+                    f.write("*.log\n")
+                    f.write("*.db\n") # Example: ignore database files
+                    f.write("*.db-journal\n")
+                    f.write("__pycache__/\n")
+                    f.write("*.pyc\n")
+                    f.write(".env*\n")
+                    f.write("node_modules/\n")
+                    f.write("dist/\n")
+                    f.write("build/\n")
+            logger.info(f"Initialized new Git repository and .gitignore in: {self.project_path}")
+            return repo
+        except Exception as e:
+            logger.error(f"Failed to initialize Git repository at {self.project_path}: {e}", exc_info=True)
+            return None
+
+    def stage_changes(self, files: Optional[list[str]] = None):
+        """
+        Stages specified files or all changes if no files are provided.
+
+        Args:
+            files (list[str], optional): List of file paths relative to the project root to stage.
+                                         Defaults to None, which stages all changes.
+        """
+        if not self.repo:
+            logger.error("Repository not initialized. Cannot stage changes.")
             return
 
-        # Ensure the base directory exists, but repo might not yet
-        self.repo_path.parent.mkdir(parents=True, exist_ok=True)
-
-        # Try to open existing repo, otherwise it stays None until init_repo is called
-        if self.repo_path.exists() and (self.repo_path / ".git").is_dir():
-            try:
-                self.repo = Repo(self.repo_path)
-                logger.info(f"Opened existing Git repository at: {self.repo_path}")
-            except Exception as e:
-                logger.error(f"Failed to open existing repository at {self.repo_path}: {e}")
-        else:
-            logger.info(f"No existing Git repository found at: {self.repo_path}. Use init_repo() to create one.")
-
-    def init_repo(self, remote_url: Optional[str] = None) -> bool:
-        """
-        Initializes a new Git repository at the specified path.
-
-        Args:
-            remote_url: Optional URL for the 'origin' remote.
-
-        Returns:
-            True if initialization was successful or repo already exists, False otherwise.
-        """
-        if not GITPYTHON_INSTALLED: return False
-        if self.repo:
-            logger.warning(f"Repository already initialized at {self.repo_path}")
-            # Optionally verify remote if passed?
-            return True
-
-        logger.info(f"Initializing new Git repository at: {self.repo_path}")
         try:
-            # Ensure the directory itself exists before initializing
-            self.repo_path.mkdir(parents=True, exist_ok=True)
-            self.repo = Repo.init(self.repo_path)
-            logger.info("Repository initialized successfully.")
-            if remote_url:
-                try:
-                    self.repo.create_remote("origin", remote_url)
-                    logger.info(f"Added remote 'origin': {remote_url}")
-                except Exception as e: # Catch potential errors if remote already exists
-                     logger.warning(f"Could not add remote 'origin' ({remote_url}): {e}")
-                     # If remote exists, maybe try setting url instead? repo.remotes.origin.set_url(remote_url)
-            return True
-        except GitCommandError as e:
-            logger.error(f"Git command failed during init: {e}")
-        except Exception as e:
-            logger.error(f"Failed to initialize repository: {e}\n{traceback.format_exc()}")
+            if files:
+                # Ensure paths are relative to repo root if absolute paths are given
+                relative_files = []
+                for f in files:
+                    if os.path.isabs(f):
+                        # Attempt to make relative; may fail if outside repo
+                        try:
+                             rel_path = os.path.relpath(f, self.project_path)
+                             relative_files.append(rel_path)
+                        except ValueError:
+                            logger.warning(f"File {f} is outside the repository root {self.project_path}. Skipping.")
+                    else:
+                        relative_files.append(f) # Assume already relative
 
-        self.repo = None # Ensure repo is None on failure
-        return False
-
-    def stage_all_changes(self) -> bool:
-        """Stages all changes (added, modified, deleted) in the repository."""
-        if not self.repo:
-            logger.error("Cannot stage changes: Repository not initialized or loaded.")
-            return False
-        logger.debug("Staging all changes...")
-        try:
-            self.repo.git.add(all=True)
-            logger.info("All changes staged.")
-            return True
-        except GitCommandError as e:
-            logger.error(f"Git command failed during staging: {e}")
-            return False
-        except Exception as e:
-             logger.error(f"Unexpected error during staging: {e}")
-             return False
-
-    def commit_changes(self, message: str) -> bool:
-        """
-        Commits staged changes with the provided message.
-
-        Args:
-            message: The commit message.
-
-        Returns:
-            True if commit was successful, False otherwise.
-        """
-        if not self.repo:
-            logger.error("Cannot commit: Repository not initialized or loaded.")
-            return False
-        if not message:
-            logger.error("Cannot commit: Commit message cannot be empty.")
-            return False
-
-        logger.info(f"Attempting commit with message: '{message}'")
-        try:
-            # Check if there's anything staged to commit
-            # Handle case where HEAD doesn't exist yet (first commit)
-            is_first_commit = not self.repo.head.is_valid()
-            has_staged_changes = False
-            if not is_first_commit:
-                # If not the first commit, check diff against HEAD
-                has_staged_changes = self.repo.index.diff("HEAD") is not None
+                logger.info(f"Staging specific files: {relative_files}")
+                self.repo.index.add(relative_files)
             else:
-                # If it IS the first commit, any staged changes count
-                # Check if the index has entries (this is a bit indirect, might need refinement)
-                has_staged_changes = bool(self.repo.index.entries)
+                logger.info("Staging all changes.")
+                self.repo.index.add('*') # Stage all tracked and untracked files
+            logger.info("Changes staged successfully.")
+            return True # Explicitly return True on success
+        except Exception as e:
+            logger.error(f"Failed to stage changes: {e}", exc_info=True)
+            # Implicitly returns None on exception
 
-            # Also consider untracked files just added
-            has_untracked_staged = bool(self.repo.untracked_files)
+    def commit_changes(self, message: str):
+        """
+        Commits staged changes with a given message.
 
-            if not has_staged_changes and not has_untracked_staged and not self.repo.is_dirty(index=False, working_tree=False, untracked_files=False):
-                 logger.warning("No changes staged or modified; nothing to commit.")
-                 return True # Arguably success, as state is clean
+        Args:
+            message (str): The commit message.
+        """
+        if not self.repo:
+            logger.error("Repository not initialized. Cannot commit changes.")
+            return
+
+        try:
+            # Check if there are staged changes
+            # diff returns empty list if no changes, raises BadName if HEAD doesn't exist (first commit)
+            staged_changes = False
+            try:
+                if self.repo.index.diff("HEAD"): # Compare index against last commit
+                     staged_changes = True
+            except git.exc.BadName: # Handles the case where HEAD doesn't exist (initial commit)
+                 if self.repo.index.diff(None): # Compare index against empty tree
+                     staged_changes = True
+
+            if not staged_changes and not self.repo.untracked_files:
+                 # Also check untracked files specifically for the initial commit scenario
+                 # where .gitignore might be the only change and needs staging first.
+                 # A better approach might be to ensure .gitignore is staged *before* calling commit.
+                 # Let's refine: stage_changes should be called before commit.
+                 # This check primarily prevents empty commits.
+                 logger.info("No changes staged for commit.")
+                 return # Prevent empty commits
 
             self.repo.index.commit(message)
-            logger.info("Commit successful.")
-            return True
-        except GitCommandError as e:
-            logger.error(f"Git command failed during commit: {e}")
-            # Specific error for empty commit:
-            if "nothing to commit" in str(e).lower() or "no changes added to commit" in str(e).lower():
-                 logger.warning("Caught 'nothing to commit' error, treating as non-failure.")
-                 return True
-            return False
+            logger.info(f"Changes committed successfully with message: '{message}'")
+            return True # Explicitly return True on success
         except Exception as e:
-            logger.error(f"Unexpected error during commit: {e}\n{traceback.format_exc()}")
-            return False
+            logger.error(f"Failed to commit changes: {e}", exc_info=True)
+            # Implicitly returns None on exception
+
+    def get_status(self) -> str:
+        """
+        Gets the current status of the repository.
+
+        Returns:
+            str: A string describing the repository status (output of git status).
+        """
+        if not self.repo:
+            logger.error("Repository not initialized. Cannot get status.")
+            return "Error: Repository not initialized."
+        try:
+            # Fetch the status using git command directly for comprehensive output
+            status_output = self.repo.git.status()
+            logger.info("Retrieved repository status.")
+            return status_output
+        except Exception as e:
+            logger.error(f"Failed to get repository status: {e}", exc_info=True)
+            return f"Error getting status: {e}"
+
+    def get_changed_files(self) -> dict:
+        """
+        Gets lists of modified, untracked, and staged files.
+
+        Returns:
+            dict: A dictionary with keys 'modified', 'untracked', 'staged'.
+                  'staged' contains tuples (status, file_path).
+        """
+        if not self.repo:
+            logger.error("Repository not initialized. Cannot get changed files.")
+            return {'modified': [], 'untracked': [], 'staged': []}
+
+        try:
+            modified_files = [item.a_path for item in self.repo.index.diff(None)] # Files modified since last commit, unstaged
+            untracked_files = self.repo.untracked_files
+            # Staged files (added, modified, deleted) compared to HEAD
+            staged_files_diff = self.repo.index.diff("HEAD") # Diff against the last commit
+            staged_details = []
+            for change in staged_files_diff:
+                status = change.change_type # e.g., 'A' (added), 'M' (modified), 'D' (deleted), 'R' (renamed), 'C' (copied)
+                path = change.a_path # Path in the index
+                staged_details.append((status, path))
+
+            # Handle initial commit case where HEAD doesn't exist
+            # In this case, diff(None) shows all staged files as 'added' essentially.
+            if not self.repo.head.is_valid():
+                staged_files_diff_initial = self.repo.index.diff(None) # Diff against empty tree
+                staged_details = []
+                for change in staged_files_diff_initial:
+                     # Treat all as 'added' or 'modified' for simplicity in initial commit context
+                     status = change.change_type if change.change_type != 'D' else 'A' # Map deletions to additions? Maybe just use type.
+                     path = change.a_path
+                     staged_details.append((change.change_type, path))
+
+
+            logger.info("Retrieved changed files status.")
+            return {
+                'modified': modified_files, # More accurately, these are unstaged changes to tracked files
+                'untracked': untracked_files,
+                'staged': staged_details
+            }
+        except git.exc.BadName: # Handle initial commit scenario for staged files
+             staged_files_diff_initial = self.repo.index.diff(None)
+             staged_details = [(change.change_type, change.a_path) for change in staged_files_diff_initial]
+             logger.info("Retrieved changed files status (initial commit).")
+             return {
+                 'modified': [], # No 'HEAD' to compare against for modifications yet
+                 'untracked': self.repo.untracked_files,
+                 'staged': staged_details
+             }
+
+        except Exception as e:
+            logger.error(f"Failed to get changed files: {e}", exc_info=True)
+            return {'modified': [], 'untracked': [], 'staged': []}
 
     # --- Placeholder Remote Operations (Require Authentication/API Interaction Later) ---
 

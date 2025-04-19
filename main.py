@@ -102,7 +102,7 @@ async def run_dreamer_flow_and_tests(): # Renamed function
             tool_info = lewis_agent.get_tool_info("Ollama")
             print(f"Lewis info for 'Ollama': {tool_info}")
             frontend_tools = lewis_agent.list_tools_by_category("Frontend")
-            print(f"Lewis 'Frontend' tools: {[t.get('name') for t in frontend_tools]}")
+            print(f"Lewis 'Frontend' tools: {frontend_tools}")
         except Exception as lewis_e:
              logger.error(f"Error during Lewis V1 test: {lewis_e}")
              print(f"ERROR testing Lewis: {lewis_e}")
@@ -117,9 +117,9 @@ async def run_dreamer_flow_and_tests(): # Renamed function
     # Define path using variables from above
     # Need to generate a unique name here or reuse one consistently
     # Using a fixed name for simplicity, ensure cleanup if rerunning manually
-    test_project_name = "FlowV2_LewisV1_VC_Test_D24" # Fixed name for test consistency
-    user_workspace_dir = Path(DEFAULT_USER_DIR)
-    test_project_context_path = user_workspace_dir / "Projects" / test_project_name
+    test_project_name_vc = "FlowV2_LewisV1_VC_Test_D24" # Changed variable name to avoid conflict
+    user_workspace_dir_vc = Path(DEFAULT_USER_DIR) # Use separate path object
+    test_project_context_path = user_workspace_dir_vc / "Projects" / test_project_name_vc
     # Create the base project dir if it doesn't exist for the test
     test_project_context_path.mkdir(parents=True, exist_ok=True)
 
@@ -131,11 +131,11 @@ async def run_dreamer_flow_and_tests(): # Renamed function
     try:
         vc = VersionControl(str(vc_test_repo_path))
         # 1. Init
-        if vc.init_repo():
+        if vc.initialize_repository():
             logger.info("VC Test: Init OK.")
             # 2. Create file & stage
             (vc_test_repo_path / "sample.txt").write_text("Hello GitPython from DreamerAI")
-            if vc.stage_all_changes():
+            if vc.stage_changes():
                 logger.info("VC Test: Stage OK.")
                 # 3. Commit
                 if vc.commit_changes("Test commit via DreamerAI VC - Day 24"):

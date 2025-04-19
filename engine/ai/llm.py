@@ -340,12 +340,28 @@ class LLM:
                 )
             )
             
-            response_text = completion.choices[0].message.content
-            if response_text:
+            # --- Start Change ---
+            response_text = None
+            if completion and completion.choices and len(completion.choices) > 0:
+                choice = completion.choices[0]
+                if choice and choice.message and choice.message.content is not None:
+                     response_text = choice.message.content
+                elif choice and choice.message and hasattr(choice.message, 'tool_calls') and choice.message.tool_calls:
+                     # Handle potential tool calls if that's an expected response format
+                     logger.warning(f"OpenAI-compatible '{provider_name}' responded with tool calls, not direct text content.")
+                     # Decide how to handle tool calls - for now, treat as non-text response
+                     response_text = None # Or potentially serialize tool calls if needed elsewhere
+                else:
+                     logger.warning(f"OpenAI-compatible '{provider_name}' choice or message content missing structure: {choice}")
+            else:
+                 logger.warning(f"OpenAI-compatible '{provider_name}' response missing choices structure: {completion}")
+            # --- End Change ---
+
+            if response_text is not None: # Check explicitly for None now
                 logger.debug(f"OpenAI-compatible '{provider_name}' model '{model_name}' generated response successfully.")
                 return response_text.strip()
             else:
-                logger.warning(f"OpenAI-compatible '{provider_name}' response empty.")
+                logger.warning(f"OpenAI-compatible '{provider_name}' response was empty or structured unexpectedly (e.g., tool calls).")
                 return None
         # Handle specific OpenAI errors
         except APIConnectionError as e: logger.error(f"OpenAI API Connection Error for '{provider_name}': {e}"); return None

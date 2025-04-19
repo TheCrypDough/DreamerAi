@@ -130,6 +130,9 @@ This section centralizes all logging requirements for traceability and context m
 ## Auto-Update Triggers & Workflow
 
 **After Each Task Completion & Approval**: (A task is typically one item marked DONE in `tasks.md`. Approval definition in Development Workflow section).
+
+**Mandatory Execution (CRITICAL):** ALL steps listed below (1-10) MUST be executed in sequence after EVERY approved task completion. NO step may be skipped, combined, or deferred for ANY reason, regardless of perceived simplicity or redundancy. Skipping steps WILL lead to context desynchronization and project errors.
+
 1.  **Update `tasks.md`**: Mark the completed task as DONE.
 
 2.  **Identify Next Task**: Read `tasks.md` to identify the next task with status TODO.
@@ -383,6 +386,7 @@ flowchart TD
 - Known challenges
 - Evolution of project decisions
 - Tool usage patterns
+- **Agent File Mapping:** Lewis (Administrator) Agent code is in `engine/agents/administrator.py`.
 
 The format is flexible - focus on capturing valuable insights that help me work more effectively with you and the project. Think of cursorrules.md as a living document that grows smarter as we work together.
 
