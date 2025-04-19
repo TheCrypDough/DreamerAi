@@ -439,13 +439,21 @@
 
 ## Day 25: Version Control Backend V2 (Remote Placeholders & Schemas) (Status: TODO)
 
-*   **Cursor Task:** Add GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET placeholders to C:\DreamerAI\data\config\.env.development. (Remind Anthony to replace placeholders with actual values). - **TODO**
-*   **Cursor Task:** Add the [integrations.github] section to C:\DreamerAI\data\config\config.dev.toml, referencing the new environment variables. - **TODO**
-*   **Cursor Task:** Activate venv (.\venv\Scripts\activate). Install httpx: pip install httpx. Update requirements.txt: pip freeze > requirements.txt. - **TODO**
-*   **Cursor Task:** Modify C:\DreamerAI\engine\core\server.py. Import necessary modules (Request, HTTPException, Optional from typing). Add a global variable github_access_token: Optional[str] = None (with TODO comment about secure storage). Implement the async def receive_github_token(request: Request) endpoint decorated with @app.post("/auth/github/token"). Parse the JSON body, extract the token, store it in the global variable, and return success. Include error handling. - **TODO**
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Add import httpx. Add a new async test function test_github_token_endpoint(). Inside it, use httpx.AsyncClient to make a POST request to http://localhost:8000/auth/github/token with a dummy token in the JSON body. Check the response status. Call this new test function from within the main run_dreamer_flow_and_tests function (or similar test runner). - **TODO**
-*   **Cursor Task:** Test the setup: Start the backend server (python -m engine.core.server in activated venv). Run the main test script (python main.py in activated venv). Verify the "Testing GitHub Token Endpoint" logs show a successful POST (e.g., response code 200). Check backend server logs to confirm the endpoint received the token. - **TODO**
-*   **Cursor Task:** Stage changes (.env.development, config.dev.toml, server.py, main.py, requirements.txt), commit, and push (commit message handled by auto-update workflow). - **TODO**
-*   **Cursor Task:** Request Approval: "Task 'Day 25: GitHub Auth Backend Prep' complete. Implementation: Added GitHub OAuth credentials to config, created /auth/github/token backend endpoint (V1 global token storage), added httpx dependency, created/ran test for endpoint via main.py. Tests: Backend endpoint received test token successfully (Verified via logs). Deferred unrelated Old Guide Day 25 features (JetBrains, Testing, Templates, Subprojects, UX) per plan. Requesting approval to proceed to 'Day 26: GitHub Auth UI'. (yes/no/details?)" - **TODO**
+*   **Cursor Task:** Add GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET placeholders to C:\DreamerAI\data\config\.env.development. (Remind Anthony to replace placeholders with actual values).
+    *   Status: [TODO]
+*   **Cursor Task:** Add the [integrations.github] section to C:\DreamerAI\data\config\config.dev.toml, referencing the new environment variables.
+    *   Status: [TODO]
+*   **Cursor Task:** Activate venv (.\venv\Scripts\activate). Install httpx: pip install httpx. Update requirements.txt: pip freeze > requirements.txt.
+    *   Status: [DONE]
+*   **Cursor Task:** Modify C:\DreamerAI\engine\core\server.py. Import necessary modules (Request, HTTPException, Optional from typing). Add a global variable github_access_token: Optional[str] = None (with TODO comment about secure storage). Implement the async def receive_github_token(request: Request) endpoint decorated with @app.post("/auth/github/token"). Parse the JSON body, extract the token, store it in the global variable, and return success. Include error handling.
+    *   Status: [TODO]
+*   **Cursor Task:** Modify C:\DreamerAI\main.py. Add import httpx. Add a new async test function test_github_token_endpoint(). Inside it, use httpx.AsyncClient to make a POST request to http://localhost:8000/auth/github/token with a dummy token in the JSON body. Check the response status. Call this new test function from within the main run_dreamer_flow_and_tests function (or similar test runner).
+    *   Status: [TODO]
+*   **Cursor Task:** Test the setup: Start the backend server (python -m engine.core.server in activated venv). Run the main test script (python main.py in activated venv). Verify the "Testing GitHub Token Endpoint" logs show a successful POST (e.g., response code 200). Check backend server logs to confirm the endpoint received the token.
+    *   Status: [TODO]
+*   **Cursor Task:** Stage changes (.env.development, config.dev.toml, server.py, main.py, requirements.txt), commit, and push (commit message handled by auto-update workflow).
+    *   Status: [TODO]
+*   **Cursor Task:** Request Approval: "Task 'Day 25: GitHub Auth Backend Prep' complete. Implementation: Added GitHub OAuth credentials to config, created /auth/github/token backend endpoint (V1 global token storage), added httpx dependency, created/ran test for endpoint via main.py. Tests: Backend endpoint received test token successfully (Verified via logs). Deferred unrelated Old Guide Day 25 features (JetBrains, Testing, Templates, Subprojects, UX) per plan. Requesting approval to proceed to 'Day 26: GitHub Auth UI'. (yes/no/details?)"
+    *   Status: [TODO]
 
 *(Future days/tasks will be added here)*

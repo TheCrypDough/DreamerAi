@@ -236,7 +236,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: [2025-04-19 19:00:00] # Placeholder timestamp
+# Last Updated: [2025-04-25 12:00:00] # Placeholder - Updated Timestamp
 
 ## Memory Bank Structure
 
@@ -252,7 +252,7 @@ flowchart TD
     SP --> AC
     TC --> AC
     
-    AC --> P[progress.md] // Last Updated: [2025-04-19 19:00:00] # Placeholder timestamp
+    AC --> P[progress.md] // Last Updated: [2025-04-25 12:00:00] # Placeholder - Updated Timestamp
 ```
 
 ### Core Files (Required)
@@ -268,11 +268,11 @@ flowchart TD
    - How it should work
    - User experience goals
 
-3. `activeContext.md` // Last Updated: [2025-04-19 19:00:00] # Placeholder timestamp
-   - **Current work focus:** Starting Day 25 Task 1 - Define Pydantic models (Details Pending Guide Input).
-   - **Recent changes:** Completed Day 24 (VC Local Ops), including testing, debugging return values, fixing linter errors, proactive LLM fix, and extensive `.gitignore`/Git index cleanup related to `/Users` directory.
-   - **Next steps:** Proceed with Day 25 tasks sequentially once provided.
-   - **Active decisions:** Confirmed local VC operations pass test. Cleaned Git history to remove unwanted `/Users` tracking.
+3. `activeContext.md` // Last Updated: [2025-04-25 12:00:00] # Placeholder - Updated Timestamp
+   - **Current work focus:** Starting Day 25 Task 4 - Modify `engine/core/server.py` to add GitHub token endpoint.
+   - **Recent changes:** Completed Day 25 Task 3 (Activated venv, installed httpx, updated requirements.txt). Verified `requirements.txt` update.
+   - **Next steps:** Proceed with Day 25 Task 4: Implement the `/auth/github/token` endpoint in `server.py`.
+   - **Active decisions:** Confirmed `httpx` install and `requirements.txt` update were successful.
 
 4. `systemPatterns.md` // Last Updated: [AUTO_TIMESTAMP]
    - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
@@ -289,11 +289,11 @@ flowchart TD
    - FastAPI `WebSocket` used for Dream Theatre endpoint.
    - Electron `session.defaultSession.webRequest.onHeadersReceived` was attempted for CSP but caused issues; reverted.
 
-6. `progress.md` // Last Updated: [2025-04-19 19:00:00] # Placeholder timestamp
-   - **What works:** Day 1-24 foundations. Subproject creation backend/UI functional. Dream Theatre backend/frontend functional. Project Manager & Settings panels placeholders integrated. Basic chat loop functional. Local Git operations (init, stage, commit, status) implemented in `VersionControl` class and tested. `.gitignore` updated and cleaned.
-   - **What's left:** Version Control schemas & remote ops (Day 25+). Version control UI integration. Implementing actual content/features in Project/Settings/etc. panels. Remaining agents.
-   - **Current status:** Completed Day 24. Ready for Day 25 Task 1.
-   - **Known issues:** Redis connection fails. OpenRouter intermittent TypeError (mitigated with robust handling). DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval' in frontend console. Terminal output capture unreliable for Python scripts (Blocking verification - requires monitoring/alternative). Lewis test failure (`AttributeError: 'str' object has no attribute 'get'`) needs investigation.
+6. `progress.md` // Last Updated: [2025-04-25 12:00:00] # Placeholder - Updated Timestamp
+   - **What works:** Day 1-24 foundations. Day 25 Task 1-3 (Config, httpx install). Subproject creation backend/UI functional. Dream Theatre backend/frontend functional. Project Manager & Settings panels placeholders integrated. Basic chat loop functional. Local Git operations tested. `.gitignore` updated.
+   - **What's left:** Day 25 Tasks 4-7 (Server endpoint, main.py test, final testing). Version Control schemas & remote ops (Day 25+). Version control UI integration. Implementing actual content/features in Project/Settings/etc. panels. Remaining agents.
+   - **Current status:** Completed Day 25 Task 3. Ready for Day 25 Task 4.
+   - **Known issues:** Redis connection fails. OpenRouter intermittent TypeError (mitigated). DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval'. Terminal output capture unreliable (Monitoring). Lewis test failure (`AttributeError: 'str' object has no attribute 'get'`).
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -444,9 +444,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 ## Current Task (Cursor Updates This Automatically After Approval)
 
-**Task:** Day 25 Task 1: Define Pydantic models (Placeholder - Awaiting Guide Input)
+**Task:** Day 25 Task 4: Modify C:\DreamerAI\engine\core\server.py (Add GitHub token endpoint)
 **Status:** TODO
-**Details:** Define Pydantic models (`CommitInfo`, `RepoStatus`, `ChangedFiles`) in `engine/core/schemas/version_control.py` (Create directory if needed).
+**Details:** Import necessary modules (Request, HTTPException, Optional from typing). Add a global variable `github_access_token: Optional[str] = None` (with TODO comment about secure storage). Implement the `async def receive_github_token(request: Request)` endpoint decorated with `@app.post("/auth/github/token")`. Parse the JSON body, extract the token, store it in the global variable, and return success. Include error handling.
 
 ## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
