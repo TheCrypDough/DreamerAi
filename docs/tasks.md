@@ -351,35 +351,48 @@
 *   DONE - Cursor Task: Execute `python main.py` (venv active). Verify the logs show Hermie running, retrieving Arch and Lewis, and calling their `receive_task` methods. Verify Arch and Lewis log that they received the task. Check for errors.
 *   DONE - Cursor Task: Stage changes (`communications.py`, `planning.py`, `administrator.py`, `main.py`), commit, and push.
 
-## Day 20: Dream Theatre UI Panel V1 & WebSocket Listener
-*   TODO - Cursor Task: Create `C:\DreamerAI\app\components\DreamTheatrePanel.jsx` using the provided React component code. Implement the useEffect hook to establish the WebSocket connection to `ws://localhost:8081` and log events (onopen, onmessage, onerror, onclose). Include placeholder text.
-*   TODO - Cursor Task: Modify `C:\DreamerAI\app\src\App.jsx`. Import `DreamTheatrePanel`. Update the `renderTabContent` function to render `<DreamTheatrePanel />` when the corresponding tab index (likely index 2 based on previous tab order) is active.
-*   TODO - Cursor Task: Run the frontend: `cd C:\DreamerAI\app`, `npm start`.
-*   TODO - Cursor Task: Navigate to the "Dream Theatre" tab in the UI. Verify the placeholder text is displayed.
-*   TODO - Cursor Task: Open Electron DevTools (Ctrl+Shift+I) and check the Console. Verify logs showing the WebSocket attempting to connect to `ws://localhost:8081`. Expect connection errors initially ("WebSocket connection to 'ws://localhost:8081/' failed") as the server doesn't exist yet. This error confirms the client is trying to connect correctly.
-*   TODO - Cursor Task: Stage changes (`DreamTheatrePanel.jsx`, `App.jsx`), commit, and push.
-
-## Day 21: Week 3 Review & Basic Integration Test, Checking the Foundation!
-*   **Cursor Task:** Modify C:\DreamerAI\main.py. Revert the primary test logic back to the Day 16 style (DreamerFlow.execute sequence) while keeping the Lewis V1 test calls.
+## Day 20: Dream Theatre UI & Backend Connection V1 (Corrected Scope)
+*   **Cursor Task:** Create `C:\DreamerAI\app\components\DreamTheatrePanel.jsx` (Day 20 Task 1 - done previously).
     *   Status: DONE
-*   **Cursor Task:** Perform Backend Test (`python main.py` - Verify Jeff->Arch->Nexus Flow & Lewis Test).
-    *   Status: IN PROGRESS
-*   **Cursor Task:** Perform Frontend Test (`npm start` - Verify UI Load, Chat Send/Receive, Dream Theatre WS Logs).
-    *   Status: TODO
-*   **Cursor Task:** Log overall results in `docs/daily_progress/daily_context_log.md`.
-    *   Status: TODO
-*   **Cursor Task:** Stage changes (`main.py`), commit, and push Day 21 changes.
-    *   Status: TODO
-*   **Overall Day Status:** IN PROGRESS
-*   **Summary:** Review Week 3 components (core agents V1, flow, UI panels/bridge) and run basic integration tests (backend flow via main.py, manual UI checks) in the Dev environment.
-*   **Issues Encountered:** None Yet
+*   **Cursor Task:** Integrate `DreamTheatrePanel.jsx` into `App.jsx` (Day 20 Task 2 - done previously).
+    *   Status: DONE
+*   **Cursor Task:** Test Frontend UI (with Backend Offline) (Day 21 Task 3).
+    *   Status: DONE
+*   **Cursor Task:** Add WebSocket endpoint to `engine/core/server.py`.
+    *   Status: DONE
+*   **Cursor Task:** Create `engine/core/dream_theatre_service.py` (Fix for ImportError).
+    *   Status: DONE
+*   **Cursor Task:** Fix Content Security Policy (CSP) in `app/forge.config.js`.
+    *   Status: DONE
+*   **Cursor Task:** Implement WebSocket broadcast in `engine/agents/main_chat.py`.
+    *   Status: DONE
+*   **Cursor Task:** Test API/WebSocket connections and broadcast functionality.
+    *   Status: DONE
+*   **Cursor Task:** Update Logs (Migration, Issues, Errors).
+    *   Status: DONE
+*   **Cursor Task:** Execute Auto-Update Workflow (Incl. Memory Bank, Context, Rules, Commit).
+    *   Status: DONE
+*   **Overall Day Status:** DONE
+*   **Summary:** Implemented Dream Theatre WebSocket backend, frontend client logic, broadcast mechanism, and fixed related connection/CSP/import errors.
+*   **Issues Encountered:** CSP errors, ImportError, NameError, Blank Screen issue, WebSocket timing limitation noted.
 
-## Day 22: UI Panels V1 (Project Manager & Settings)
-*   **Task:** Create C:\DreamerAI\app\components\ProjectManagerPanel.jsx with basic placeholder component code. (Status: TODO)
-*   **Task:** Create C:\DreamerAI\app\components\SettingsPanel.jsx with basic placeholder component code. (Status: TODO)
-*   **Task:** Modify C:\DreamerAI\app\src\App.jsx (Import new components, update `renderTabContent`). (Status: TODO)
-*   **Task:** Run the frontend: `cd C:\DreamerAI\app`, `npm start`. (Status: TODO)
-*   **Task:** Verify UI Tabs: Click through all tabs and verify correct content/placeholders display. (Status: TODO)
-*   **Task:** Stage changes (`ProjectManagerPanel.jsx`, `SettingsPanel.jsx`, `App.jsx`), commit, and push. (Status: TODO)
+## Day 21: UI Panels V1 (Project Manager & Settings), Expanding the Dreamer Desktop!
+*   **Cursor Task:** Create C:\DreamerAI\app\components\ProjectManagerPanel.jsx with the basic placeholder component code provided below.
+    *   Status: TODO
+*   **Cursor Task:** Create C:\DreamerAI\app\components\SettingsPanel.jsx with the basic placeholder component code provided below.
+    *   Status: TODO
+*   **Cursor Task:** Modify C:\DreamerAI\app\src\App.jsx.
+    *   Status: TODO
+*   **Cursor Task:** Run the frontend: cd C:\DreamerAI\app, npm start.
+    *   Status: TODO
+*   **Cursor Task:** Click through all the tabs. Verify the "Chat" tab shows the chat panel. Verify the "Project Manager" and "Settings" tabs show their respective placeholder text. Verify the other tabs ("Plan/Build", "Dream Theatre") show their existing placeholders/content.
+    *   Status: TODO
+*   **Cursor Task:** Stage changes (ProjectManagerPanel.jsx, SettingsPanel.jsx, App.jsx), commit, and push.
+    *   Status: TODO
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
+    *   Status: TODO
+*   **Overall Day Status:** TODO
+*   **Summary:** Expanding the UI structure by creating the V1 placeholder components for Project Manager and Settings panels and integrating them into the main App navigation.
+*   **Issues Encountered:** None Anticipated Yet
 
 *(Future days/tasks will be added here)*
