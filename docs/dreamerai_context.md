@@ -315,3 +315,10 @@ Template for Entries must be completed at least Daily!
 *   **Key Decisions:** Used global variable for V1 simplicity, explicitly adding a TODO comment regarding the need for secure, user-specific storage later. Ensured necessary imports (`Request`, `HTTPException`, `Optional`) were present.
 *   **Anthony's Feedback/Vibe:** Approved completion.
 *   **Blocking Issues:** None.
+
+### Day 25 Task 5: Modify main.py (Add GitHub Token Test) (Completed: [AUTO_TIMESTAMP])
+
+*   **Summary:** Modified `main.py` to add an asynchronous test function `test_github_token_endpoint`. This function uses `httpx` to send a POST request with a dummy GitHub token to the `/auth/github/token` endpoint implemented in Task 4. Added the `httpx` import and called the new test function within the main test execution sequence (`run_dreamer_flow_and_tests`).
+*   **Key Decisions:** Followed guide structure for the test function, including basic status code checking and error handling.
+*   **Anthony's Feedback/Vibe:** Approved completion.
+*   **Blocking Issues:** None.

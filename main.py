@@ -6,6 +6,7 @@ from typing import Dict, Optional, List, Any
 from pathlib import Path
 import json
 import traceback
+import httpx # NEW Import for Day 25 Test
 
 # Add project root...
 project_root_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '.')) # Use . for root
@@ -153,7 +154,52 @@ async def run_dreamer_flow_and_tests(): # Renamed function
         print(f"ERROR during VC Test: {e}")
 
     print("-----------------------------------------")
+
+    # --- NEW: Test GitHub Token Endpoint (Day 25) ---
+    await test_github_token_endpoint()
+
+    print("\n--- All Tests Finished ---")
+    print("-----------------------------------------")
     logger.info("run_dreamer_flow_and_tests finished.") # Added final log
+
+# --- NEW Test function for GitHub Endpoint ---
+async def test_github_token_endpoint():
+    """Tests the backend endpoint for receiving the GitHub token."""
+    print("\n--- Testing GitHub Token Endpoint (/auth/github/token) ---")
+    backend_url = "http://localhost:8000/auth/github/token" # Ensure port matches server.py
+    # Use a realistic looking prefix for a test token
+    dummy_token = "gho_Test123DummyTokenForDreamerAIxyz"
+    payload = {"token": dummy_token}
+
+    try:
+        # Use httpx.AsyncClient for making async requests
+        async with httpx.AsyncClient() as client:
+            logger.debug(f"POSTing dummy token to {backend_url}...")
+            response = await client.post(backend_url, json=payload, timeout=10) # Increased timeout slightly
+
+            if response.status_code == 200:
+                logger.info(f"GitHub Token Endpoint Test SUCCESS: Status {response.status_code}, Response: {response.json()}")
+                print(f"Token Endpoint Test: SUCCESS ({response.status_code}) - Backend received token.")
+            else:
+                # Log the detailed error from FastAPI if possible
+                error_detail = response.text
+                try:
+                    error_json = response.json()
+                    error_detail = error_json.get("detail", response.text)
+                except Exception:
+                    pass # Keep raw text if not JSON
+                logger.error(f"GitHub Token Endpoint Test FAILED: Status {response.status_code}, Detail: {error_detail}")
+                print(f"Token Endpoint Test: FAILED ({response.status_code}) - Detail: {error_detail}. Check backend logs.")
+
+    except httpx.ConnectError as exc:
+         logger.error(f"HTTPX Connect Error during token endpoint test: {exc}")
+         print(f"Token Endpoint Test: FAILED - Connection error: {exc}. Is backend server (python -m engine.core.server) running on port 8000?")
+    except httpx.RequestError as exc:
+        logger.error(f"HTTPX Request Error during token endpoint test: {exc}")
+        print(f"Token Endpoint Test: FAILED - Request error: {exc}.")
+    except Exception as e:
+        logger.exception("Token Endpoint Test: Unexpected error during test.")
+        print(f"Token Endpoint Test: FAILED - Unexpected error: {e}")
 
 if __name__ == "__main__":
     # Ensure all prerequisites are met (venv, Ollama/Keys, DB seeds if needed, toolchest.json)

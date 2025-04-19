@@ -448,7 +448,7 @@
 *   **Cursor Task:** Modify C:\DreamerAI\engine\core\server.py. Import necessary modules (Request, HTTPException, Optional from typing). Add a global variable github_access_token: Optional[str] = None (with TODO comment about secure storage). Implement the async def receive_github_token(request: Request) endpoint decorated with @app.post("/auth/github/token"). Parse the JSON body, extract the token, store it in the global variable, and return success. Include error handling.
     *   Status: [DONE]
 *   **Cursor Task:** Modify C:\DreamerAI\main.py. Add import httpx. Add a new async test function test_github_token_endpoint(). Inside it, use httpx.AsyncClient to make a POST request to http://localhost:8000/auth/github/token with a dummy token in the JSON body. Check the response status. Call this new test function from within the main run_dreamer_flow_and_tests function (or similar test runner).
-    *   Status: [TODO]
+    *   Status: [DONE]
 *   **Cursor Task:** Test the setup: Start the backend server (python -m engine.core.server in activated venv). Run the main test script (python main.py in activated venv). Verify the "Testing GitHub Token Endpoint" logs show a successful POST (e.g., response code 200). Check backend server logs to confirm the endpoint received the token.
     *   Status: [TODO]
 *   **Cursor Task:** Stage changes (.env.development, config.dev.toml, server.py, main.py, requirements.txt), commit, and push (commit message handled by auto-update workflow).
