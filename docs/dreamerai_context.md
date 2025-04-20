@@ -322,3 +322,10 @@ Template for Entries must be completed at least Daily!
 *   **Key Decisions:** Followed guide structure for the test function, including basic status code checking and error handling.
 *   **Anthony's Feedback/Vibe:** Approved completion.
 *   **Blocking Issues:** None.
+
+### Day 25 Task 6: Test GitHub Token Endpoint Setup (Completed: [AUTO_TIMESTAMP])
+
+*   **Summary:** Successfully tested the GitHub token endpoint. Started the backend server (`engine.core.server`) and ran the `main.py` test script. Corrected the port in `main.py` from 8000 to 8090. Confirmed the `/auth/github/token` endpoint received the test token (HTTP 200) via server logs and `main.py` output.
+*   **Key Decisions:** Identified and corrected the port mismatch between `server.py` (8090) and the test function in `main.py` (originally 8000).
+*   **Anthony's Feedback/Vibe:** Guided debugging of connection error, confirmed successful test after port fix.
+*   **Blocking Issues:** Initial test failed due to `Connect Error` (wrong port). Resolved by correcting port in `main.py`. Expected Redis/n8n errors noted during test run.
