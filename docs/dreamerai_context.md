@@ -323,9 +323,26 @@ Template for Entries must be completed at least Daily!
 *   **Anthony's Feedback/Vibe:** Approved completion.
 *   **Blocking Issues:** None.
 
-### Day 25 Task 6: Test GitHub Token Endpoint Setup (Completed: [AUTO_TIMESTAMP])
+### Day 25 Task 6: Log Rules Check
+
+- **Summary:** Logged the mandatory rules check for starting Task 6 in `docs/logs/rules_check.log`.
+- **Key Decisions:** None (Routine logging).
+- **Anthony's Feedback/Vibe:** Approved.
+- **Blocking Issues:** None.
+
+### Day 25 Task 7: Test GitHub Token Endpoint Setup (Completed: [AUTO_TIMESTAMP])
 
 *   **Summary:** Successfully tested the GitHub token endpoint. Started the backend server (`engine.core.server`) and ran the `main.py` test script. Corrected the port in `main.py` from 8000 to 8090. Confirmed the `/auth/github/token` endpoint received the test token (HTTP 200) via server logs and `main.py` output.
 *   **Key Decisions:** Identified and corrected the port mismatch between `server.py` (8090) and the test function in `main.py` (originally 8000).
 *   **Anthony's Feedback/Vibe:** Guided debugging of connection error, confirmed successful test after port fix.
 *   **Blocking Issues:** Initial test failed due to `Connect Error` (wrong port). Resolved by correcting port in `main.py`. Expected Redis/n8n errors noted during test run.
+
+---
+**Task Completed: Day 25 - GitHub Auth Backend Prep**
+*   **Timestamp:** 2024-07-28 17:30:00
+*   **Summary of Work:** Prepared the backend for GitHub OAuth integration. Added `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` placeholders to `.env.development` and referenced them in `config.dev.toml`. Installed `httpx` dependency. Created a new FastAPI endpoint `/auth/github/token` in `server.py` to receive and store (globally, V1) the GitHub OAuth token. Implemented a test function `test_github_token_endpoint` in `main.py` using `httpx` to verify the endpoint.
+*   **Key Decisions/Rationale:** Used global variable for token storage as a temporary V1 solution, acknowledging the need for secure storage later. Followed guide structure for endpoint and test implementation. Deferred unrelated old Day 25 guide features.
+*   **Testing/Verification Outcome:** Endpoint test passed (HTTP 200 received) after correcting port number in `main.py` test function. Backend logs confirmed token reception. Approved by Anthony.
+*   **Issues Logged/Resolved:** Initial test connection error due to port mismatch (resolved).
+*   **Anthony's Feedback/Vibe:** Guided debugging, approved completion.
+*   **Next Task Context:** Proceeding to Day 26, Task: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.

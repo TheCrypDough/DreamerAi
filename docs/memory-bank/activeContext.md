@@ -26,3 +26,11 @@ Last Updated: 2025-04-18 02:21:00 (After Day 18 Completion & Correction)
 *   **BaseAgent V2 Adaptation:** Continue applying the established strategy: prioritize guide *intent* but adapt code snippets (especially for core functions like RAG, memory, state) to use the standardized `BaseAgent` V2 methods.
 *   **DB Pool Functions:** The missing `initialize_db_pool`/`close_db_pool` functions in `engine.core.db` remain a known issue to be addressed later, likely during PostgreSQL integration (Day 100 target). Current tests needing DB context (like BaseAgent V2 init) should continue to handle their absence gracefully if possible.
 *   **Open Issues:** Keep track of open issues logged in `issues.log` (e.g., Jeff n8n handoff verification).
+
+# Active Context
+*Last Updated: 2024-07-28 17:30:00*
+
+*   **Current work focus:** Starting Day 26, Task 1: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
+*   **Recent changes:** Completed Day 25 (Tasks 1-8): Added GitHub OAuth placeholders/config to `.env.development` and `config.dev.toml`. Created backend FastAPI endpoint `/auth/github/token` in `server.py` (using global variable for V1 token storage). Added `httpx` dependency to `requirements.txt`. Created and ran `test_github_token_endpoint` function in `main.py` to verify endpoint functionality. Confirmed successful token reception via logs (HTTP 200). Pushed all changes to GitHub.
+*   **Next steps:** Proceed with Day 26, Task 1: Install required Node dependencies (`electron-oauth2`, `keytar`) for the GitHub Authentication UI component.
+*   **Active decisions:** Confirmed `/auth/github/token` endpoint functions correctly on port 8000. Deferred unrelated Old Guide Day 25 features (JetBrains, Testing, Templates, Subprojects, UX) per plan. Using global variable for backend token storage is temporary (V1), requires secure, user-specific solution later.

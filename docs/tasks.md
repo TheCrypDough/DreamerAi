@@ -452,8 +452,32 @@
 *   **Cursor Task:** Test the setup: Start the backend server (python -m engine.core.server in activated venv). Run the main test script (python main.py in activated venv). Verify the "Testing GitHub Token Endpoint" logs show a successful POST (e.g., response code 200). Check backend server logs to confirm the endpoint received the token.
     *   Status: [DONE]
 *   **Cursor Task:** Stage changes (.env.development, config.dev.toml, server.py, main.py, requirements.txt), commit, and push (commit message handled by auto-update workflow).
-    *   Status: [TODO]
+    *   Status: [DONE]
 *   **Cursor Task:** Request Approval: "Task 'Day 25: GitHub Auth Backend Prep' complete. Implementation: Added GitHub OAuth credentials to config, created /auth/github/token backend endpoint (V1 global token storage), added httpx dependency, created/ran test for endpoint via main.py. Tests: Backend endpoint received test token successfully (Verified via logs). Deferred unrelated Old Guide Day 25 features (JetBrains, Testing, Templates, Subprojects, UX) per plan. Requesting approval to proceed to 'Day 26: GitHub Auth UI'. (yes/no/details?)"
+    *   Status: [DONE]
+*   **Overall Day Status:** DONE
+
+## Day 26: GitHub Auth UI
+*   **Cursor Task:** Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
     *   Status: [TODO]
+*   **Cursor Task:** Verify electron-oauth2 and keytar are added to C:\DreamerAI\app\package.json.
+    *   Status: [TODO]
+*   **Cursor Task:** Create C:\DreamerAI\app\components\GitHubSignIn.jsx. Implement the component using the code below. Include the prominent TODO regarding the placeholder Client ID/Secret.
+    *   Status: [TODO]
+*   **Cursor Task:** Modify C:\DreamerAI\app\components\SettingsPanel.jsx. Import GitHubSignIn. Add state to track if the user is signed in... Render the GitHubSignIn component...
+    *   Status: [TODO]
+*   **Cursor Task:** (Optional but Recommended) Modify C:\DreamerAI\app\src\App.jsx. Lift the sign-in state...
+    *   Status: [TODO]
+*   **Cursor Task:** Test the Feature: (Includes manual secret replacement, backend/frontend start, UI interaction, verification steps).
+    *   Status: [TODO]
+*   **Cursor Task:** IMPORTANT: Before committing, REVERT the actual Client ID/Secret in GitHubSignIn.jsx back to the placeholder strings...
+    *   Status: [TODO]
+*   **Cursor Task:** Stage changes (GitHubSignIn.jsx, SettingsPanel.jsx, package.json, package-lock.json), commit, and push.
+    *   Status: [TODO]
+*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
+    *   Status: [TODO]
+*   **Overall Day Status:** TODO
+*   **Summary:** Implement the frontend UI and logic for GitHub OAuth authentication using electron-oauth2 and keytar for secure token storage.
+*   **Issues Encountered:** None Anticipated Yet
 
 *(Future days/tasks will be added here)*

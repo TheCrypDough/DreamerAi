@@ -166,7 +166,7 @@ async def run_dreamer_flow_and_tests(): # Renamed function
 async def test_github_token_endpoint():
     """Tests the backend endpoint for receiving the GitHub token."""
     print("\n--- Testing GitHub Token Endpoint (/auth/github/token) ---")
-    backend_url = "http://localhost:8000/auth/github/token" # Ensure port matches server.py
+    backend_url = "http://localhost:8090/auth/github/token" # CORRECTED PORT to 8090
     # Use a realistic looking prefix for a test token
     dummy_token = "gho_Test123DummyTokenForDreamerAIxyz"
     payload = {"token": dummy_token}

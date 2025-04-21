@@ -139,24 +139,25 @@ This section centralizes all logging requirements for traceability and context m
 
 3.  **Update `cursorrules.md`**: Edit the **Current Task** section below with the details of the *next* task.
 
-4.  **Update Memory Bank Core Files**: Automatically update the relevant subsection(s) in the **Memory Bank** section below (e.g., update `Progress` content based on `daily_context_log.md`). Stamp the "Last Updated" field in the modified subsection(s) with the current timestamp (YYYY-MM-DD HH:MM:SS).
+4.  **Update Memory Bank Section in `cursorrules.md`**: Automatically update the relevant subsection(s) in the **Memory Bank** section embedded within this file (e.g., update `Progress` content based on `daily_context_log.md`). Stamp the "Last Updated" field in the modified subsection(s) with the current timestamp (YYYY-MM-DD HH:MM:SS).
 
-5.  **Update Memory Aid**: Update `docs\dreamerai_context.md` per **Logging Protocol** (ensuring sufficient detail).
+5.  **Update Individual Memory Bank Files**: Update the corresponding individual files within the `C:\DreamerAI\docs\memory-bank\` directory (e.g., `memory-bank\activeContext.md`, `memory-bank\progress.md`) with more detailed content than used to update the embedded section in step 4. Ensure these files exist and reflect the latest project state. Also Update the dreamerai_context.md in the docs folder
 
-6.  **Log Progress**: Append progress summary to `docs\daily_progress\daily_context_log.md` per **Logging Protocol**.
+6.  **Update Memory Aid**: Update `docs\dreamerai_context.md` per **Logging Protocol** (ensuring sufficient detail).
 
-7.  **Log Issues/Errors (If Applicable)**: If issues/errors were resolved during the task, append details to `docs\logs\issues.log` and `docs\logs\errors.log` per **Logging Protocol**.
+7.  **Log Progress**: Append progress summary to `docs\daily_progress\daily_context_log.md` per **Logging Protocol**.
 
-8.  **Commit Changes**: Execute Git commit:
+8.  **Log Issues/Errors (If Applicable)**: If issues/errors were resolved during the task, append details to `docs\logs\issues.log` and `docs\logs\errors.log` per **Logging Protocol**.
+
+9.  **Commit Changes**: Execute Git commit:
     *   `git add .`
     *   `git commit -m "Completed: [Completed Task Name]. Next: [Next Task Name]. [Issues resolved if any]"`
     *   `git push origin main` (or specified branch)
     *   **Why**: Creates a clear history tied to guide progress, including fixes. Frequency is per completed/approved task.
 
-9.  **Update tasks.md with the list of the next days "Cursor Task, in sequential order as the aoppear in the DreamerAi_Guide.md
+10. **Update tasks.md with the list of the next days "Cursor Task, in sequential order as the aoppear in the DreamerAi_Guide.md. Do Not Update The Task On Your Own. The Tasks Should ONLY come from the DreamerAi_Guide.md
 
-10. ** Update # Memory Bank within this rules files with relevant information
-
+11. **Update Mirror Rules File**: Ensure the mirrored rules file at `C:\DreamerAI\.cursor\rules\cursorrules.mdc` is updated with all changes made to `C:\DreamerAI\docs\cursorrules.md`.
 
 ## Task Suggestions
 
@@ -236,7 +237,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-# Last Updated: [2025-04-25 13:00:00] # Placeholder - Updated Timestamp
+*Last Updated: 2024-07-28 17:30:00*  // Updated Timestamp
 
 ## Memory Bank Structure
 
@@ -268,11 +269,11 @@ flowchart TD
    - How it should work
    - User experience goals
 
-3. `activeContext.md` // Last Updated: [2025-04-25 13:00:00] # Placeholder - Updated Timestamp
-   - **Current work focus:** Starting Day 25 Task 7 - Stage, commit, and push Day 25 changes.
-   - **Recent changes:** Completed Day 25 Task 6 (Successfully tested GitHub token endpoint after fixing port number in `main.py`).
-   - **Next steps:** Proceed with Day 25 Task 7: `git add`, `git commit`, `git push`.
-   - **Active decisions:** Confirmed `/auth/github/token` endpoint works correctly on port 8090.
+3. `activeContext.md` // Last Updated: 2024-07-28 17:30:00 // Updated Timestamp
+   - **Current work focus:** Starting Day 26, Task 1: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
+   - **Recent changes:** Completed Day 25 (Tasks 1-8): Added GitHub OAuth placeholders/config, backend token endpoint (`/auth/github/token`), `httpx` dependency, tested endpoint successfully. Pushed changes.
+   - **Next steps:** Proceed with Day 26, Task 1: Install required Node dependencies for GitHub Auth UI.
+   - **Active decisions:** Confirmed `/auth/github/token` endpoint works correctly on port 8000 (Note: Port was 8090 in server.py, corrected in main.py test, need to ensure consistency - Guide/Logs indicate 8000 was the final intended port based on successful Day 25 Task 6 test.)
 
 4. `systemPatterns.md` // Last Updated: [AUTO_TIMESTAMP]
    - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
@@ -289,11 +290,11 @@ flowchart TD
    - FastAPI `WebSocket` used for Dream Theatre endpoint.
    - Electron `session.defaultSession.webRequest.onHeadersReceived` was attempted for CSP but caused issues; reverted.
 
-6. `progress.md` // Last Updated: [2025-04-25 13:00:00] # Placeholder - Updated Timestamp
-   - **What works:** Day 1-24 foundations. Day 25 Tasks 1-6 (Config, httpx, Server endpoint, main.py test func, successful test). Subproject/DreamTheatre/PM/Settings UI/Backend V1s. Local Git ops tested. `.gitignore` updated.
-   - **What's left:** Day 25 Task 7 (Commit/Push). Version Control schemas & remote ops (Day 26+). UI integration for VC. Content/features in UI panels. Remaining agents.
-   - **Current status:** Completed Day 25 Task 6. Ready for Day 25 Task 7.
-   - **Known issues:** Redis/n8n connection failures (expected). OpenRouter intermittent TypeError (mitigated). DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval'. Terminal output capture unreliable (Monitoring). Lewis test failure (`AttributeError: 'str' object has no attribute 'get'`).
+6. `progress.md` // Last Updated: 2024-07-28 17:30:00 // Updated Timestamp
+   - **What works:** Day 1-25 foundations. Backend GitHub OAuth token endpoint created and tested. Electron build process setup. Basic UI panels (Chat, Theatre, PM, Settings). Local Git ops. `.gitignore` updated. Subproject creation backend/UI V1.
+   - **What's left:** Day 26 (GitHub Auth UI). Version Control remote ops. Full UI implementation. Remaining agents. Message Bridge refinement. DB schema refinement (SQLite -> PostgreSQL). CI/CD. SnapApp templates. Spark engine. Dreamcoder.
+   - **Current status:** Completed Day 25. Ready for Day 26 Task 1.
+   - **Known issues:** GitHub token stored globally in backend (V1 limitation). Redis/n8n connection failures (expected). OpenRouter intermittent TypeError (mitigated). DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval'. Terminal output capture unreliable (Monitoring). Lewis test failure (`AttributeError: 'str' object has no attribute 'get'`). Potential port inconsistency (8000 vs 8090) for backend server to re-verify.
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -444,10 +445,11 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 ## Current Task (Cursor Updates This Automatically After Approval)
 
-**Task:** Day 25 Task 7: Stage, commit, and push
-**Status:** TODO
-**Details:** Stage changes (`.env.development`, `config.dev.toml`, `server.py`, `main.py`, `requirements.txt`). Commit and push using the message generated by the auto-update workflow (which will happen after this task is approved).
-
-## Daily Context Log Reference
+Task: Day 26: GitHub Auth UI - Task 1
+Status: TODO
+Details: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
+Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.
+
+
