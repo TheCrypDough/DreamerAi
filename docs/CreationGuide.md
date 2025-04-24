@@ -97,7 +97,8 @@ Day 109: PostgreSQL Migration Execution Pt 2 (Subprojects & Chats) (See Appendix
 Day 110: Core Refactor db.py V3 (PostgreSQL via psycopg - Async) (See Appendix 10.2) (Was D111 / D100 Plan Pt 2)
 Day 111: Backend Refactor Pt 1 (Use Async DB Methods) (See Appendix 10.3) (Was D112)
 Day 112: Backend Refactor Pt 2 (User/Project Context API Usage) (See Appendix 10.4) (Was D113 / D109/D110 task spillover)
-Day 113: Cloud Sync V2 (UI Integration & Robustness) (See Appendix 10.5) (Was D114 / D104)
+Day 113: Frontend State Management Refactor V1 (React Context/Zustand) (See Appendix 10.5) (Was New / Replaces Old 10.5 Slot)
+Day 113.1: Cloud Sync V2 (UI Integration & Robustness) (See Appendix 10.5.1) (Was D114 / D104)
 Day 114: Auth Refactor V4 (GitHub Client ID via IPC - Keep Secret TODO) (See Appendix 10.6) (Was D115 / D107)
 Day 115: Agent Dependency Injection V1 Integration (See Appendix 10.7) (Was D116 / D103 related)
 Day 116: Functional Lewis V6 (Resource Request Fulfillment V1 via Events) (See Appendix 10.8) (Was D117 / D97 related)
@@ -767,7 +768,22 @@ Endpoint Refactor: Change signatures of endpoints currently assuming a single gl
 Context Retrieval: Endpoints receive project_id from URL path. Use injected authenticated user: UserSchema (Ref: 10.101) and project_id to call db.get_project_details(user_uid=user.firebase_uid, project_id=project_id) (Ref: 10.2). Method MUST perform ownership check.
 Logic Update: Use fetched/validated project details (e.g., file path) within endpoint logic instead of global path.
 Pain Point Solved: Removes insecure global state. Enables multi-user capability. Correctly scopes operations via authenticated API calls. RESTful and scalable.
-10.5: Cloud Sync V2 (UI Integration & Robustness) (Linked from Section 5 / Day 113) (Was D114 / D104)
+10.5: Frontend State Management Refactor V1 (React Context/Zustand) (Linked from Section 5 / Day 113) (Was New)
+Core Vision: Implement a robust, centralized state management solution for the React frontend to replace reliance on App.jsx local state and prop drilling, improving maintainability and scalability as UI complexity increases. Essential for managing shared state like Authentication, Active Project, and potentially WebSocket data across multiple independent UI panels.
+Anthony's Detailed Input / Quotes: Need for "scalable", "easily maintenanced", "future-proof" application (general vision). Feedback highlighting state complexity implicitly necessitates this (e.g., needing activeProjectId in multiple panels, sharing currentUser state).
+Key Mechanics:
+Choose Library: Evaluate React Context API (+ useReducer if complex updates needed) vs. a lightweight external library like Zustand. (V1 Decision: Zustand often simpler setup/boilerplate for shared state).
+Install: npm install zustand in app/. Update dependencies.
+Create Store: Define a Zustand store (app/src/store.js?) with slices/state for key global concerns:
+authSlice: currentUser, isLoadingAuth, authError. Actions: loginUser, logoutUser, setAuthLoading.
+projectSlice: activeProjectId, activeProjectContext, setActiveProject.
+wsSlice: wsConnectionStatus, agentStatuses, workflowProgress, setWsMessageData (action called by WS listener).
+uiSlice: isDarkMode, points, beginnerMode, uiError, toggleTheme, addPoints, setBeginnerMode, setUiError, clearUiError.
+Refactor App.jsx: Remove corresponding local useState variables. Use Zustand store hooks (useAuthStore, useProjectStore, etc.) to access state and actions where needed (e.g., reading isDarkMode for ThemeProvider, reading uiError for Snackbar). Wrap App return in Zustand provider if needed (usually not). Move WebSocket connection useEffect hook to a dedicated non-UI module maybe, or keep in App.jsx but have its onmessage handler call store actions (e.g., useWsStore.getState().handleMessage(data)).
+Refactor Consumer Components: Update components previously receiving state via props (DreamTheatrePanel, SettingsPanel, ProjectManagerPanel, Header, apiClient) to import and use the relevant Zustand store hooks directly (const currentUser = useAuthStore(state => state.currentUser);).
+Pain Point Solved: Eliminates complex prop drilling. Centralizes global state logic. Improves component decoupling and testability. Makes shared state (like activeProjectId needed for Day 113.1 Cloud Sync UI) easily accessible where needed. Simplifies App.jsx.
+Cross-References: Depends on User Auth (Ref: 10.101), Active Project Context (Ref: 10.4), WebSocket Data (Ref: 10.123), UI Polish State (Ref: 10.64). Unblocks/simplifies implementation of Cloud Sync UI (New Ref: 10.6), future RBAC UI (Ref: 10.84), and any feature needing shared frontend state.
+10.5.1: Cloud Sync V2 (UI Integration & Robustness) (Linked from Section 5 / Day 113) (Was D114 / D104)
 Core Vision: Provide users with a way to initiate cloud synchronization (V1: Metadata/Blueprint to Firestore (Ref: 10.126)) and receive feedback directly within the application UI. Needed for full sync (Ref: 10.87).
 Anthony's Detailed Input / Quotes: Need for saving work, accessing projects elsewhere. Builds on D74 Backend V1 logic (Ref: 10.126).
 Key Mechanics:
