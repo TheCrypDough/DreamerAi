@@ -457,27 +457,15 @@
     *   Status: [DONE]
 *   **Overall Day Status:** DONE
 
-## Day 26: GitHub Auth UI
-*   **Cursor Task:** Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
-    *   Status: [TODO]
-*   **Cursor Task:** Verify electron-oauth2 and keytar are added to C:\DreamerAI\app\package.json.
-    *   Status: [TODO]
-*   **Cursor Task:** Create C:\DreamerAI\app\components\GitHubSignIn.jsx. Implement the component using the code below. Include the prominent TODO regarding the placeholder Client ID/Secret.
-    *   Status: [TODO]
-*   **Cursor Task:** Modify C:\DreamerAI\app\components\SettingsPanel.jsx. Import GitHubSignIn. Add state to track if the user is signed in... Render the GitHubSignIn component...
-    *   Status: [TODO]
-*   **Cursor Task:** (Optional but Recommended) Modify C:\DreamerAI\app\src\App.jsx. Lift the sign-in state...
-    *   Status: [TODO]
-*   **Cursor Task:** Test the Feature: (Includes manual secret replacement, backend/frontend start, UI interaction, verification steps).
-    *   Status: [TODO]
-*   **Cursor Task:** IMPORTANT: Before committing, REVERT the actual Client ID/Secret in GitHubSignIn.jsx back to the placeholder strings...
-    *   Status: [TODO]
-*   **Cursor Task:** Stage changes (GitHubSignIn.jsx, SettingsPanel.jsx, package.json, package-lock.json), commit, and push.
-    *   Status: [TODO]
-*   **Cursor Task:** Execute Auto-Update Triggers & Workflow.
-    *   Status: [TODO]
-*   **Overall Day Status:** TODO
-*   **Summary:** Implement the frontend UI and logic for GitHub OAuth authentication using electron-oauth2 and keytar for secure token storage.
-*   **Issues Encountered:** None Anticipated Yet
+## Day 26: GitHub Auth UI V1.0 (Basic Setup - Rev 4)
+
+*   **Task:** Navigate to C:\\DreamerAI\\app. Run npm install electron-oauth2 keytar @mui/icons-material. (Status: TODO)
+*   **Task:** Verify electron-oauth2 and keytar are added to C:\\DreamerAI\\app\\package.json dependencies. (Status: TODO)
+*   **Task:** Create C:\\DreamerAI\\app\\components\\GitHubSignIn.jsx. Implement the component using the exact code provided below (Rev 4 - Insecure V1.0), which uses direct keytar require/calls and includes placeholders AND CRITICAL TODOs for secrets. (Status: TODO)
+*   **Task:** Modify C:\\DreamerAI\\app\\components\\SettingsPanel.jsx. Import GitHubSignIn. Add state management (isGitHubSignedIn, etc.). Add useEffect hook calling direct keytar.getPassword on mount. Implement success/error/signout handlers (handleGitHubSignInSuccess, handleGitHubSignOut using direct keytar.deletePassword). Conditionally render components. Use the exact code provided below (Rev 4 - Insecure V1.0). (Status: TODO)
+*   **Task:** Test the V1.0 INSECURE GitHub Auth Flow (Requires Manual Secret Insertion/Reversion). (Status: TODO)
+*   **Task:** Present Summary for Approval. (Status: TODO)
+*   **Task:** (Upon Approval) Stage changes (GitHubSignIn.jsx, SettingsPanel.jsx, package.json, package-lock.json), commit, push. (Status: TODO)
+*   **Task:** (Upon Approval) Execute Auto-Update Triggers & Workflow. (Status: TODO)
 
 *(Future days/tasks will be added here)*

@@ -280,11 +280,9 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-*Last Updated: 2024-07-28 17:30:00*  // Updated Timestamp
+*Last Updated: 2025-04-25 14:10:00* // Updated Timestamp
 
 ## Memory Bank Structure
-
-The Memory Bank consists of required core files and optional context files, all in Markdown format. Files build upon each other in a clear hierarchy:
 
 ```mermaid
 flowchart TD
@@ -296,7 +294,7 @@ flowchart TD
     SP --> AC
     TC --> AC
     
-    AC --> P[progress.md] // Last Updated: [2025-04-25 13:00:00] # Placeholder - Updated Timestamp
+    AC --> P[progress.md] // Last Updated: 2025-04-25 14:10:00 // Updated Timestamp
 ```
 
 ### Core Files (Required)
@@ -312,13 +310,13 @@ flowchart TD
    - How it should work
    - User experience goals
 
-3. `activeContext.md` // Last Updated: 2024-07-28 17:30:00 // Updated Timestamp
-   - **Current work focus:** Starting Day 26, Task 1: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
-   - **Recent changes:** Completed Day 25 (Tasks 1-8): Added GitHub OAuth placeholders/config, backend token endpoint (`/auth/github/token`), `httpx` dependency, tested endpoint successfully. Pushed changes.
-   - **Next steps:** Proceed with Day 26, Task 1: Install required Node dependencies for GitHub Auth UI.
-   - **Active decisions:** Confirmed `/auth/github/token` endpoint works correctly on port 8000 (Note: Port was 8090 in server.py, corrected in main.py test, need to ensure consistency - Guide/Logs indicate 8000 was the final intended port based on successful Day 25 Task 6 test.)
+3. `activeContext.md` // Last Updated: 2025-04-25 14:10:00 // Updated Timestamp
+   - **Current work focus:** Reset workspace to HEAD commit after failing to implement Day 26 GitHub Auth UI due to persistent OAuth library/environment errors.
+   - **Recent changes:** Attempted Day 26 implementation using both `http://localhost` (via `electron-oauth2`) and custom protocol (`dreamerai://`) strategies. Both failed with blocking errors (ERR_CONNECTION_REFUSED and OS protocol handling issues respectively). Multiple intermediate errors were introduced and fixed during debugging. Workspace reset via `git reset --hard HEAD`.
+   - **Next steps:** Re-attempt Day 26 Task 1, potentially needing a different library or approach for OAuth.
+   - **Active decisions:** Decision to revert to localhost method failed. Decision to reset codebase made by user.
 
-4. `systemPatterns.md` // Last Updated: [AUTO_TIMESTAMP]
+4. `systemPatterns.md` // Last Updated: [Timestamp from last commit] - *No relevant pattern changes from attempted Day 26.*
    - DreamerFlow orchestrator pattern (V2 demonstrated Jeff->Arch->Nexus V1 Sim).
    - BaseAgent V2 provides core RAG (ChromaDB/ST), memory, event patterns.
    - Agent communication currently direct calls (main.py test), Hermie V1 aims to centralize this.
@@ -326,18 +324,18 @@ flowchart TD
    - Backend agents (`main_chat.py`) can broadcast JSON messages via the `ws_manager`.
    - Electron CSP configured via `forge.config.js` (`devContentSecurityPolicy`).
 
-5. `techContext.md` // Last Updated: [AUTO_TIMESTAMP]
+5. `techContext.md` // Last Updated: [Timestamp from last commit] - *No relevant tech changes from attempted Day 26.*
    - asyncio used for main flow/agent execution.
    - ChromaDB/SentenceTransformer used for RAG (via BaseAgent V2).
    - Missing DB Pool functions handled via try/except for now.
    - FastAPI `WebSocket` used for Dream Theatre endpoint.
    - Electron `session.defaultSession.webRequest.onHeadersReceived` was attempted for CSP but caused issues; reverted.
 
-6. `progress.md` // Last Updated: 2024-07-28 17:30:00 // Updated Timestamp
-   - **What works:** Day 1-25 foundations. Backend GitHub OAuth token endpoint created and tested. Electron build process setup. Basic UI panels (Chat, Theatre, PM, Settings). Local Git ops. `.gitignore` updated. Subproject creation backend/UI V1.
-   - **What's left:** Day 26 (GitHub Auth UI). Version Control remote ops. Full UI implementation. Remaining agents. Message Bridge refinement. DB schema refinement (SQLite -> PostgreSQL). CI/CD. SnapApp templates. Spark engine. Dreamcoder.
-   - **Current status:** Completed Day 25. Ready for Day 26 Task 1.
-   - **Known issues:** GitHub token stored globally in backend (V1 limitation). Redis/n8n connection failures (expected). OpenRouter intermittent TypeError (mitigated). DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval'. Terminal output capture unreliable (Monitoring). Lewis test failure (`AttributeError: 'str' object has no attribute 'get'`). Potential port inconsistency (8000 vs 8090) for backend server to re-verify.
+6. `progress.md` // Last Updated: 2025-04-25 14:10:00 // Updated Timestamp
+   - **What works:** Day 1-25 foundations (as per last commit).
+   - **What's left:** Day 26 (GitHub Auth UI - Needs re-attempt). All subsequent tasks.
+   - **Current status:** Workspace reset to commit after Day 25 completion. Ready to restart Day 26.
+   - **Known issues:** Persistent ERR_CONNECTION_REFUSED with `electron-oauth2` localhost method in dev environment. Custom protocol handling unreliable in dev environment. (Plus issues logged from Day 1-25).
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:

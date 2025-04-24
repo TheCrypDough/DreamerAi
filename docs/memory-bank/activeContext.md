@@ -1,36 +1,30 @@
 # DreamerAI Active Context (Memory Bank)
-Last Updated: 2025-04-18 02:21:00 (After Day 18 Completion & Correction)
+*Last Updated: 2025-04-24 00:20:00*
 
 ## Current Work Focus
-*   **Starting Day:** Day 19 - Hermie V1 Basic Routing Simulation.
-*   **Goal:** Implement Hermie's initial task distribution simulation to Arch (Planning) and Lewis (Administrator).
+*   **Completed:** Day 26 Tasks (Implicitly) - Full GitHub OAuth UI Flow Implementation & Debugging.
+*   **Goal:** Log completion and prepare for next guided task.
 
-## Recent Changes (Corrected Day 18 - Hermie V1 Placeholder Test)
-*   **Completed:** Successfully executed the *corrected* scope for Day 18.
-*   **Verification:** Confirmed `engine/agents/communications.py` contains the correct `HermieAgent` V1 placeholder code, inheriting from the stabilized `BaseAgent` V2.
-*   **Testing:** Replaced `main.py` content with a script focused *exclusively* on testing the Hermie V1 structure and its inherited RAG V2 capabilities. This test ran successfully, verifying:
-    *   Hermie V1 initialization.
-    *   Successful RAG query via inherited `query_rag`.
-    *   Correct simulation log messages.
-    *   Correct static success dictionary returned.
-    *   Graceful handling (via `try/except`) of missing DB Pool functions (`initialize_db_pool`, `close_db_pool`) in `engine.core.db`.
-*   **RAG Seeding:** Created and ran a temporary seed script (`seed_rag_hermie.py`) to populate Hermie's RAG DB, then deleted the script.
-*   **Corrections:** This followed a significant correction process where incorrect changes made earlier in the day (based on a misunderstanding of Day 18's scope) were reverted using Git. Strict adherence to the guide's task sequence and scope is now reinforced.
+## Recent Changes (GitHub Auth UI Debugging Marathon)
+*   **Completed:** Successfully implemented and debugged the entire GitHub OAuth flow via Electron IPC.
+*   **Key Steps & Fixes:**
+    *   Refactored `GitHubSignIn.jsx` to use IPC (`github-oauth-flow`) instead of direct `electron-oauth2`.
+    *   Added `github-oauth-flow` handler in `main.js`.
+    *   Corrected `exports is not defined` error by converting all relevant frontend components (`App.jsx`, `MainChatPanel.jsx`, `DreamTheatrePanel.jsx`, `ProjectManagerPanel.jsx`, `SettingsPanel.jsx`) to use ES Module `import`/`export` syntax.
+    *   Resolved `require is not defined` by removing direct `require('http')` usage from `App.jsx` (incompatible with `nodeIntegration:false`).
+    *   Fixed "IPC bridge unavailable" by setting `contextIsolation: true` / `nodeIntegration: false` in `main.js` and correctly exposing `electronAPI` via `contextBridge` in `preload.js`.
+    *   Fixed `OAuth is not a constructor` error by correcting the `require('electron-oauth2')` statement in `main.js`.
+    *   Fixed GitHub 404 error after sign-in by replacing placeholder Client ID/Secret with actual credentials (redirect URI was confirmed correct).
+    *   Fixed `No handler registered for 'secure-keytar-get'` by adding `keytar` import and IPC handlers (`get`, `save`, `delete`) in `main.js`.
+    *   Fixed Webpack `node-loader` build error by adding `keytar` to `externals` in `webpack.main.config.js`.
+*   **Outcome:** The "Link GitHub Account" button in the Settings tab now successfully initiates the OAuth flow, allows user sign-in, and updates the UI to "GitHub Account Linked".
 
 ## Next Steps
-*   Proceed with the first task of Day 19 as defined in `DreamerAi_Guide.md`: Modify `engine/agents/communications.py` (HermieAgent `__init__` and `run` methods for basic routing).
-*   Follow subsequent Day 19 tasks sequentially: Modify Arch and Lewis to add `receive_task`, update `main.py` for testing, execute test, commit/push.
+*   Complete the logging updates for this debugging session.
+*   Identify the next official task from the `DreamerAi_Guide.md` (likely related to saving the received token or proceeding with Day 27).
 
 ## Active Decisions & Considerations
-*   **Guide Adherence:** Strict adherence to the `DreamerAi_Guide.md` task order and scope for Day 19 is mandatory.
-*   **BaseAgent V2 Adaptation:** Continue applying the established strategy: prioritize guide *intent* but adapt code snippets (especially for core functions like RAG, memory, state) to use the standardized `BaseAgent` V2 methods.
-*   **DB Pool Functions:** The missing `initialize_db_pool`/`close_db_pool` functions in `engine.core.db` remain a known issue to be addressed later, likely during PostgreSQL integration (Day 100 target). Current tests needing DB context (like BaseAgent V2 init) should continue to handle their absence gracefully if possible.
-*   **Open Issues:** Keep track of open issues logged in `issues.log` (e.g., Jeff n8n handoff verification).
-
-# Active Context
-*Last Updated: 2024-07-28 17:30:00*
-
-*   **Current work focus:** Starting Day 26, Task 1: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
-*   **Recent changes:** Completed Day 25 (Tasks 1-8): Added GitHub OAuth placeholders/config to `.env.development` and `config.dev.toml`. Created backend FastAPI endpoint `/auth/github/token` in `server.py` (using global variable for V1 token storage). Added `httpx` dependency to `requirements.txt`. Created and ran `test_github_token_endpoint` function in `main.py` to verify endpoint functionality. Confirmed successful token reception via logs (HTTP 200). Pushed all changes to GitHub.
-*   **Next steps:** Proceed with Day 26, Task 1: Install required Node dependencies (`electron-oauth2`, `keytar`) for the GitHub Authentication UI component.
-*   **Active decisions:** Confirmed `/auth/github/token` endpoint functions correctly on port 8000. Deferred unrelated Old Guide Day 25 features (JetBrains, Testing, Templates, Subprojects, UX) per plan. Using global variable for backend token storage is temporary (V1), requires secure, user-specific solution later.
+*   **Deviation:** Acknowledged significant deviation from the guide was necessary to achieve functional GitHub authentication. Future tasks should attempt stricter adherence where possible.
+*   **Credentials:** Actual GitHub Client ID/Secret are currently hardcoded with `// REMOVE LATER` comments. Secure handling needs to be implemented (tracked via TODO D66/D107).
+*   **Keytar:** IPC handlers for `keytar` are now in place in `main.js`. The `secure-keytar-save` handler needs to be called after successful OAuth to persist the token.
+*   **UI State:** The `SettingsPanel` UI correctly reflects the linked state. Further steps might involve fetching user info or displaying errors more granularly.
