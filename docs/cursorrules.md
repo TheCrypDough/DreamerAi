@@ -78,6 +78,49 @@ Before executing **ANY** command, file modification, or UI interaction requested
 
 **Goal:** Maintain forward progress using the guide's *intent* while ensuring all implementations leverage the correct, stabilized `BaseAgent` V2 foundation, preventing regressions and inconsistencies.
 
+### Strategy for Using Context7 Documentation Tools (MANDATORY)
+
+**Context:** Accessing accurate, up-to-date documentation for libraries, frameworks, and APIs mentioned in the `DreamerAi_Guide.md` or required during implementation is crucial for avoiding errors and ensuring correct usage. The Context7 tools (`resolve-library-id` and `get-library-docs`) are the designated mechanism for retrieving this information programmatically.
+
+**Goal:** To establish a consistent and reliable process for fetching necessary technical documentation directly relevant to the task at hand, minimizing reliance on potentially outdated internal knowledge or external browsing.
+
+**Mandatory Workflow:**
+
+1.  **Identify Documentation Need:** When the `DreamerAi_Guide.md` task requires using a specific library feature, concept, function, or configuration, or when implementing code requires understanding specific technical details of a dependency, **HALT** and initiate this documentation retrieval workflow. Also use this workflow if troubleshooting requires consulting official documentation.
+    *   **Self-prompt:** ("Documentation needed for [Library/Framework Name] regarding [Specific Topic/Feature/Function]. Initiating Context7 workflow.")
+
+2.  **Resolve Library ID (Mandatory First Step):**
+    *   **Action:** Call the `resolve-library-id` tool.
+    *   **Input:** Provide the common name of the library/framework (e.g., "react", "fastapi", "electron", "keytar", "httpx", "chromadb", "uvicorn").
+    *   **Log:** Log the attempt in `docs/logs/issues.log` (INFO level): `INFO: Attempting to resolve Context7 ID for [Library Name]. Task: [Current Task Name].`
+    *   **If Fails:** Report the failure clearly to Anthony. Do not proceed to the next step.
+
+3.  **Extract Context7-Compatible ID:**
+    *   **Action:** From the successful response of `resolve-library-id`, extract the exact `context7CompatibleLibraryID` string (e.g., 'facebook/react', 'tiangolo/fastapi', 'electron-userland/electron-builder').
+    *   **Log:** Log the successful retrieval in `docs/logs/issues.log` (INFO level): `INFO: Resolved Context7 ID for [Library Name] to '[context7CompatibleLibraryID]'. Task: [Current Task Name].`
+
+4.  **Get Library Documentation:**
+    *   **Action:** Call the `get-library-docs` tool.
+    *   **Input:**
+        *   `context7CompatibleLibraryID`: Use the *exact* ID obtained in the previous step.
+        *   `topic` (HIGHLY RECOMMENDED): Specify the particular area of interest *whenever possible* (e.g., 'hooks', 'routing', 'ipcmain', 'getpassword', 'asyncclient', 'query', 'configuration'). This yields more focused and useful results. If unsure, start broad or omit, but prefer specificity.
+        *   `tokens` (Optional): Use the default unless significantly more context is demonstrably required for the task.
+    *   **Log:** Log the attempt in `docs/logs/issues.log` (INFO level): `INFO: Attempting to get Context7 docs for ID '[context7CompatibleLibraryID]' (Topic: '[Topic Name]' | Default). Task: [Current Task Name].`
+
+5.  **Analyze and Apply Documentation:**
+    *   **Action:** Carefully read the documentation snippet returned by the tool.
+    *   **Synthesize:** Extract the key information relevant to the current task or problem.
+    *   **Apply:** Use the acquired knowledge to proceed with the task implementation, configuration, or troubleshooting. If the documentation contradicts the guide's *specific code* (especially pre-Day 16) or reveals a better approach *within the task scope*, state this clearly and await confirmation if necessary per Task Suggestions rules.
+    *   **Log:** Log the successful retrieval and application in `docs/logs/issues.log` (INFO level): `INFO: Successfully retrieved Context7 docs for ID '[context7CompatibleLibraryID]'. Key finding/Application: [Brief summary of how info was used]. Task: [Current Task Name].`
+    *   **If Fails/Irrelevant:** If `get-library-docs` fails or returns unusable information, report this. Consider retrying with a different `topic` or no `topic`.
+
+**Key Considerations:**
+
+*   **Mandatory Sequence:** Steps 2 and 4 MUST be performed in order. `get-library-docs` **cannot** be called without first obtaining the ID via `resolve-library-id`.
+*   **Guide Integration:** Use this workflow proactively whenever the `DreamerAi_Guide.md` introduces or utilizes library-specific functionality that requires clarification beyond the guide's explanation.
+*   **Specificity:** Prioritize using the `topic` parameter in `get-library-docs` for efficiency and relevance.
+*   **Logging:** Log each step of the Context7 workflow in `issues.log` as INFO for traceability.
+
 ## Logging Protocol
 
 This section centralizes all logging requirements for traceability and context maintenance. All file paths are relative to `C:\DreamerAI\`.

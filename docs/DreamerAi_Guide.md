@@ -8612,323 +8612,384 @@ Motivation:
 
 
 
-(Start of COMPLETE Guide Entry for Day 26)
-Day 26 - GitHub Authentication UI, Unlocking the GitHub Door!
-Anthony's Vision: You need DreamerAI to work seamlessly with existing developer ecosystems ("entry level to pro"), and GitHub is central to that. Allowing users to securely log in with their GitHub account and grant DreamerAI necessary permissions is the first step towards deep integration for version control, code sharing, and potentially even accessing public repositories for context or RAG. This UI component makes that connection possible.
+(Start of COMPLETE CORRECTED Guide Entry for Day 26)
+Day 26 - GitHub Authentication UI (Secure IPC V1), Unlocking the GitHub Door Safely!
+Anthony's Vision: DreamerAI needs to work seamlessly with existing developer ecosystems ("entry level to pro"), and GitHub is central to that. Allowing users to securely log in and authorize DreamerAI without exposing secrets in the frontend is critical for building trust ("bulletproof"). This UI component makes the connection possible, prioritizing security via established IPC mechanisms.
 Description:
-Today, we implement the user interface component responsible for initiating the GitHub OAuth login flow. Building on the backend preparation from Day 25, we create a GitHubSignIn.jsx component using the electron-oauth2 library. This component displays a "Sign in with GitHub" button. When clicked, it triggers the OAuth process, opening a GitHub authorization window. Upon successful user authorization, it retrieves the access token, stores it securely using keytar, and sends it to the backend endpoint (/auth/github/token) established yesterday. We integrate this button into a suitable UI panel (e.g., the SettingsPanel V1).
+This day implements the user interface component responsible for initiating the GitHub OAuth login flow, now incorporating secure token handling via Electron IPC. Building on the backend preparation from Day 25 and the secure IPC bridge from Day 66/105, we create a GitHubSignIn.jsx component using the electron-oauth2 library. This component displays a "Sign in with GitHub" button. When clicked, it fetches the necessary (public) Client ID via IPC, then triggers the OAuth process, opening a GitHub authorization window. Upon successful user authorization, it retrieves the access token and sends it securely via IPC to the main process, which uses keytar to store it. The token is also sent to the backend endpoint (/auth/github/token) for backend storage/use. We integrate this button into the SettingsPanel.jsx.
 Relevant Context:
-Technical Analysis: Creates app/components/GitHubSignIn.jsx. Uses react, useState, @mui/material/Button. Imports electron-oauth2 and keytar (installed Day 27 - CORRECTION: Should have been installed earlier, adding dependency now). Instantiates the OAuth helper from electron-oauth2 using the Client ID and Secret referenced in config.dev.toml (needs mechanism to read this from backend or securely inject - V1 Simplification: Hardcode placeholders matching .env). The signIn function calls oauth.getAccessToken({ scope: 'repo' }) which handles the popup/redirect. The received token.access_token is stored via keytar.setPassword(...) and then POSTed to the backend's http://localhost:8000/auth/github/token endpoint using fetch. Modifies app/components/SettingsPanel.jsx (Day 22) to import and render the GitHubSignIn button. Updates App.jsx to potentially manage and display login status. Dependency Correction: Adds electron-oauth2 and keytar to package.json and npm install.
-Layman's Terms: We're adding the "Sign in with GitHub" button to the Settings screen. When you click it, a window pops up asking you to log into GitHub and approve DreamerAI. If you approve, the UI grabs a special key (access token), stores it securely in your computer's keychain (keytar), and sends a copy to the backend's "drop box" (API endpoint from Day 25) so the backend knows you're logged in too.
-Interaction: Directly implements the frontend part of GitHub authentication, connecting user action (button click) to the OAuth flow (electron-oauth2). Securely stores the resulting token (keytar). Communicates the token to the backend endpoint (/auth/github/token created Day 25). Integrates into the SettingsPanel UI (Day 22).
-Old Guide Deferral: Unrelated old guide Day 26 features (DreamIt Input Form, Voice Input) are deferred. Voice Input potentially for MainChatPanel enhancement later. Basic input handled Day 14.
-Groks Thought Input:
-Closing the loop on auth initiation! This frontend piece is crucial. electron-oauth2 handles the complex OAuth dance nicely. Using keytar for secure token storage is absolutely the right move – keeps sensitive tokens out of plain text or localStorage. Sending the token to the backend confirms the handshake. Integrating into the Settings panel makes sense contextually. We DO need to fix the electron-oauth2/keytar dependency installation - let's add it now. The hardcoded config placeholders in the component are a necessary evil for V1 UI-side setup but need a secure config injection strategy later.
+Technical Analysis: Installs electron-oauth2 and keytar if not present (Task 1/2). Creates app/components/GitHubSignIn.jsx. Uses React useState, MUI Button. Imports electron-oauth2. Crucially, uses window.electronAPI.invoke('get-github-client-id') (via preload bridge D66/D107) to fetch the Client ID from the main process. Initializes electron-oauth2 config using fetched Client ID but keeps insecure Client Secret placeholder + TODO comment V1.1 (Day 107 limitation). The handleSignIn function calls oauth.getAccessToken. The received token.access_token is NOT stored directly; instead, it calls await window.electronAPI.invoke('secure-keytar-save', { service: '...', account: '...', token: ... }) to send the token to the main process for secure keytar storage (IPC handler implemented Day 66). Simultaneously POSTs token to backend (/auth/github/token, Day 25) using fetch. Modifies app/components/SettingsPanel.jsx to import/render GitHubSignIn button and manage basic logged-in state (using keytar-get IPC call V1).
+Layman's Terms: We add the "Sign in with GitHub" button to Settings. When clicked, it securely asks the main app brain for the public Client ID via the intercom. It starts the login flow. If you approve on GitHub, the app gets a secret access token. Instead of holding the token itself, the UI immediately uses the secure intercom again to tell the main app brain: "Lock this token away safely using the system keychain!". The UI also sends a copy to the backend. The login UI then updates to show you're connected. This keeps the token much safer than the original Day 26 attempt. (We still have a known issue V1.1: the Client Secret is a placeholder in the UI code - needing a bigger fix later).
+Grok's Thought Input:
+This corrected approach is significantly better. Fetching the Client ID via IPC and, most importantly, using IPC (secure-keytar-save) to delegate the actual keytar token storage to the main process aligns perfectly with the secure Electron patterns established on Day 66/105. This closes the loop identified from the previous debugging attempt and avoids direct keytar use in the renderer. The Client Secret placeholder remains a necessary documented V1.1 limitation until the full OAuth flow is moved to the main process.
 My thought input:
-Okay, GitHubSignIn.jsx. Need useState for potential loading state. The electron-oauth2 config requires the Client ID/Secret. Critical Issue: Getting these secrets securely from .env into the renderer process is non-trivial in Electron due to security contexts. Hardcoding placeholders directly in the JS component is bad practice but the simplest V1 approach for Cursor to implement today alongside a prominent TODO comment to fix this with secure IPC (Inter-Process Communication) or a build-time injection later. Using keytar is good. The fetch call to the backend endpoint closes the loop. Need to add electron-oauth2 and keytar via npm install.
+This looks correct now. Add the install task. GitHubSignIn.jsx MUST use invoke to get the Client ID AND use invoke to tell the main process to save the token via Keytar (channel: secure-keytar-save). Keep the insecure secret placeholder + comment from D107. SettingsPanel.jsx needs state and basic logic to check keychain (via secure-keytar-get invoke) on mount and update UI (show button or signed-in status). Task 5 (lift state) remains deferred.
 Additional Files, Documentation, Tools, Programs etc needed:
-electron-oauth2: (Library), Handles Electron OAuth2 flows, Required for GitHubSignIn.jsx, npm install electron-oauth2, app/node_modules/.
-keytar: (Library), Securely store credentials in system keychain, Required for storing GitHub token, npm install keytar, app/node_modules/.
-GitHub OAuth App Credentials: (Configuration), Client ID/Secret obtained Day 25, Needed for OAuth config (V1 placeholder in code).
+electron-oauth2: (Library), Handles Electron OAuth2 flows, Installs/Verify today.
+keytar: (Library), Securely store credentials in system keychain, Installs/Verify today.
+GitHub OAuth App Credentials: (Configuration), Client ID obtained by main proc via process.env, Client Secret V1.1 placeholder in GitHubSignIn.jsx.
+Secure IPC Bridge: (main.js/preload.js), Handlers for get-github-client-id, secure-keytar-save, secure-keytar-get, secure-keytar-delete must exist (Setup D66/D105/D107).
 Any Additional updates needed to the project due to this implementation?
-Prior: Backend endpoint /auth/github/token exists (Day 25). SettingsPanel V1 exists (Day 22). GitHub OAuth App registered.
-Post: UI allows users to initiate GitHub login. Token is securely stored locally and sent to the backend. electron-oauth2 and keytar added as dependencies. Requires secure method for passing Client ID/Secret to the renderer process later.
+Prior: Backend endpoint /auth/github/token exists (D25). SettingsPanel V1 exists (D22). GitHub OAuth App registered. Secure IPC framework in place (D66/D105/D107). process.env setup for main.js access to Client ID/Secret (D107).
+Post: UI allows users to initiate GitHub login. Token securely stored locally via IPC/main process/keytar and sent to backend. electron-oauth2 and keytar confirmed dependencies.
 Project/File Structure Update Needed:
+Yes: Modify app/package.json, app/package-lock.json (Add/confirm dependencies).
 Yes: Create app/components/GitHubSignIn.jsx.
 Yes: Modify app/components/SettingsPanel.jsx.
-Yes: Modify app/package.json (add dependencies).
-Maybe: Modify app/src/App.jsx (to display login status).
-Any additional updates needed to the guide for changes or explanation due to this implementation:
-Add explicit task to install electron-oauth2 and keytar.
-Add explicit note/TODO about the insecure V1 hardcoding of Client ID/Secret in GitHubSignIn.jsx and the need for secure config injection later (e.g., via preload script or IPC).
-Day 27 (VC Remote Ops) will now assume a token might be available via the backend's global variable (acknowledging its limitation).
-Any removals from the guide needed due to this implementation:
-Removes unrelated Old Guide Day 26 features.
-Effect on Project Timeline: Day 26 of ~80+ days. Requires installing new dependencies.
+Any additional updates needed to the guide for changes or explanation due to this implementation?
+This corrected entry replaces the flawed Day 26 entry.
+Re-emphasize secure storage via IPC and the remaining Client Secret V1.1 limitation/TODO.
+Any removals from the guide needed due to this implementation (detailed):
+Removes direct keytar usage from renderer code.
+Original Day 26 Task 5 (Modify App.jsx) confirmed as deferred.
+Effect on Project Timeline: Day 26 of ~80+ days. Adds dependency install step. Corrects security implementation.
 Integration Plan:
-When: Day 26 (Week 4) – Following backend auth prep.
-Where: app/components/, app/package.json, integrated into SettingsPanel.jsx.
-Dependencies: React, MUI, electron-oauth2, keytar, Node.js fetch. Requires actual GitHub OAuth App credentials.
-Setup Instructions: Run npm install electron-oauth2 keytar within C:\DreamerAI\app\. Ensure actual Client ID/Secret are available (from Anthony, replacing placeholders in code/.env for testing).
+When: Day 26 (Week 4) – Implementing secure frontend Auth flow V1.1.
+Where: app/ directory (dependencies, components). Interacts with main process via IPC and backend API.
+Dependencies: React, MUI, electron-oauth2, keytar (implicitly via IPC), Node.js fetch, functional Secure IPC bridge (D66/D105/D107). Backend endpoint functional (D25). Requires GITHUB_CLIENT_ID/SECRET available to main process env.
+Setup Instructions: Ensure main process can access GitHub env vars. Run npm install.
 Recommended Tools:
 VS Code/CursorAI Editor.
-Electron DevTools (Console, Network, Application->Keychain).
-GitHub Developer Settings.
+Electron DevTools (Console, Network).
+Terminal(s).
+OS Keychain/Credential Manager (for checking keytar).
 Tasks:
 Cursor Task: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
-Cursor Task: Verify electron-oauth2 and keytar are added to C:\DreamerAI\app\package.json.
-Cursor Task: Create C:\DreamerAI\app\components\GitHubSignIn.jsx. Implement the component using the code below. Include the prominent  regarding the placeholder Client ID/Secret.
-Cursor Task: Modify C:\DreamerAI\app\components\SettingsPanel.jsx. Import GitHubSignIn. Add state to track if the user is signed in (isSignedIn, setIsSignedIn) and potentially store the token prefix or username. Render the GitHubSignIn component, passing a handler (handleSignInSuccess) to update the state upon successful sign-in. Display sign-out button/status if signed in. Add logic to check keytar on mount.
-Cursor Task: (Optional but Recommended) Modify C:\DreamerAI\app\src\App.jsx. Lift the sign-in state (isSignedIn, githubUsername) up from SettingsPanel or use React Context for global access if needed by other panels later. For now, keep state within SettingsPanel is okay.
-Cursor Task: Test the Feature:
-CRITICAL: Manually replace "YOUR_GITHUB_CLIENT_ID_HERE" and "YOUR_GITHUB_CLIENT_SECRET_HERE" in GitHubSignIn.jsx with the actual credentials obtained by Anthony from the registered GitHub OAuth App for testing this flow.
-Start the backend server (python -m engine.core.server).
-Start the frontend (npm start in app/).
-Navigate to the "Settings" tab.
-Click the "Sign in with GitHub" button.
-A GitHub authorization window should pop up. Log in and authorize DreamerAI (repo scope).
-Verify the popup closes and the Settings panel UI updates (e.g., shows "Signed In", maybe hides Sign In button).
-Check Electron DevTools Console for success/error logs from GitHubSignIn.
-Check backend server logs to confirm the /auth/github/token endpoint received the token.
-(Optional) Check system keychain (e.g., Keychain Access on macOS, Credential Manager on Windows) for the stored 'DreamerAI' password 'github_token'.
-
-
-Cursor Task: IMPORTANT: Before committing, REVERT the actual Client ID/Secret in GitHubSignIn.jsx back to the placeholder strings ("YOUR_GITHUB_CLIENT_ID_HERE", etc.) to avoid committing secrets.
-Cursor Task: Stage changes (GitHubSignIn.jsx, SettingsPanel.jsx, package.json, package-lock.json), commit, and push.
-Cursor Task: Execute Auto-Update Triggers & Workflow.
+Cursor Task: Verify electron-oauth2 and keytar are added/updated in C:\DreamerAI\app\package.json dependencies.
+Cursor Task: Create C:\DreamerAI\app\components\GitHubSignIn.jsx. Implement the component using the code provided below (uses IPC invoke for Client ID fetch and Keytar save). Include the CRITICAL TODO comment about the insecure Client Secret placeholder V1.1.
+Cursor Task: Modify C:\DreamerAI\app\components\SettingsPanel.jsx. Import GitHubSignIn. Add state for isGitHubSignedIn / gitHubError. Add useEffect hook calling window.electronAPI.invoke('secure-keytar-get', ...) to check initial login state. Implement handleGitHubSignInSuccess and handleGitHubSignOut (which calls secure-keytar-delete via IPC). Conditionally render GitHubSignIn button or Sign Out button/status. Use code below.
+Cursor Task: Test the Secure GitHub Auth Flow:
+(Prep) Manually ensure REAL GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET are available as environment variables accessible by app/main.js. Start Backend (server.py). Start Frontend (npm start).
+(Login) Navigate to Settings. Click "Sign in with GitHub". Complete popup authorization.
+(Verify IPC/Storage) Check main process logs for 'get-github-client-id' and 'secure-keytar-save' IPC handler execution success.
+(Verify UI Update) Check Settings panel updates (shows "Signed In" or similar, Sign Out button visible).
+(Verify Backend) Check backend logs for successful /auth/github/token call.
+(Logout) Click "Sign Out". Check main process logs for 'secure-keytar-delete' success. Check UI reverts to "Sign in".
+(Verify Persistence - Optional) Restart frontend app (npm start). Go to Settings. Verify initial check finds token via 'secure-keytar-get' and UI shows "Signed In" state immediately.
+(CRITICAL Cleanup) Revert REAL secrets from env vars used by main.js back to placeholders/safe state.
+Cursor Task: Present Summary for Approval: "Task 'Day 26: GitHub Auth UI (Secure IPC V1)' complete. Implementation: Installed/Verified electron-oauth2/keytar. Created GitHubSignIn.jsx which fetches Client ID via IPC, uses placeholder for Client Secret (known V1.1 limitation documented), and sends token via IPC for secure Keytar storage in main process. Updated SettingsPanel.jsx to manage state and trigger IPC calls. Tests/Verification: Manually tested login/logout flow. Verified Client ID IPC call ok, secure token storage via IPC Keytar call ok (main proc logs), UI state updates correctly, backend received token. Login state restored on app restart via IPC get. Requesting approval. (yes/no/details?)"
+Cursor Task: (Upon Approval) Stage changes (GitHubSignIn.jsx, SettingsPanel.jsx, package.json, package-lock.json), commit, push.
+Cursor Task: (Upon Approval) Execute Auto-Update Triggers & Workflow.
 Code:
-(New File)
+(Ensure dependencies in package.json)
+// C:\DreamerAI\app\package.json -> dependencies
+{
+  // ... other deps
+  "electron-oauth2": "^4.0.0",
+  "keytar": "^7.9.0"
+  // ...
+}
+Use code with caution.
+Json
+(New File - Uses Secure IPC)
 // C:\DreamerAI\app\components\GitHubSignIn.jsx
 const React = require('react');
-const { useState } = React;
-const { Button } = require('@mui/material');
-// Dynamically import electron-oauth2 to handle potential issues in non-Electron envs?
-// For simplicity V1, use standard require. Ensure running within Electron.
+const { useState, useEffect } = React;
+const Button = require('@mui/material/Button').default;
+const Typography = require('@mui/material/Typography').default;
+const CircularProgress = require('@mui/material/CircularProgress').default;
+
+// --- Dynamic OAuth Import ---
 let OAuth;
-let keytar;
 try {
-    OAuth = require('electron-oauth2').default; // Note the .default
-    keytar = require('keytar');
+    OAuth = require('electron-oauth2').default;
 } catch (error) {
-    console.error("Failed to load electron-oauth2 or keytar. GitHub auth unavailable.", error);
-    // Handle the error gracefully in the component, e.g., disable the button
+    console.error("GitHubSignIn: Failed to load electron-oauth2.", error);
 }
+// ---------------------------
 
-// --- TODO: SECURE CONFIG INJECTION ---
-// HARDCODING SECRETS HERE IS BAD PRACTICE & INSECURE.
-// Replace these with a secure method to get config into the renderer process,
-// e.g., via contextBridge in preload.js or IPC calls to the main process
-// which reads from the environment/config files safely.
-const GITHUB_CLIENT_ID_PLACEHOLDER = "YOUR_GITHUB_CLIENT_ID_HERE";
-const GITHUB_CLIENT_SECRET_PLACEHOLDER = "YOUR_GITHUB_CLIENT_SECRET_HERE";
-// --- END TODO ---
+// --- CRITICAL TODO V2+ (Post V1.1) ---
+// The electron-oauth2 library REQUIRES the Client Secret in the RENDERER for the
+// token exchange step. This remains INSECURE. The CORRECT solution is to
+// refactor the ENTIRE OAuth flow into the main process using IPC triggers.
+// See main.js Day 107 TODO comment.
+const GITHUB_CLIENT_SECRET_PLACEHOLDER_V1_1 = "YOUR_GITHUB_CLIENT_SECRET_HERE_V1_INSECURE_TODO";
+// --- END CRITICAL TODO ---
+
+// --- Keytar Configuration (Match main.js handlers) ---
+const GITHUB_KEYCHAIN_SERVICE_APP = 'DreamerAI_GitHub_App'; // Consistent service name for app keytar
+const GITHUB_KEYCHAIN_ACCOUNT_APP = 'user_github_token';
+// ----------------------------------------------------
 
 
-function GitHubSignIn({ onSignInSuccess }) {
+function GitHubSignIn({ onSignInSuccess, onSignInError }) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // Clear error on mount
+    useEffect(() => { setError(null); }, []);
+
     const handleSignIn = async () => {
-        if (!OAuth || !keytar) {
-            setError("GitHub Sign-In libraries not loaded.");
+        if (!OAuth || !window.electronAPI?.invoke) {
+            const message = !OAuth ? "GitHub Sign-In library failed to load." : "Secure IPC bridge (electronAPI) not available.";
+            console.error("GitHubSignIn: Pre-requisite check failed.", message);
+            setError(message);
+            if(onSignInError) onSignInError(message);
             return;
         }
 
         setIsLoading(true);
         setError(null);
 
-        const config = {
-            clientId: GITHUB_CLIENT_ID_PLACEHOLDER, // Use placeholder or injected config
-            clientSecret: GITHUB_CLIENT_SECRET_PLACEHOLDER, // Use placeholder or injected config
-            authorizationUrl: 'https://github.com/login/oauth/authorize',
-            tokenUrl: 'https://github.com/login/oauth/access_token',
-            useBasicAuthorizationHeader: false,
-            // The redirectUri must match exactly what's configured in your GitHub OAuth App settings.
-            // 'http://localhost' is often used for simple Electron setups, but might need adjustment.
-            redirectUri: 'http://localhost'
-        };
-
-        // Ensure window options are suitable (size might need adjustment)
-        const windowOptions = {
-             width: 800,
-             height: 600,
-             webPreferences: {
-                 nodeIntegration: false, // Keep nodeIntegration false for the auth window itself
-                 contextIsolation: true
-            }
-        };
-
-        const githubOAuth = new OAuth(config, windowOptions);
-
         try {
-            console.log("Initiating GitHub OAuth flow...");
-            // Request 'repo' scope for full repository access
-            const token = await githubOAuth.getAccessToken({ scope: 'repo' });
-            console.log('GitHub OAuth Success:', token); // Log full token object initially for debug
-
-            if (!token || !token.access_token) {
-                throw new Error("Received invalid token object from GitHub.");
+            // --- Step 1: Fetch Client ID via Secure IPC ---
+            console.log("Requesting GitHub Client ID via IPC...");
+            const configResponse = await window.electronAPI.invoke('get-github-client-id');
+            if (!configResponse || !configResponse.success || !configResponse.clientId) {
+                throw new Error(`Failed IPC Client ID fetch: ${configResponse?.error || 'Unknown Error'}`);
             }
+            const clientId = configResponse.clientId;
+            console.log("GitHub Client ID received via IPC.");
+            // -------------------------------------------
 
-            // Store the access token securely using keytar
-            // Use a service name and account name convention
-            const service = 'DreamerAI_GitHub';
-            const account = 'user_access_token'; // Or link to user ID later
-            await keytar.setPassword(service, account, token.access_token);
-            console.log(`Token stored securely in keychain (Service: ${service})`);
+            // --- Step 2: Configure OAuth Library ---
+            const config = {
+                clientId: clientId, // Use fetched ID
+                clientSecret: GITHUB_CLIENT_SECRET_PLACEHOLDER_V1_1, // <-- STILL INSECURE V1.1 PLACEHOLDER
+                authorizationUrl: 'https://github.com/login/oauth/authorize',
+                tokenUrl: 'https://github.com/login/oauth/access_token',
+                useBasicAuthorizationHeader: false,
+                redirectUri: 'http://localhost' // MUST match GitHub App config
+            };
+            const windowOptions = { width: 800, height: 600, webPreferences:{ nodeIntegration: false, contextIsolation: true } };
+            const githubOAuth = new OAuth(config, windowOptions);
+            // --------------------------------------
 
-            // Send the token to the backend V1 endpoint
-            console.log("Sending token to backend...");
-            const backendResponse = await fetch('http://localhost:8000/auth/github/token', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token.access_token })
+            // --- Step 3: Trigger OAuth Flow ---
+            console.log("Initiating GitHub OAuth window...");
+            const token = await githubOAuth.getAccessToken({ scope: 'repo, user:email' }); // Added email scope maybe useful
+            if (!token || !token.access_token) throw new Error("Invalid token object from GitHub.");
+            console.log("GitHub OAuth flow successful. Token received.");
+            // --------------------------------
+
+            // --- Step 4: Secure Token Storage via IPC/Keytar ---
+            console.log(`IPC: Requesting main process to save GitHub token via 'secure-keytar-save'`);
+            const saveKeytarResult = await window.electronAPI.invoke('secure-keytar-save', {
+                service: GITHUB_KEYCHAIN_SERVICE_APP,
+                account: GITHUB_KEYCHAIN_ACCOUNT_APP,
+                token: token.access_token
             });
+            if (!saveKeytarResult || !saveKeytarResult.success) {
+                throw new Error(`Failed to store GitHub token securely: ${saveKeytarResult?.error || 'IPC Error'}`);
+            }
+            console.log("IPC: GitHub Token storage acknowledged by main process.");
+            // ----------------------------------------------
 
+            // --- Step 5: Send token to backend endpoint (Day 25) ---
+            console.log("Sending GitHub token to backend...");
+            const backendResponse = await fetch('http://localhost:8000/auth/github/token', { // Use API_URL if defined
+                 method: 'POST',
+                 headers: { 'Content-Type': 'application/json' },
+                 body: JSON.stringify({ token: token.access_token })
+            });
             if (!backendResponse.ok) {
-                const errorData = await backendResponse.json();
-                throw new Error(`Backend token storage failed: ${errorData.detail || backendResponse.statusText}`);
+                 const errorData = await backendResponse.json();
+                 // Log warning but maybe don't fail entire sign-in if backend store fails V1?
+                 // Depends on how critical backend having token is initially. V1 = Log & continue.
+                 console.warn(`Backend GitHub token storage failed: ${errorData.detail || backendResponse.statusText}`);
+                 // throw new Error(`Backend GitHub token storage failed: ${errorData.detail || backendResponse.statusText}`);
+            } else {
+                console.log("Backend acknowledged GitHub token receipt.");
             }
-            console.log("Backend acknowledged token receipt.");
+            // ---------------------------------------------------
 
-            // Call the success handler passed from parent (e.g., SettingsPanel)
+            // --- Step 6: Notify Parent Component ---
             if (onSignInSuccess) {
-                // Pass relevant info, maybe username if available, or just signal success
-                onSignInSuccess({ accessToken: token.access_token });
+                onSignInSuccess({ accessToken: token.access_token }); // Pass token if needed
             }
+            // -------------------------------------
 
         } catch (err) {
-            console.error('GitHub OAuth Error:', err);
+            console.error('GitHub Sign-In Process Error:', err);
             setError(`GitHub Sign-In Failed: ${err.message}`);
+             if(onSignInError) onSignInError(err.message);
         } finally {
             setIsLoading(false);
         }
     };
 
-    if (!OAuth || !keytar) {
-         return React.createElement(Button, { variant: "contained", disabled: true }, "GitHub Sign-In Unavailable");
-    }
-
+    // --- Render Button ---
     return React.createElement(Box, null,
         React.createElement(Button, {
             variant: "contained",
-            color: "primary",
+            color: "primary", // Or custom GitHub color?
             onClick: handleSignIn,
-            disabled: isLoading
+            disabled: isLoading || !OAuth || !window.electronAPI?.invoke, // Disable if libs/IPC missing
+            startIcon: isLoading ? React.createElement(CircularProgress, { size: 20, color:"inherit" }) : null,
+            // Add GitHub icon later maybe
         }, isLoading ? "Signing In..." : "Sign in with GitHub"),
-        error && React.createElement(Typography, { color: "error", sx: { mt: 1 } }, error)
+        // Display Errors:
+        error && React.createElement(Typography, { color: "error", variant:"caption", sx: { mt: 1, display:'block' } }, error)
     );
 }
 
 exports.default = GitHubSignIn;
-content_copy
-download
-Use code with caution.Jsx
-(Modification)
+Use code with caution.
+Jsx
+(Modification - Incorporate GitHub Sign-In & State Check)
 // C:\DreamerAI\app\components\SettingsPanel.jsx
 const React = require('react');
-const { useState, useEffect } = React;
-const Box = require('@mui/material/Box').default;
-const Typography = require('@mui/material/Typography').default;
-const Button = require('@mui/material/Button').default; // For Sign Out
-const Alert = require('@mui/material/Alert').default;
-// Import the new SignIn component
+const { useState, useEffect, useCallback } = React;
+// ... Keep MUI imports (Box, Typography, Button, Alert, etc.) ...
+// --- Import NEW GitHub Component ---
 const GitHubSignIn = require('./GitHubSignIn').default;
-// Import keytar to check for existing token
-let keytar;
-try {
-    keytar = require('keytar');
-} catch (error) {
-    console.error("Failed to load keytar in SettingsPanel.", error);
-}
+// ---------------------------------
 
-const GITHUB_KEYCHAIN_SERVICE = 'DreamerAI_GitHub';
-const GITHUB_KEYCHAIN_ACCOUNT = 'user_access_token'; // Match service/account used in GitHubSignIn
+// Keep i18n imports/hook...
+const { useTranslation } = require('react-i18next');
 
-function SettingsPanel() {
-    const [isSignedIn, setIsSignedIn] = useState(false);
-    const [authStatusMessage, setAuthStatusMessage] = useState('');
+// Keep Firebase imports/auth init if using D56 logic...
+// let initializeApp; let getAuth, ... auth ... etc ...
 
-    // Check for existing token on component mount
+// Keep constants for Keytar service/account for GitHub
+const GITHUB_KEYCHAIN_SERVICE_APP = 'DreamerAI_GitHub_App';
+const GITHUB_KEYCHAIN_ACCOUNT_APP = 'user_github_token';
+
+function SettingsPanel({ startTutorial /* Keep other props like activeProjectId? */ }) {
+    const { t, i18n } = useTranslation();
+    // Keep other state: currentUser, authLoading, authError (Firebase D56 state) ...
+
+    // --- NEW State for GitHub Auth ---
+    const [isGitHubSignedIn, setIsGitHubSignedIn] = useState(false);
+    const [gitHubUsername, setGitHubUsername] = useState(null); // Store username later V2+
+    const [gitHubError, setGitHubError] = useState(null);
+    const [checkingGitHubStatus, setCheckingGitHubStatus] = useState(true); // Check on mount
+    // --------------------------------
+
+    // --- Check GitHub Status on Mount via IPC/Keytar ---
     useEffect(() => {
-        const checkExistingToken = async () => {
-            if (!keytar) return; // Skip if keytar failed to load
+        const checkGitHubToken = async () => {
+            setCheckingGitHubStatus(true);
+            setGitHubError(null);
+            if (!window.electronAPI?.invoke) {
+                setGitHubError("IPC unavailable. Cannot check GitHub status.");
+                setIsGitHubSignedIn(false);
+                setCheckingGitHubStatus(false);
+                return;
+            }
             try {
-                const token = await keytar.getPassword(GITHUB_KEYCHAIN_SERVICE, GITHUB_KEYCHAIN_ACCOUNT);
-                if (token) {
-                    setIsSignedIn(true);
-                    setAuthStatusMessage('Signed in to GitHub (token found in keychain).');
-                    console.log('Existing GitHub token found in keychain.');
-                    // Optional: Re-send token to backend on startup? Or assume backend has it / request on demand.
-                    // For V1, just update UI state.
+                console.log("SettingsPanel: Checking for existing GitHub token via IPC 'secure-keytar-get'...");
+                const response = await window.electronAPI.invoke('secure-keytar-get', {
+                     service: GITHUB_KEYCHAIN_SERVICE_APP, account: GITHUB_KEYCHAIN_ACCOUNT_APP
+                 });
+                if (response && response.success && response.token) {
+                     console.log("SettingsPanel: Existing GitHub token found.");
+                     setIsGitHubSignedIn(true);
+                     // TODO V2: Fetch GitHub username using token via backend API?
+                     setGitHubUsername("GitHub Linked"); // Placeholder V1.1
                 } else {
-                    setIsSignedIn(false);
-                    setAuthStatusMessage('Not signed in to GitHub.');
-                    console.log('No existing GitHub token found in keychain.');
+                    console.log("SettingsPanel: No existing GitHub token found.");
+                     setIsGitHubSignedIn(false);
+                     setGitHubUsername(null);
+                     if (response && !response.success) setGitHubError(response.error); // Show IPC error
                 }
             } catch (error) {
-                console.error('Keytar error checking for token:', error);
-                setAuthStatusMessage('Error checking GitHub sign-in status.');
-                setIsSignedIn(false);
+                console.error("Error checking GitHub token via IPC:", error);
+                setGitHubError(`Error checking status: ${error.message}`);
+                setIsGitHubSignedIn(false);
+                 setGitHubUsername(null);
+            } finally {
+                setCheckingGitHubStatus(false);
             }
         };
-        checkExistingToken();
+        checkGitHubToken();
     }, []);
+    // ---------------------------------------------
 
-    const handleSignInSuccess = (authData) => {
-        console.log("GitHub sign-in successful in SettingsPanel handler.");
-        setIsSignedIn(true);
-        setAuthStatusMessage('Successfully signed in to GitHub!');
-        // Potentially store username/profile info here later
+    // --- Existing Firebase Handlers (Keep from Day 56) ---
+    // signInWithGoogle, handleSignOut... (These handle currentUser state)
+
+    // --- NEW GitHub Auth Handlers ---
+    const handleGitHubSignInSuccess = (authData) => {
+        console.log("SettingsPanel: GitHub sign-in SUCCESS.");
+        setIsGitHubSignedIn(true);
+        setGitHubError(null);
+        setGitHubUsername("GitHub Linked"); // V1.1 placeholder
+        // TODO V2: Get actual username maybe from backend confirmation?
     };
 
-    const handleSignOut = async () => {
-        if (!keytar) return;
-        console.log("Signing out from GitHub...");
-        try {
-            const deleted = await keytar.deletePassword(GITHUB_KEYCHAIN_SERVICE, GITHUB_KEYCHAIN_ACCOUNT);
-            if (deleted) {
-                setIsSignedIn(false);
-                setAuthStatusMessage('Successfully signed out from GitHub.');
-                console.log('GitHub token removed from keychain.');
-                // TODO: Notify backend to clear its token (needs new endpoint)
-            } else {
-                 setAuthStatusMessage('Could not sign out: Token not found?');
-                 console.warn('Attempted sign out, but no token found in keychain.');
-            }
-        } catch (error) {
-             console.error('Keytar error during sign out:', error);
-             setAuthStatusMessage('Error signing out from GitHub.');
-        }
+    const handleGitHubSignInError = (errorMessage) => {
+         console.error("SettingsPanel: GitHub sign-in ERROR reported:", errorMessage);
+         setGitHubError(errorMessage || "An unknown GitHub sign-in error occurred.");
+         setIsGitHubSignedIn(false);
+         setGitHubUsername(null);
+     };
+
+    const handleGitHubSignOut = async () => {
+         console.log("SettingsPanel: Attempting GitHub sign out...");
+         setGitHubError(null);
+         if (!window.electronAPI?.invoke) { setGitHubError("IPC unavailable."); return; }
+         try {
+             const response = await window.electronAPI.invoke('secure-keytar-delete', {
+                  service: GITHUB_KEYCHAIN_SERVICE_APP, account: GITHUB_KEYCHAIN_ACCOUNT_APP
+              });
+             if (response && response.success) {
+                  console.log("SettingsPanel: GitHub token deleted via IPC.");
+                  setIsGitHubSignedIn(false);
+                  setGitHubUsername(null);
+                  // TODO: Notify backend to invalidate its keytar token if necessary? V2+
+             } else {
+                 throw new Error(response?.error || "IPC Delete Error");
+             }
+         } catch (error) {
+             console.error("Error signing out from GitHub via IPC:", error);
+             setGitHubError(`Sign out failed: ${error.message}`);
+         }
     };
+    // -------------------------------
+
 
     return React.createElement(Box, { sx: { p: 2 } },
-        React.createElement(Typography, { variant: 'h5', gutterBottom: true }, "Settings"),
+        // Keep Title, Language, Tutorial Sections ...
 
-        // --- GitHub Authentication Section ---
+        // --- Firebase Auth Section ---
         React.createElement(Box, { sx: { mt: 3, p: 2, border: '1px solid grey', borderRadius: '4px'} },
-            React.createElement(Typography, { variant: 'h6', gutterBottom: true }, "GitHub Integration"),
-            authStatusMessage && React.createElement(Alert, { severity: isSignedIn ? 'success' : 'info', sx: { mb: 2 } }, authStatusMessage),
-            !isSignedIn && React.createElement(GitHubSignIn, { onSignInSuccess: handleSignInSuccess }),
-            isSignedIn && React.createElement(Button, { variant: 'outlined', color: 'warning', onClick: handleSignOut }, "Sign Out from GitHub")
+            // ... Firebase Content (Day 56/101) ... renderFirebaseAuth helper etc...
         ),
 
-        // ... (Placeholder for other settings from Day 22) ...
-        React.createElement(Typography, { variant: 'body2', sx:{mt: 4, color: 'grey.500'} },
-             "(Other settings like AI Model Selection, etc. will appear here later)."
-        )
+        // --- NEW GitHub Authentication Section ---
+        React.createElement(Box, { sx: { mt: 3, p: 2, border: '1px solid grey', borderRadius: '4px'} },
+            React.createElement(Typography, { variant: 'h6', gutterBottom: true }, "GitHub Integration"),
+            checkingGitHubStatus && React.createElement(CircularProgress, { size: 20, sx:{mr:1} }),
+            !checkingGitHubStatus && isGitHubSignedIn && React.createElement(Box, {sx:{mb:1}},
+                 React.createElement(Typography, { variant:'body2', color:'success.main' }, `${gitHubUsername || 'Successfully Linked'}`),
+                 React.createElement(Button, { variant:"outlined", size:"small", onClick: handleGitHubSignOut, sx:{ml:2} }, "Unlink GitHub")
+             ),
+            !checkingGitHubStatus && !isGitHubSignedIn && React.createElement(GitHubSignIn, {
+                 onSignInSuccess: handleGitHubSignInSuccess,
+                 onSignInError: handleGitHubSignInError
+             }),
+             // Display GitHub specific errors:
+             gitHubError && React.createElement(Alert, { severity: "error", sx: { mt: 1 } }, gitHubError)
+        ),
+        // ------------------------------------
+
+        // --- Keep Distillation Placeholder Section (Day 64) ---
+        // React.createElement(Box, { sx: { /* ... */ }, /* Distill Placeholder Button */ ),
+
+        // --- Keep VC Panel (Conditionally render if needed, D106 suggestion) ---
+        // currentUser && React.createElement(VersionControlPanel)
     );
 }
 
 exports.default = SettingsPanel;
-content_copy
-download
-Use code with caution.Jsx
-(Modification - Add Dependencies)
-// C:\DreamerAI\app\package.json
-{
-  "name": "dreamerai-app", // Assuming name from init
-  "version": "0.1.0", // Assuming version
-  "description": "DreamerAI Frontend",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "lint": "eslint ."
-  },
-  "dependencies": {
-    // ... existing deps: @emotion/react, @emotion/styled, @mui/material, electron, firebase, framer-motion, i18next, joi, n8n, posthog-js, react, react-beautiful-dnd, react-dom, react-grid-layout, react-i18next, ws ...
-    "electron-oauth2": "^4.0.0", // Check for latest ^4.x version
-    "keytar": "^7.9.0" // Check for latest ^7.x version
-  },
-  "devDependencies": {
-    // ... existing devDeps: eslint ...
-    "electron-builder": "^24.9.1" // Example, update later
-  }
-  // ... potentially other fields like author, license, repository ...
-}
-content_copy
-download
-Use code with caution.Json
+Use code with caution.
+Jsx
+Explanation of Changes:
+Dependency Install: Added Task 1 & 2 to ensure electron-oauth2 and keytar are installed and in package.json.
+GitHubSignIn.jsx:
+Removes direct keytar require.
+Fetches Client ID using window.electronAPI.invoke('get-github-client-id').
+Critically: Replaces direct keytar.setPassword with window.electronAPI.invoke('secure-keytar-save', { service: ..., account: ..., token: ... }). This delegates secure storage to the main process via the established IPC channel. Uses consistent service/account names.
+Keeps the GITHUB_CLIENT_SECRET_PLACEHOLDER_V1_1 and the enhanced TODO/Warning about its insecurity and the need for a Post-V1.1 refactor.
+SettingsPanel.jsx:
+Imports GitHubSignIn.
+Adds state (isGitHubSignedIn, gitHubError, checkingGitHubStatus).
+Adds useEffect hook to call window.electronAPI.invoke('secure-keytar-get', ...) on mount to check initial login status from secure storage.
+Adds handleGitHubSignInSuccess, handleGitHubSignInError, and handleGitHubSignOut callbacks. handleGitHubSignOut now uses window.electronAPI.invoke('secure-keytar-delete', ...) to securely clear the stored token.
+Conditionally renders the GitHubSignIn button or the "Signed In / Unlink" status based on state. Displays specific GitHub errors.
+Guide Text: Updated Description, Context, Mechanics, Interactions, and Advice sections to accurately reflect the use of IPC for secure storage and the remaining V1.1 Client Secret limitation. Removed misleading statements about Day 107 fully solving the secret handling. Explicitly noted dependency installation and state management deferral.
+This corrected Day 26 entry now aligns with the secure patterns established in Day 66/105/107, provides a functional (albeit partially insecure V1.1 due to the secret placeholder) GitHub login flow, and accurately documents the remaining security TODO.
 Explanation:
 Dependencies: Adds electron-oauth2 for managing the OAuth flow within Electron and keytar for securely storing the obtained access token in the operating system's credential manager/keychain.
 :
