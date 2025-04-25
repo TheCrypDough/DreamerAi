@@ -457,15 +457,26 @@
     *   Status: [DONE]
 *   **Overall Day Status:** DONE
 
-## Day 26: GitHub Auth UI V1.0 (Basic Setup - Rev 4)
+## Day 26 (Rev 6): Secure GitHub Auth Re-architecture (Phase 1: Main Process Plan & UI Trigger Prep)
 
-*   **Task:** Navigate to C:\\DreamerAI\\app. Run npm install electron-oauth2 keytar @mui/icons-material. (Status: TODO)
-*   **Task:** Verify electron-oauth2 and keytar are added to C:\\DreamerAI\\app\\package.json dependencies. (Status: TODO)
-*   **Task:** Create C:\\DreamerAI\\app\\components\\GitHubSignIn.jsx. Implement the component using the exact code provided below (Rev 4 - Insecure V1.0), which uses direct keytar require/calls and includes placeholders AND CRITICAL TODOs for secrets. (Status: TODO)
-*   **Task:** Modify C:\\DreamerAI\\app\\components\\SettingsPanel.jsx. Import GitHubSignIn. Add state management (isGitHubSignedIn, etc.). Add useEffect hook calling direct keytar.getPassword on mount. Implement success/error/signout handlers (handleGitHubSignInSuccess, handleGitHubSignOut using direct keytar.deletePassword). Conditionally render components. Use the exact code provided below (Rev 4 - Insecure V1.0). (Status: TODO)
-*   **Task:** Test the V1.0 INSECURE GitHub Auth Flow (Requires Manual Secret Insertion/Reversion). (Status: TODO)
-*   **Task:** Present Summary for Approval. (Status: TODO)
-*   **Task:** (Upon Approval) Stage changes (GitHubSignIn.jsx, SettingsPanel.jsx, package.json, package-lock.json), commit, push. (Status: TODO)
-*   **Task:** (Upon Approval) Execute Auto-Update Triggers & Workflow. (Status: TODO)
+*   **Cursor Task:** Clean Up Dependencies (npm uninstall electron-oauth2 keytar)
+    *   Status: DONE
+*   **Cursor Task:** Modify main.js (Env Var Check & IPC Placeholder)
+    *   Status: TODO
+*   **Cursor Task:** Modify preload.js (Whitelist Channel)
+    *   Status: TODO
+*   **Cursor Task:** Refactor GitHubSignIn.jsx (Trigger Button)
+    *   Status: TODO
+*   **Cursor Task:** Test Placeholder Trigger
+    *   Status: TODO
+*   **Cursor Task:** Present Summary for Approval
+    *   Status: TODO
+*   **Cursor Task:** (Upon Approval) Stage changes, commit, push
+    *   Status: TODO
+*   **Cursor Task:** (Upon Approval) Execute Auto-Update Triggers & Workflow
+    *   Status: TODO
+*   **Overall Day Status:** TODO
+*   **Summary:** Phase 1 Re-architecture: Uninstall insecure deps, plan main-process flow (via TODOs), prep main env check, add IPC placeholder trigger, refactor UI to simple IPC trigger button.
+*   **Issues Encountered:** None Anticipated Yet
 
 *(Future days/tasks will be added here)*

@@ -346,3 +346,11 @@ Template for Entries must be completed at least Daily!
 *   **Issues Logged/Resolved:** Initial test connection error due to port mismatch (resolved).
 *   **Anthony's Feedback/Vibe:** Guided debugging, approved completion.
 *   **Next Task Context:** Proceeding to Day 26, Task: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
+
+## Day 26 (Rev 6) Task 1: Clean Up Dependencies
+
+*   **Summary:** Uninstalled `electron-oauth2` and `keytar` from `app/` directory due to identified security vulnerability (GHSA-r683-j2x4-v87g in `node-fetch` via `electron-oauth2`) and architectural flaws. Implicit `npm audit` after uninstall confirmed 0 vulnerabilities remaining from this source.
+*   **Key Decisions:** Pivoted from Day 26 Rev 5 guide to Rev 6 based on security investigation. Prioritized removing vulnerable dependencies immediately.
+*   **Anthony's Feedback/Vibe:** Approved pivot and investigation, emphasized thoroughness.
+*   **Blocking Issues:** None for this task. Previous vulnerabilities resolved by uninstall.
+*   **Next Task:** Modify main.js (Env Var Check & IPC Placeholder)
