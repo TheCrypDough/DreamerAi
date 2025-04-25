@@ -362,3 +362,11 @@ Template for Entries must be completed at least Daily!
 *   **Anthony's Feedback/Vibe:** Approved completion.
 *   **Blocking Issues:** None.
 *   **Next Task:** Day 26 (Rev 6) Task 3: Modify preload.js (Whitelist Channel)
+
+## Day 26 (Rev 6) Task 3: Modify preload.js (Whitelist Channel)
+
+*   **Summary:** Replaced the content of `app/preload.js` with the secure version from Day 26 Rev 6 guide. Set up `contextBridge` to expose `window.electronAPI.invoke`. Updated `validInvokeChannels` whitelist to add `start-github-auth` and remove obsolete `get-github-client-id`, aligning with the main-process OAuth flow trigger.
+*   **Key Decisions:** Used the complete secure preload structure assuming it supersedes the minimal existing file.
+*   **Anthony's Feedback/Vibe:** Approved completion.
+*   **Blocking Issues:** None.
+*   **Next Task:** Day 26 (Rev 6) Task 4: Refactor GitHubSignIn.jsx (Trigger Button)

@@ -464,7 +464,7 @@
 *   **Cursor Task:** Modify main.js (Env Var Check & IPC Placeholder)
     *   Status: DONE
 *   **Cursor Task:** Modify preload.js (Whitelist Channel)
-    *   Status: TODO
+    *   Status: DONE
 *   **Cursor Task:** Refactor GitHubSignIn.jsx (Trigger Button)
     *   Status: TODO
 *   **Cursor Task:** Test Placeholder Trigger
