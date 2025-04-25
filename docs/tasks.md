@@ -462,7 +462,7 @@
 *   **Cursor Task:** Clean Up Dependencies (npm uninstall electron-oauth2 keytar)
     *   Status: DONE
 *   **Cursor Task:** Modify main.js (Env Var Check & IPC Placeholder)
-    *   Status: TODO
+    *   Status: DONE
 *   **Cursor Task:** Modify preload.js (Whitelist Channel)
     *   Status: TODO
 *   **Cursor Task:** Refactor GitHubSignIn.jsx (Trigger Button)

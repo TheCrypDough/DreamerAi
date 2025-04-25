@@ -354,3 +354,11 @@ Template for Entries must be completed at least Daily!
 *   **Anthony's Feedback/Vibe:** Approved pivot and investigation, emphasized thoroughness.
 *   **Blocking Issues:** None for this task. Previous vulnerabilities resolved by uninstall.
 *   **Next Task:** Modify main.js (Env Var Check & IPC Placeholder)
+
+## Day 26 (Rev 6) Task 2: Modify main.js (Env Var Check & IPC Placeholder)
+
+*   **Summary:** Modified `app/main.js` to align with Day 26 Rev 6. Implemented secure webPreferences (`nodeIntegration: false`, `contextIsolation: true`). Added checks for `GITHUB_CLIENT_ID`/`SECRET` in `process.env` (loaded via `dotenv`), logging warnings if missing/placeholders. Added placeholder `ipcMain.handle('start-github-auth', ...)` which logs a TODO and returns failure, establishing the trigger point for the future main-process OAuth flow. Integrated existing secure JWT/Keytar IPC handlers from previous days.
+*   **Key Decisions:** Followed guide code precisely, ensuring secure Electron settings and preparing for main-process OAuth.
+*   **Anthony's Feedback/Vibe:** Approved completion.
+*   **Blocking Issues:** None.
+*   **Next Task:** Day 26 (Rev 6) Task 3: Modify preload.js (Whitelist Channel)
