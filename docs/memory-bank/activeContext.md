@@ -1,8 +1,38 @@
 # Active Context
-*Last Updated: [AUTO_TIMESTAMP]*
 
-- **Current work focus:** Starting Day 26.1, Task 1: Verify electron-rebuild setup.
-- **Recent changes:** Completed Day 26 foundation refactor. Ran `npx electron-forge import`, moving build configs to root. Installed `electron-rebuild` and verified `keytar` loads in main process. Modified `main.js` (keytar load attempt, IPC placeholder), `preload.js` (whitelist), `GitHubSignIn.jsx` (trigger button), `App.jsx` (restored V1 HTTP listener). Uninstalled `electron-oauth2`. Resolved merge conflicts after `git pull`. Tested build, load, keytar, IPC trigger, and HTTP bridge successfully. Corrected backend server startup using `python -m engine.core.server` or `uvicorn`.
-- **Next steps:** Proceed with Day 26.1 tasks sequentially: Implement functional main process GitHub OAuth flow using temp HTTP server and keytar.
-- **Active decisions:** Verified Day 26 refactoring successful. Confirmed file structure changes from `electron-forge import` are correct and supersede older guide instructions regarding config file locations. Confirmed backend server requires specific startup command (`python -m` or `uvicorn`).
-- **Key Challenges/Blockers:** None currently. Need to ensure GitHub App callback URL and secrets are correctly handled during Day 26.1 testing.
+*Last Updated: 2024-07-29 16:00:00*
+
+## Current Work Focus
+
+Starting Day 27: VC Remote Ops Backend.
+
+## Recent Changes
+
+- Completed Day 26.1 functional GitHub Auth flow.
+- Verified and rebuilt the `keytar` native module using `electron-rebuild`.
+- Implemented the secure OAuth 2.0 flow entirely within the Electron main process (`main.js`):
+    - Triggered via IPC (`start-github-auth`) from the renderer (`GitHubSignIn.jsx`).
+    - Launched the GitHub authorization URL in the default browser using `shell.openExternal`.
+    - Started a temporary local HTTP server (`http://localhost:9876`) to listen for the OAuth callback.
+    - Extracted the authorization `code` from the callback URL.
+    - Exchanged the `code` for an access token by making a secure HTTPS POST request to `https://api.github.com/app/installations/.../access_tokens`, including the client ID and client secret (loaded securely from environment variables).
+    - Securely stored the obtained access token in the OS keychain using `keytar.setPassword`.
+    - Cleared the temporary server.
+    - Sent the obtained token to the backend API (`/auth/github/token`) via `fetch` (or `httpx`).
+    - Implemented logic to retrieve (`keytar.getPassword`) and delete (`keytar.deletePassword`) the token for status checking and unlinking.
+- Refined UI feedback in `GitHubSignIn.jsx` to reflect success/failure/linking status based on IPC results and keychain checks.
+- Successfully tested the end-to-end flow: linking via UI button, browser authorization, callback handling, token storage, backend notification, UI update, and unlinking.
+- Resolved backend connection errors (`ECONNREFUSED`) during testing by correcting the `BACKEND_URL` in `main.js` from `http://localhost:8000` to `http://localhost:8090`.
+- Reverted real GitHub secrets from the environment/code after successful testing.
+
+## Next Steps
+
+- Proceed with Day 27 tasks sequentially as outlined in the `DreamerAi_Guide.md`.
+- Focus on implementing the backend logic for remote Git operations (push, pull, clone) using the stored GitHub token.
+
+## Active Decisions & Considerations
+
+- Confirmed the Day 26.1 main-process OAuth flow is functional and adheres to security best practices (secrets not exposed to renderer, token stored securely).
+- The temporary HTTP server approach for the OAuth callback is effective for development.
+- The backend endpoint `/auth/github/token` successfully receives the token but currently stores it in a non-persistent global variable; this needs a proper database storage solution later.
+- Need to ensure the backend uses the received GitHub token correctly for authenticated remote Git operations in Day 27.

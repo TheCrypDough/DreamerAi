@@ -1,6 +1,9 @@
 const { app, BrowserWindow, ipcMain, safeStorage, shell } = require('electron');
 const path = require('path');
 const http = require('http'); // Added for Bridge Listener
+const https = require('https'); // NEW - For secure token exchange request
+const url = require('url'); // NEW - For parsing redirect URL
+const querystring = require('querystring'); // NEW - For token exchange body
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -26,7 +29,10 @@ const BRIDGE_LISTENER_PORT = process.env.BRIDGE_LISTENER_PORT || 3131;
 
 // --- GitHub Config Check (Env Vars - Needs setup for D26.1+) ---
 // Load dotenv configuration based on the environment
-require('dotenv').config({ path: path.resolve(__dirname, '..', 'data', 'config', '.env.development') });
+console.log(`[Main Process] app.getAppPath() = ${app.getAppPath()}`);
+const dotenvPath = path.resolve(app.getAppPath(), 'data', 'config', '.env.development');
+require('dotenv').config({ path: dotenvPath, override: true, debug: true });
+console.log(`[Main Process] Attempting to load .env from: ${dotenvPath}`);
 
 const GITHUB_CLIENT_ID_MAIN = process.env.GITHUB_CLIENT_ID;
 const GITHUB_CLIENT_SECRET_MAIN = process.env.GITHUB_CLIENT_SECRET;
@@ -39,7 +45,189 @@ if (!GITHUB_CLIENT_ID_MAIN || !GITHUB_CLIENT_SECRET_MAIN) {
 }
 // -----------------------------------------------------------
 
+// --- GitHub Keytar Config (Consistent Names) ---
+const GITHUB_KEYCHAIN_SERVICE = 'DreamerAI_GitHub_Token_Service_D66';
+const GITHUB_KEYCHAIN_ACCOUNT = 'user_github_access_token';
+// --- Backend Config ---
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8090'; // Use env var or default to 8090
+
+// --- Temporary Redirect Server Config --- (Moved here for helpers)
+const REDIRECT_PORT = 9876; // Ensure matches GitHub App config
+const REDIRECT_HOST = 'localhost';
+const REDIRECT_URI = `http://${REDIRECT_HOST}:${REDIRECT_PORT}/github_callback`;
+let tempServer = null;
+let resolveRedirectPromise = null;
+let rejectRedirectPromise = null;
+// --------------------------------------
+
 let mainWindow = null; // Make mainWindow accessible in this scope
+
+// --- Helper Functions (Moved Before createWindow for Clarity) ---
+
+// --- Helper: Start Temporary Redirect Server ---
+function startTemporaryRedirectServer() {
+    return new Promise((resolve, reject) => {
+        if (tempServer) { // Prevent multiple servers
+             console.warn("[TempServer] Already running. Closing existing...");
+             closeTemporaryRedirectServer();
+             setTimeout(() => startTemporaryRedirectServer().then(resolve).catch(reject), 200); // Retry after small delay
+             return;
+        }
+        resolveRedirectPromise = resolve;
+        rejectRedirectPromise = reject;
+        tempServer = http.createServer(async (req, res) => {
+            const requestUrl = url.parse(req.url, true);
+            const query = requestUrl.query;
+            let handled = false; // Flag to ensure promise resolved/rejected only once
+
+            if (requestUrl.pathname === '/github_callback') {
+                if (query.error) {
+                    const errorMsg = `GitHub Auth Error: ${query.error} (${query.error_description || 'No desc.'})`;
+                    console.error(`[TempServer] ${errorMsg}`);
+                    if (rejectRedirectPromise && !handled) { handled = true; rejectRedirectPromise(new Error(errorMsg)); }
+                    res.writeHead(400, { 'Content-Type': 'text/html' });
+                    res.end(`<html><head><title>OAuth Error</title></head><body><h1>OAuth Error</h1><p>${errorMsg}</p><p>You can close this window.</p><script>window.close();</script></body></html>`);
+                } else if (query.code) {
+                    console.log("[TempServer] Authorization code received.");
+                    if (resolveRedirectPromise && !handled) { handled = true; resolveRedirectPromise(query.code); }
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end("<html><head><title>Success!</title></head><body><h1>Success!</h1><p>Authentication successful. You can close this window now.</p><script>window.close();</script></body></html>");
+                } else {
+                    const errorMsg = "Invalid callback request received (missing code/error).";
+                    console.error(`[TempServer] ${errorMsg}`);
+                    if (rejectRedirectPromise && !handled) { handled = true; rejectRedirectPromise(new Error(errorMsg)); }
+                    res.writeHead(400, { 'Content-Type': 'text/html' });
+                    res.end(`<html><head><title>Error</title></head><body><h1>Error</h1><p>${errorMsg}</p><script>window.close();</script></body></html>`);
+                }
+                closeTemporaryRedirectServer(); // Close after handling
+            } else {
+                 res.writeHead(404); res.end('Not Found by Temp Server');
+            }
+        }).listen(REDIRECT_PORT, REDIRECT_HOST, () => {
+            console.log(`[TempServer] Listening on ${REDIRECT_URI}`);
+        });
+        tempServer.on('error', (err) => {
+            console.error(`[TempServer] Server error: ${err}`);
+             if (rejectRedirectPromise) {
+                 if (err.code === 'EADDRINUSE') {
+                     rejectRedirectPromise(new Error(`Port ${REDIRECT_PORT} already in use. Please close the other application or change REDIRECT_PORT in main.js and GitHub App settings.`));
+                 } else {
+                     rejectRedirectPromise(err);
+                 }
+             }
+            closeTemporaryRedirectServer();
+        });
+    });
+}
+// --- Helper: Close Temporary Redirect Server ---
+function closeTemporaryRedirectServer() {
+    if (tempServer) {
+        tempServer.close(() => { console.log('[TempServer] Closed.'); tempServer = null; resolveRedirectPromise = null; rejectRedirectPromise = null; });
+    } else { 
+        resolveRedirectPromise = null; 
+        rejectRedirectPromise = null; 
+    }
+}
+// --- Helper: Exchange Code for Token ---
+async function exchangeCodeForToken(code) {
+    console.log('[Main Process] Exchanging authorization code for access token...');
+    return new Promise((resolve, reject) => {
+        const postData = querystring.stringify({
+            client_id: GITHUB_CLIENT_ID_MAIN,
+            client_secret: GITHUB_CLIENT_SECRET_MAIN,
+            code: code,
+            redirect_uri: REDIRECT_URI,
+        });
+
+        const options = {
+            hostname: 'github.com',
+            port: 443,
+            path: '/login/oauth/access_token',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': Buffer.byteLength(postData),
+                'Accept': 'application/json' // Request JSON response
+            }
+        };
+
+        const req = https.request(options, (res) => {
+            let responseBody = '';
+            res.on('data', (chunk) => { responseBody += chunk; });
+            res.on('end', () => {
+                try {
+                    if (res.statusCode >= 200 && res.statusCode < 300) {
+                        const parsedBody = JSON.parse(responseBody);
+                        if (parsedBody.access_token) {
+                            console.log('[Main Process] Access token obtained successfully.');
+                            resolve(parsedBody.access_token);
+                        } else if (parsedBody.error) {
+                            reject(new Error(`GitHub Token Exchange Error: ${parsedBody.error} (${parsedBody.error_description || 'No description'})`));
+                        } else {
+                            reject(new Error('Invalid response format from GitHub token endpoint.'));
+                        }
+                    } else {
+                        reject(new Error(`GitHub Token Exchange Failed: Status Code ${res.statusCode}. Response: ${responseBody}`));
+                    }
+                } catch (e) {
+                    reject(new Error(`Error parsing GitHub token response: ${e.message}. Response: ${responseBody}`));
+                }
+            });
+        });
+
+        req.on('error', (e) => {
+            console.error('[Main Process] Error during token exchange request:', e);
+            reject(new Error(`Network error during token exchange: ${e.message}`));
+        });
+
+        req.write(postData);
+        req.end();
+    });
+}
+
+// --- Helper: Send Token to Backend ---
+async function sendTokenToBackend(accessToken) {
+     console.log(`[Main Process] Sending token to backend at ${BACKEND_URL}/auth/github/token`);
+     return new Promise((resolve, reject) => {
+         const postData = JSON.stringify({ token: accessToken });
+         const backendUrlParts = url.parse(BACKEND_URL + '/auth/github/token');
+
+         const options = {
+             hostname: backendUrlParts.hostname,
+             port: backendUrlParts.port || (backendUrlParts.protocol === 'https:' ? 443 : 80),
+             path: backendUrlParts.pathname,
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+                 'Content-Length': Buffer.byteLength(postData)
+             }
+         };
+
+         const req = (backendUrlParts.protocol === 'https:' ? https : http).request(options, (res) => {
+             let responseBody = '';
+             res.on('data', (chunk) => { responseBody += chunk; });
+             res.on('end', () => {
+                 if (res.statusCode >= 200 && res.statusCode < 300) {
+                     console.log('[Main Process] Token successfully sent to backend.');
+                     resolve({ success: true, response: responseBody });
+                 } else {
+                     console.error(`[Main Process] Backend notification failed: Status ${res.statusCode}. Response: ${responseBody}`);
+                     reject(new Error(`Backend error (Status ${res.statusCode}): ${responseBody || 'No response body'}`));
+                 }
+             });
+         });
+
+         req.on('error', (e) => {
+             console.error('[Main Process] Error sending token to backend:', e);
+             reject(new Error(`Network error sending token to backend: ${e.message}`));
+         });
+
+         req.write(postData);
+         req.end();
+     });
+}
+
+// --- End Helper Functions ---
 
 const createWindow = () => {
   // Create the browser window.
@@ -113,44 +301,137 @@ if (!gotTheLock) {
    encryptionAvailable = safeStorage.isEncryptionAvailable(); // Check safeStorage
    console.log(`[Main Process D26] safeStorage Available: ${encryptionAvailable}`);
 
-   // --- Setup IPC Handlers ---
-   // Existing handlers (JWT, Keytar Placeholders/Functional if implemented D66/D105)
-   ipcMain.handle('secure-jwt-save', async (event, token) => { /* D105 Logic/Placeholder */ console.warn("IPC: secure-jwt-save not implemented"); return { success: false, error: 'Not implemented' }; });
-   ipcMain.handle('secure-jwt-get', async (event) => { /* D105 Logic/Placeholder */ console.warn("IPC: secure-jwt-get not implemented"); return { success: false, token: null, error: 'Not implemented' }; });
-   ipcMain.handle('secure-jwt-delete', async (event) => { /* D105 Logic/Placeholder */ console.warn("IPC: secure-jwt-delete not implemented"); return { success: false, error: 'Not implemented' }; });
+   // --- Setup Functional IPC Handlers --- 
+   // JWT Placeholders (Keep for now)
+   ipcMain.handle('secure-jwt-save', async (event, token) => { console.warn("IPC: secure-jwt-save not implemented"); return { success: false, error: 'Not implemented' }; });
+   ipcMain.handle('secure-jwt-get', async (event) => { console.warn("IPC: secure-jwt-get not implemented"); return { success: false, token: null, error: 'Not implemented' }; });
+   ipcMain.handle('secure-jwt-delete', async (event) => { console.warn("IPC: secure-jwt-delete not implemented"); return { success: false, error: 'Not implemented' }; });
 
-   const GITHUB_KEYCHAIN_SERVICE = 'DreamerAI_GitHub_Token_Service_D66';
-   const GITHUB_KEYCHAIN_ACCOUNT = 'user_github_access_token';
-   if (keytar) { // Only setup if keytar loaded
-       ipcMain.handle('secure-keytar-save', async (event, { service, account, token }) => { /* D66 Functional Logic Here */ console.warn("IPC: secure-keytar-save not implemented"); return { success: false, error: 'Not implemented' }; });
-       ipcMain.handle('secure-keytar-get', async (event, { service, account }) => { /* D66 Functional Logic Here */ console.warn("IPC: secure-keytar-get not implemented"); return { success: false, token: null, error: 'Not implemented' }; });
-       ipcMain.handle('secure-keytar-delete', async (event, { service, account }) => { /* D66 Functional Logic Here */ console.warn("IPC: secure-keytar-delete not implemented"); return { success: false, error: 'Not implemented' }; });
-        console.log("[Main Process D26] IPC: Keytar placeholder handlers configured.");
+   // Functional Keytar Handlers (Replacing Placeholders)
+   if (keytar) { 
+        console.log("[Main Process] Configuring Functional Keytar IPC handlers...");
+        ipcMain.handle('secure-keytar-get', async (event, { service, account }) => {
+            console.log(`IPC: Handling 'secure-keytar-get' for service=${service}, account=${account}`);
+            if (!keytar) return { success: false, error: 'Keytar unavailable.' };
+            try {
+                const secret = await keytar.getPassword(service, account);
+                if (secret) {
+                     console.log(`IPC: Secret retrieved for ${service}/${account}`);
+                     return { success: true, secret: secret };
+                 } else {
+                     console.log(`IPC: No secret found for ${service}/${account}`);
+                     return { success: true, secret: null };
+                 }
+            } catch (error) {
+                console.error(`IPC: Error getting secret for ${service}/${account}:`, error);
+                return { success: false, error: error.message || 'Failed to get secret' };
+            }
+        });
+        ipcMain.handle('secure-keytar-save', async (event, { service, account, secret }) => { 
+             console.log(`IPC: Handling 'secure-keytar-save' for service=${service}, account=${account}`);
+            if (!keytar) return { success: false, error: 'Keytar unavailable.' };
+            if (!secret) return { success: false, error: 'Cannot save empty secret.' };
+            try {
+                await keytar.setPassword(service, account, secret);
+                console.log(`IPC: Secret saved successfully for ${service}/${account}`);
+                return { success: true };
+            } catch (error) {
+                console.error(`IPC: Error saving secret for ${service}/${account}:`, error);
+                return { success: false, error: error.message || 'Failed to save secret' };
+            }
+        });
+         ipcMain.handle('secure-keytar-delete', async (event, { service, account }) => {
+             console.log(`IPC: Handling 'secure-keytar-delete' for service=${service}, account=${account}`);
+             if (!keytar) return { success: false, error: 'Keytar unavailable.' };
+             try {
+                 const deleted = await keytar.deletePassword(service, account);
+                 if(deleted) {
+                     console.log(`IPC: Secret deleted successfully for ${service}/${account}`);
+                     return { success: true, deleted: true };
+                 } else {
+                     console.log(`IPC: No secret found to delete for ${service}/${account}`);
+                     return { success: true, deleted: false };
+                 }
+             } catch (error) {
+                 console.error(`IPC: Error deleting secret for ${service}/${account}:`, error);
+                 return { success: false, error: error.message || 'Failed to delete secret' };
+             }
+         });
     } else { 
-        // Define fallback handlers if keytar is not available
-        const keytarError = 'Keytar native module not loaded. Secure storage unavailable.';
-        ipcMain.handle('secure-keytar-save', async () => ({ success: false, error: keytarError }));
-        ipcMain.handle('secure-keytar-get', async () => ({ success: false, token: null, error: keytarError }));
-        ipcMain.handle('secure-keytar-delete', async () => ({ success: false, error: keytarError }));
-        console.error("[Main Process D26] IPC: Keytar fallback error handlers configured."); 
+        console.error("[Main Process] IPC: Keytar unavailable, configuring fallback error handlers."); 
+        const keytarError = { success: false, error: 'Secure storage (keytar) unavailable.' };
+        ipcMain.handle('secure-keytar-get', async () => keytarError);
+        ipcMain.handle('secure-keytar-save', async () => keytarError);
+        ipcMain.handle('secure-keytar-delete', async () => keytarError);
     }
 
-   // --- Day 26 Placeholder GitHub Auth Trigger --- //
+   // Functional GitHub Auth Handler (Day 26.1 - Replacing Placeholder)
    ipcMain.handle('start-github-auth', async () => {
-       console.warn("IPC <<< Received 'start-github-auth' request from renderer.");
-       console.error("<<<<< ERROR: Actual GitHub OAuth logic not implemented yet. TODO: Implement in Day 26.1+ >>>>>");
-       // In a real implementation (Day 26.1+), this would:
-       // 1. Check if githubCredentialsOk
-       // 2. Generate state, construct GitHub authorization URL
-       // 3. Open the URL in the default browser using shell.openExternal()
-       // 4. Setup a temporary server OR use protocol handler to catch the redirect
-       // 5. Exchange code for token
-       // 6. Save token securely (using keytar handler)
-       // 7. Return success/failure to renderer
-       return { success: false, error: 'Main process GitHub OAuth flow not implemented yet (Planned D26.1+).' };
+        console.log("IPC: Handling 'start-github-auth' functional request...");
+        if (!githubCredentialsOk) return { success: false, error: 'GitHub credentials misconfigured.' };
+        if (!keytar) return { success: false, error: 'Secure storage (keytar) unavailable.' };
+
+        let authorizationCode = null; 
+        let serverCleanupTimer = null;
+        
+        const cleanup = () => {
+            if (serverCleanupTimer) clearTimeout(serverCleanupTimer);
+            closeTemporaryRedirectServer();
+        };
+
+        try {
+            // Start server and set a timeout
+            const serverPromise = startTemporaryRedirectServer();
+            serverCleanupTimer = setTimeout(() => {
+                 console.warn("[Main Process] GitHub auth timed out waiting for redirect.");
+                 rejectRedirectPromise?.(new Error("GitHub authentication timed out."));
+                 cleanup(); 
+            }, 5 * 60 * 1000); 
+
+            // Construct the GitHub URL
+            const authUrl = new URL('https://github.com/login/oauth/authorize');
+            authUrl.searchParams.append('client_id', GITHUB_CLIENT_ID_MAIN);
+            authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
+            authUrl.searchParams.append('scope', 'repo user:email');
+            const state = `DREAMERAI_CSRF_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+            authUrl.searchParams.append('state', state); 
+            console.log(`[Main Process] Generated state for CSRF: ${state}`);
+            console.log(`[Main Process] GitHub Auth URL: ${authUrl.toString()}`);
+
+            // --- Fire-and-forget opening the actual GitHub URL --- 
+            console.log("[Main Process] Opening external browser for GitHub auth (fire-and-forget)...");
+            shell.openExternal(authUrl.toString()); // No await, no check
+            console.log("[Main Process] shell.openExternal called. Proceeding to wait for redirect...");
+            // --- End Fire-and-forget ---
+
+            console.log("[Main Process] Waiting for authorization code from temporary server...");
+            authorizationCode = await serverPromise;
+            if (!authorizationCode) throw new Error("Authentication code not received from redirect.");
+
+            // TODO V2: Verify received state matches stored state
+
+            const accessToken = await exchangeCodeForToken(authorizationCode);
+            if (!accessToken) throw new Error("Failed to exchange code for access token.");
+
+            console.log("[Main Process] Storing GitHub token securely via Keytar...");
+            await keytar.setPassword(GITHUB_KEYCHAIN_SERVICE, GITHUB_KEYCHAIN_ACCOUNT, accessToken);
+            console.log("[Main Process] GitHub token stored successfully in Keytar.");
+
+            console.log("[Main Process] Notifying backend of new GitHub token...");
+            await sendTokenToBackend(accessToken);
+
+            console.log("[Main Process] GitHub OAuth flow completed successfully!");
+            cleanup(); 
+            return { success: true };
+
+        } catch (error) {
+             console.error("[Main Process] GitHub OAuth Flow Error:", error);
+             cleanup(); 
+             return { success: false, error: error.message || "Unknown GitHub OAuth error." };
+        }
    });
-   console.log("[Main Process D26] IPC: 'start-github-auth' placeholder handler configured.");
-   // ------------------------------------------ //
+   console.log("[Main Process] Functional IPC handlers configured (Keytar, GitHub Auth).");
+   // ---------------------------------------------------------------------- //
 
    createWindow(); // Create the main window
 
@@ -224,5 +505,8 @@ app.on('window-all-closed', () => {
   }
 });
 
-// In this file, you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here. 
+// Add handler to cleanup temp server on quit
+app.on('will-quit', () => {
+     console.log("[Main Process] App quitting, ensuring temp server is closed.");
+     closeTemporaryRedirectServer();
+}); 

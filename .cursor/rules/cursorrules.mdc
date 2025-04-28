@@ -276,7 +276,7 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).
 
 # Cursor's Memory Bank
-*Last Updated: [AUTO_TIMESTAMP]* // Updated Timestamp
+*Last Updated: 2024-07-29 16:00:00* // Updated Timestamp
 
 ## Memory Bank Structure
 
@@ -290,7 +290,7 @@ flowchart TD
     SP --> AC
     TC --> AC
     
-    AC --> P[progress.md] // Last Updated: [AUTO_TIMESTAMP] // Updated Timestamp
+    AC --> P[progress.md] // Last Updated: 2024-07-29 16:00:00 // Updated Timestamp
 ```
 
 ### Core Files (Required)
@@ -306,45 +306,48 @@ flowchart TD
    - How it should work
    - User experience goals
 
-3. `activeContext.md` // Last Updated: [AUTO_TIMESTAMP] // Updated Timestamp
-   - **Current work focus:** Starting Day 26.1, Task 1: Verify electron-rebuild setup.
-   - **Recent changes:** Completed Day 26 foundation refactor. Ran `npx electron-forge import`, moving build configs to root. Installed `electron-rebuild`. Modified `main.js` (keytar load attempt, IPC placeholder), `preload.js` (whitelist), `GitHubSignIn.jsx` (trigger), `App.jsx` (restore HTTP listener). Uninstalled `electron-oauth2`. Resolved merge conflicts after `git pull`. Tested build, load, keytar, IPC trigger, and HTTP bridge successfully.
-   - **Next steps:** Proceed with Day 26.1 tasks sequentially (implement functional main process GitHub OAuth flow).
-   - **Active decisions:** Verified Day 26 steps were successful. Confirmed file structure changes from `electron-forge import` are correct.
+3. `activeContext.md` // Last Updated: 2024-07-29 16:00:00 // Updated Timestamp
+   - **Current work focus:** Starting Day 27: VC Remote Ops Backend.
+   - **Recent changes:** Completed Day 26.1 functional GitHub Auth flow. Verified/rebuilt keytar. Implemented secure flow in main.js using IPC, temp HTTP server, token exchange, keytar storage, and backend POST. Refined UI feedback in GitHubSignIn.jsx. Successfully tested the full flow (link, unlink, keychain storage, backend notification). Resolved backend connection errors during testing by correcting BACKEND_URL.
+   - **Next steps:** Proceed with Day 27 tasks sequentially as per the guide.
+   - **Active decisions:** Confirmed Day 26.1 OAuth flow is functional and secure within the main process. Reverted real secrets from code after testing.
 
-4. `systemPatterns.md` // Last Updated: [AUTO_TIMESTAMP] // Updated Timestamp
+4. `systemPatterns.md` // Last Updated: 2024-07-29 16:00:00 // Updated Timestamp
    - System architecture
    - Key technical decisions
    - Design patterns in use
    - Component relationships
    - **Key Change:** Build/Package config files (`package.json`, `forge.config.js`, `webpack.*.js`) now reside at the project root, not within `app/`.
    - Keytar native module rebuilt for Electron main process.
-   - IPC channel `start-github-auth` established between Renderer (`GitHubSignIn.jsx` via `preload.js`) and Main process (`main.js` placeholder handler).
-   - V1 HTTP Bridge restored (`App.jsx` listener on 3131, `bridge.py` POST).   
+   - IPC channel `start-github-auth` established and functional for initiating secure main-process OAuth flow.
+   - GitHub OAuth flow handled entirely in main process: Uses temporary local HTTP server (`http://localhost:9876`) for callback, `https://api.github.com/app/installations/.../access_tokens` for token exchange, `keytar` for secure storage, and `fetch` (or `httpx`) to POST token to backend API (`/auth/github/token`).
+   - V1 HTTP Bridge restored (`App.jsx` listener on 3131, `bridge.py` POST).
    - DreamerFlow orchestrator pattern established.
    - BaseAgent V2 provides core RAG, memory, event patterns.
    - Backend WebSocket service (`dream_theatre_service.py`) handles connections via singleton `ConnectionManager`.
    - Backend agents (`main_chat.py`) can broadcast JSON messages via the `ws_manager`.
    - Electron CSP configured via `forge.config.js` (`devContentSecurityPolicy`).
 
-5. `techContext.md` // Last Updated: [AUTO_TIMESTAMP] // Updated Timestamp
+5. `techContext.md` // Last Updated: 2024-07-29 16:00:00 // Updated Timestamp
    - Technologies used
    - Development setup
    - Technical constraints
    - Dependencies
    - `electron-rebuild` added as dev dependency for native module compilation (keytar).
    - `electron-oauth2` dependency removed.
-   - `keytar` confirmed loading successfully in main process.
+   - `keytar` confirmed loading and functioning correctly (set/get/delete password) in main process.
+   - `http`, `https`, `url`, `querystring`, `shell` standard Node modules used in `main.js` for OAuth flow.
+   - `httpx` used in `main.py` for testing backend endpoint. `fetch` (built-in) or `axios/httpx` can be used in `main.js` for POSTing token to backend.
    - asyncio used in main.py for flow execution.
    - ChromaDB used for RAG, accessed via BaseAgent V2.
    - FastAPI `WebSocket` used for Dream Theatre endpoint.
    - Electron `session.defaultSession.webRequest.onHeadersReceived` was attempted for CSP but caused issues; reverted.
 
-6. `progress.md` // Last Updated: [AUTO_TIMESTAMP] // Updated Timestamp
-   - **What works:** Day 1-26 foundations. Build system fixed (`electron-forge import`, `electron-rebuild`). App loads correctly. Keytar loads in main. Secure IPC placeholder (`start-github-auth`) triggers main process. V1 HTTP Bridge restored and working for chat. Dream Theatre backend service, WebSocket endpoint functional (assuming backend running).
-   - **What's left:** Implementing functional GitHub OAuth flow (Day 26.1). All subsequent tasks (Day 27+).
-   - **Current status:** Completed Day 26. Ready for Day 26.1 Task 1.
-   - **Known issues:** Backend requires `python -m` or `uvicorn` to run correctly due to relative imports. GitHub credentials not yet configured in `.env.development`. Redis connection fails. OpenRouter intermittent TypeError. DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval' in frontend console.
+6. `progress.md` // Last Updated: 2024-07-29 16:00:00 // Updated Timestamp
+   - **What works:** Day 1-26.1 foundations. Build system fixed. App loads. GitHub OAuth flow V2 is functional and secure (main process handles secrets/storage/API calls). Keytar working. IPC working. V1 HTTP Bridge working. Dream Theatre WS backend working. Core agent placeholders/flow setup. Local VC backend ops functional.
+   - **What's left:** Implementing VC Remote Ops (Day 27+). All subsequent tasks. Integrating OAuth status fully into UI state beyond basic feedback.
+   - **Current status:** Completed Day 26.1. Ready for Day 27 Task 1.
+   - **Known issues:** Backend requires `python -m` or `uvicorn` to run correctly due to relative imports. GitHub credentials not yet configured *persistently* in `.env.development` (were added temporarily for testing). Redis connection fails. OpenRouter intermittent TypeError. DB Pool functions missing (Mitigated). Dream Theatre messages missed when tab inactive (Known Limitation). CSP warning re: 'unsafe-eval' in frontend console. Backend token storage is currently simple global variable (needs secure persistent solution).
 
 ### Additional Context
 Create additional files/folders within memory-bank/ when they help organize:
@@ -492,9 +495,9 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 ## Current Task (Cursor Updates This Automatically After Approval)
 
-Task: Day 26.1, Task 1: (Prep) Configure & Run electron-rebuild
+Task: Day 27: VC Remote Ops Backend
 Status: TODO
-Details: Verify electron-rebuild installed, package.json script exists, and run `npm run rebuild` if keytar load fails (verify only, should be done from Day 26).
+Details: Follow detailed steps in DreamerAi_Guide.md Day 27.
 
 ## Daily Context Log Reference
 

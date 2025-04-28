@@ -1,7 +1,7 @@
 const React = require('react');
 const Box = require('@mui/material/Box').default;
 const Typography = require('@mui/material/Typography').default;
-const GitHubSignIn = require('./GitHubSignIn').default;
+const GitHubSignIn = require('./GitHubSignIn');
 
 function SettingsPanel() {
     return React.createElement(Box, { sx: { p: 2 } },

@@ -352,3 +352,23 @@ Template for Entries must be completed at least Daily!
 *   **Key Decisions:** Adopted standard Electron Forge project structure with configs at root. Confirmed V1 HTTP bridge restoration was necessary and successful. Verified secure IPC placeholder mechanism.
 *   **Issues Resolved:** Build errors, merge conflicts, backend startup failure (relative imports), WebSocket connection refused.
 *   **Next Task:** Day 26.1 - Implement functional main process GitHub OAuth flow.
+
+## Day 26.1: GitHub Auth Flow V2 (Functional Main Process) - Completed 2024-07-29
+
+*   **Task:** Day 26.1 GitHub Auth Flow V2 (Functional Main Process)
+*   **Summary of Work:** Verified `keytar` native module rebuild and load. Implemented the full GitHub OAuth 2.0 flow securely within the Electron main process (`main.js`). This involved:
+    *   Handling the `start-github-auth` IPC call from the renderer.
+    *   Launching the GitHub authorization URL in the user's default browser (`shell.openExternal`).
+    *   Starting a temporary local HTTP server (`http://localhost:9876`) to receive the OAuth callback.
+    *   Extracting the authorization code from the callback.
+    *   Exchanging the code for an access token via a secure HTTPS POST to GitHub's API, using client ID/secret loaded from environment variables.
+    *   Storing the obtained token securely in the OS keychain using `keytar.setPassword`.
+    -   Implemented token retrieval (`keytar.getPassword`) and deletion (`keytar.deletePassword`).
+    *   Sending the token to the backend API endpoint (`/auth/github/token`).
+    *   Refined UI feedback in `GitHubSignIn.jsx` based on success/failure and link status.
+*   **Key Decisions Made:** Confirmed the main-process-only OAuth flow is the correct secure approach. Used standard Node.js modules (`http`, `https`, `url`, etc.) for the flow. Corrected backend URL assumption in `main.js` during testing.
+*   **Anthony's Feedback/Vibe:** Approved completion.
+*   **Blocking Issues Encountered/Resolved:**
+    *   `ECONNREFUSED` error when POSTing token to backend: Resolved by changing `BACKEND_URL` in `main.js` from port 8000 to 8090.
+    *   `shell.openExternal` promise resolution issue: Mitigated by removing `await` (fire-and-forget).
+*   **Auto-Update Workflow Failure:** Noted that the automatic update of embedded memory bank in `cursorrules.md` and the `daily_context_log.md` milestone entry failed and required manual correction.

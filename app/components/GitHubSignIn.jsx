@@ -1,91 +1,98 @@
 const React = require('react');
 const { useState, useEffect } = React;
+const Box = require('@mui/material/Box').default;
 const Button = require('@mui/material/Button').default;
 const Typography = require('@mui/material/Typography').default;
 const CircularProgress = require('@mui/material/CircularProgress').default;
-const GitHubIcon = require('@mui/icons-material/GitHub').default;
-const Box = require('@mui/material/Box').default;
+let GitHubIcon; 
+try { 
+    const icons = require('@mui/icons-material'); 
+    GitHubIcon = icons.GitHub;
+} catch(e){
+    console.error("GitHub Icon Load Error", e);
+    GitHubIcon = null; // Fallback if icon loading fails
+}
 
-function GitHubSignIn() {
+// Day 26.1: Triggers main process flow, handles final success/error response.
+
+function GitHubSignIn({ onCheckStatus, setGitHubError }) {
     const [isLoading, setIsLoading] = useState(false);
     const [statusMessage, setStatusMessage] = useState('');
-    const [isError, setIsError] = useState(false);
 
-    const setStatus = (message, error = false) => {
+    const setStatus = (message, isError = false) => {
         setStatusMessage(message);
-        setIsError(error);
+        if (isError && setGitHubError) setGitHubError(message);
+        else if (!isError && setGitHubError) setGitHubError(null);
     };
 
-    useEffect(() => {
-        // Optionally clear status on component mount or specific events
-        setStatus('');
-    }, []);
+    useEffect(() => { 
+        // Clear status on mount
+        setStatus(''); 
+    }, []); // Empty dependency array ensures this runs only once on mount
 
     const handleStartAuthFlow = async () => {
         setIsLoading(true);
-        setStatus('Contacting main application...', false);
-        
+        setStatus('Starting GitHub Link process...', false);
+
         if (!window.electronAPI?.invoke) {
-            setStatus('Error: Electron API bridge not available. Cannot start auth.', true);
-            setIsLoading(false);
-            return;
+            setStatus("Error: Secure communication unavailable.", true);
+            setIsLoading(false); return;
         }
 
         try {
-            // Trigger placeholder handler in main.js
-            console.log("[GitHubSignIn] Invoking 'start-github-auth'...");
+            // Trigger the main process flow via secure IPC invoke
+            console.log("GitHubSignIn: Invoking 'start-github-auth'...");
             const result = await window.electronAPI.invoke('start-github-auth');
-            console.log("[GitHubSignIn] Received result from main process:", result);
+            console.log("GitHubSignIn: Received result from 'start-github-auth':", result);
 
-            // Expecting failure V1 because the main process handler is a placeholder
             if (!result || !result.success) {
-                throw new Error(result?.error || 'Main process rejected the request.');
+                // Handle failure response from main process
+                throw new Error(result?.error || 'Main process failed to link GitHub account.');
             }
 
-            // Success handling (only after Day 26.1+ implementation in main.js)
-            // setStatus('GitHub authentication successful! Token should be stored.', false);
+            // --- SUCCESS! Main process handled everything --- 
+            // Update status message and trigger parent re-check
+            setStatus("GitHub Account Linked Successfully! Verifying...", false);
+            if (onCheckStatus) {
+                // Ask parent (SettingsPanel) to re-verify status via Keytar/IPC
+                 console.log("GitHubSignIn: Sign-in success reported by main process, triggering parent status check...");
+                 await onCheckStatus(); // Wait for check to complete
+            } else {
+                 console.warn("GitHubSignIn: onCheckStatus prop not provided.");
+                 // Optionally handle the missing callback case, maybe just stop loading
+                 setIsLoading(false);
+            }
+             // State update (setIsLoading=false) should happen in onCheckStatus in parent or here if no callback
+
         } catch (err) {
-             // Display the expected "Not Implemented" error from the placeholder
-             console.error("[GitHubSignIn] Error during auth flow:", err);
-             setStatus(`Error: ${err.message}`, true);
-        } finally {
-            setIsLoading(false);
+             console.error('GitHubSignIn: Error triggering/completing GitHub auth flow:', err);
+             setStatus(`Error linking account: ${err.message}`, true);
+             setIsLoading(false); // Stop loading on specific error here
         }
+        // Note: setIsLoading(false) is handled on error or if onCheckStatus is missing.
+        // If onCheckStatus exists, it (or the parent) is responsible for setting loading state after re-verification.
     };
 
     const isAvailable = window.electronAPI?.invoke;
 
-    return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, p: 2, border: '1px dashed grey', borderRadius: 1 }}>
-            <Typography variant="h6">Link GitHub Account</Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-                Connect your GitHub account to enable related features.
-            </Typography>
-            <Button
-                variant="contained"
-                startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <GitHubIcon />}
-                onClick={handleStartAuthFlow}
-                disabled={isLoading || !isAvailable}
-                sx={{ minWidth: '200px' }}
-            >
-                {isLoading ? 'Processing...' : 'Connect with GitHub'}
-            </Button>
-            {statusMessage && (
-                <Typography 
-                    variant="caption" 
-                    color={isError ? 'error' : 'text.secondary'}
-                    sx={{ mt: 1, textAlign: 'center' }}
-                >
-                    {statusMessage}
-                </Typography>
-            )}
-            {!isAvailable && (
-                 <Typography variant="caption" color="error" sx={{ mt: 1, textAlign: 'center' }}>
-                    Error: Cannot communicate with main process. IPC unavailable.
-                 </Typography>
-            )}
-        </Box>
+    return React.createElement(Box, null,
+        React.createElement(Button, {
+            variant: "contained",
+            color: "secondary",
+            onClick: handleStartAuthFlow,
+            disabled: isLoading || !isAvailable,
+            startIcon: isLoading ? React.createElement(CircularProgress, { size: 20, color:"inherit" }) : (GitHubIcon ? React.createElement(GitHubIcon) : null)
+        }, isLoading ? "Linking (Check Browser)..." : (isAvailable ? "Link GitHub Account" : "Link Unavailable")),
+        // Display Status/Error Message from the IPC call attempt/result
+        statusMessage && React.createElement(Typography, {
+             color: statusMessage.startsWith("Error") ? "error" : (statusMessage.includes("Successfully") ? "success.main" : "text.secondary"), // Color success green
+             variant:"caption", sx: { mt: 1, display:'block' } 
+         }, statusMessage)
     );
 }
 
-exports.default = GitHubSignIn; 
+// Use module.exports for CommonJS compatibility with Electron Forge Webpack setup
+module.exports = GitHubSignIn; 
+// ============================================
+// END: C:\DreamerAI\app\components\GitHubSignIn.jsx
+// ============================================ 
