@@ -1,11 +1,6 @@
 ---
 description: 
 globs: 
-alwaysApply: false
----
----
-description: 
-globs: 
 alwaysApply: true
 ---
 # Rules For CursorAI: Building DreamerAI (Version: Finalized 2025-03-31 - Rev 2)
@@ -497,9 +492,11 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 ## Current Task (Cursor Updates This Automatically After Approval)
 
-**Task:** Day 22 Task 1: Create C:\DreamerAI\app\components\ProjectManagerPanel.jsx
+**Task:** Day 26, Task 9: Comprehensive Test
 **Status:** TODO
-**Details:** Create the ProjectManagerPanel.jsx file with basic placeholder component code as per Day 22 guide.
+**Details:** Follow detailed steps in DreamerAi_Guide.md Day 26, Task 9. Verify build, load, keytar, bridge, auth trigger.
+
+## Daily Context Log Reference
 
 
 **Task:** Day 22 Task 1: Create C:\DreamerAI\app\components\ProjectManagerPanel.jsx

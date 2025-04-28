@@ -1,9 +1,4 @@
-// C:\DreamerAI\app\preload.js
-// This file runs in a privileged environment before the renderer process.
-// It's often used to expose specific Node.js APIs to the renderer securely
-// via the contextBridge API when contextIsolation is true.
-// For now, with contextIsolation: false, it can be empty or used minimally.
-
+// C:\DreamerAI\app\preload.js (Updated for Day 26 Rev 6 Secure IPC)
 const { contextBridge, ipcRenderer } = require('electron');
 
 // Define allowed channels for invoke for security

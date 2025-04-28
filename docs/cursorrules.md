@@ -500,10 +500,11 @@ Usage: Leverage proactively where relevant (e.g., sequentialthinking for plannin
 
 ## Current Task (Cursor Updates This Automatically After Approval)
 
-Task: Day 26: GitHub Auth UI - Task 1
+Task: Day 26, Task 9: Comprehensive Test
 Status: TODO
-Details: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
-Daily Context Log Reference
+Details: Follow detailed steps in DreamerAi_Guide.md Day 26, Task 9. Verify build, load, keytar, bridge, auth trigger.
+
+## Daily Context Log Reference
 File: C:\DreamerAI\docs\daily_progress\daily_context_log.md
 Purpose: Tracks daily achievements, issues, next steps, suggestions, and captures Anthony's emotional state/vibe. Refer to Logging Protocol for update details.
 

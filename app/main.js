@@ -210,7 +210,8 @@ if (!gotTheLock) {
 
 app.on('window-all-closed', () => {
   // --- Close Bridge Server Gracefully ---
-  if (bridgeServer) {
+  let bridgeServer = null; // Define bridgeServer here or ensure it's accessible
+  if (bridgeServer) { 
       console.log("[Main Process] Closing HTTP Bridge Listener...");
       bridgeServer.close((err) => {
           if (err) console.error("[Main Process] Error closing HTTP Bridge Listener:", err);

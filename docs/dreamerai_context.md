@@ -347,6 +347,7 @@ Template for Entries must be completed at least Daily!
 *   **Anthony's Feedback/Vibe:** Guided debugging, approved completion.
 *   **Next Task Context:** Proceeding to Day 26, Task: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
 
+<<<<<<< HEAD
 ## Task: Day 26 Foundational Cleanup (Performed before Day 26 Rev 9 Tasks)
 
 *   **Summary:** Encountered critical build failures preventing `npm start`. Performed extensive refactoring to stabilize the project structure and build process:
@@ -360,3 +361,28 @@ Template for Entries must be completed at least Daily!
 *   **Anthony's Feedback/Vibe:** Expressed confusion and concern about deviation and progress, prompting this clarification and cleanup.
 *   **Blocking Issues Resolved:** `npm start` failures (module not found, constructor errors, loader errors, preload errors), `http.createServer` error in renderer.
 *   **Current Status:** Build system stabilized. Application launches successfully via `npm start`. Preload script loads correctly. Basic IPC bridge (`bridge-message`) functional. WebSocket connection to backend established. Project structure is now more conventional.
+=======
+## Day 26 (Rev 6) Task 1: Clean Up Dependencies
+
+*   **Summary:** Uninstalled `electron-oauth2` and `keytar` from `app/` directory due to identified security vulnerability (GHSA-r683-j2x4-v87g in `node-fetch` via `electron-oauth2`) and architectural flaws. Implicit `npm audit` after uninstall confirmed 0 vulnerabilities remaining from this source.
+*   **Key Decisions:** Pivoted from Day 26 Rev 5 guide to Rev 6 based on security investigation. Prioritized removing vulnerable dependencies immediately.
+*   **Anthony's Feedback/Vibe:** Approved pivot and investigation, emphasized thoroughness.
+*   **Blocking Issues:** None for this task. Previous vulnerabilities resolved by uninstall.
+*   **Next Task:** Modify main.js (Env Var Check & IPC Placeholder)
+
+## Day 26 (Rev 6) Task 2: Modify main.js (Env Var Check & IPC Placeholder)
+
+*   **Summary:** Modified `app/main.js` to align with Day 26 Rev 6. Implemented secure webPreferences (`nodeIntegration: false`, `contextIsolation: true`). Added checks for `GITHUB_CLIENT_ID`/`SECRET` in `process.env` (loaded via `dotenv`), logging warnings if missing/placeholders. Added placeholder `ipcMain.handle('start-github-auth', ...)` which logs a TODO and returns failure, establishing the trigger point for the future main-process OAuth flow. Integrated existing secure JWT/Keytar IPC handlers from previous days.
+*   **Key Decisions:** Followed guide code precisely, ensuring secure Electron settings and preparing for main-process OAuth.
+*   **Anthony's Feedback/Vibe:** Approved completion.
+*   **Blocking Issues:** None.
+*   **Next Task:** Day 26 (Rev 6) Task 3: Modify preload.js (Whitelist Channel)
+
+## Day 26 (Rev 6) Task 3: Modify preload.js (Whitelist Channel)
+
+*   **Summary:** Replaced the content of `app/preload.js` with the secure version from Day 26 Rev 6 guide. Set up `contextBridge` to expose `window.electronAPI.invoke`. Updated `validInvokeChannels` whitelist to add `start-github-auth` and remove obsolete `get-github-client-id`, aligning with the main-process OAuth flow trigger.
+*   **Key Decisions:** Used the complete secure preload structure assuming it supersedes the minimal existing file.
+*   **Anthony's Feedback/Vibe:** Approved completion.
+*   **Blocking Issues:** None.
+*   **Next Task:** Day 26 (Rev 6) Task 4: Refactor GitHubSignIn.jsx (Trigger Button)
+>>>>>>> eda010a1c637c93ec7d6e59dffdca58e02dff56b
