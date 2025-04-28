@@ -1,30 +1,8 @@
-# DreamerAI Active Context (Memory Bank)
-*Last Updated: 2025-04-24 00:20:00*
+# Active Context
+*Last Updated: [AUTO_TIMESTAMP]*
 
-## Current Work Focus
-*   **Completed:** Day 26 Tasks (Implicitly) - Full GitHub OAuth UI Flow Implementation & Debugging.
-*   **Goal:** Log completion and prepare for next guided task.
-
-## Recent Changes (GitHub Auth UI Debugging Marathon)
-*   **Completed:** Successfully implemented and debugged the entire GitHub OAuth flow via Electron IPC.
-*   **Key Steps & Fixes:**
-    *   Refactored `GitHubSignIn.jsx` to use IPC (`github-oauth-flow`) instead of direct `electron-oauth2`.
-    *   Added `github-oauth-flow` handler in `main.js`.
-    *   Corrected `exports is not defined` error by converting all relevant frontend components (`App.jsx`, `MainChatPanel.jsx`, `DreamTheatrePanel.jsx`, `ProjectManagerPanel.jsx`, `SettingsPanel.jsx`) to use ES Module `import`/`export` syntax.
-    *   Resolved `require is not defined` by removing direct `require('http')` usage from `App.jsx` (incompatible with `nodeIntegration:false`).
-    *   Fixed "IPC bridge unavailable" by setting `contextIsolation: true` / `nodeIntegration: false` in `main.js` and correctly exposing `electronAPI` via `contextBridge` in `preload.js`.
-    *   Fixed `OAuth is not a constructor` error by correcting the `require('electron-oauth2')` statement in `main.js`.
-    *   Fixed GitHub 404 error after sign-in by replacing placeholder Client ID/Secret with actual credentials (redirect URI was confirmed correct).
-    *   Fixed `No handler registered for 'secure-keytar-get'` by adding `keytar` import and IPC handlers (`get`, `save`, `delete`) in `main.js`.
-    *   Fixed Webpack `node-loader` build error by adding `keytar` to `externals` in `webpack.main.config.js`.
-*   **Outcome:** The "Link GitHub Account" button in the Settings tab now successfully initiates the OAuth flow, allows user sign-in, and updates the UI to "GitHub Account Linked".
-
-## Next Steps
-*   Complete the logging updates for this debugging session.
-*   Identify the next official task from the `DreamerAi_Guide.md` (likely related to saving the received token or proceeding with Day 27).
-
-## Active Decisions & Considerations
-*   **Deviation:** Acknowledged significant deviation from the guide was necessary to achieve functional GitHub authentication. Future tasks should attempt stricter adherence where possible.
-*   **Credentials:** Actual GitHub Client ID/Secret are currently hardcoded with `// REMOVE LATER` comments. Secure handling needs to be implemented (tracked via TODO D66/D107).
-*   **Keytar:** IPC handlers for `keytar` are now in place in `main.js`. The `secure-keytar-save` handler needs to be called after successful OAuth to persist the token.
-*   **UI State:** The `SettingsPanel` UI correctly reflects the linked state. Further steps might involve fetching user info or displaying errors more granularly.
+- **Current work focus:** Starting Day 26.1, Task 1: Verify electron-rebuild setup.
+- **Recent changes:** Completed Day 26 foundation refactor. Ran `npx electron-forge import`, moving build configs to root. Installed `electron-rebuild` and verified `keytar` loads in main process. Modified `main.js` (keytar load attempt, IPC placeholder), `preload.js` (whitelist), `GitHubSignIn.jsx` (trigger button), `App.jsx` (restored V1 HTTP listener). Uninstalled `electron-oauth2`. Resolved merge conflicts after `git pull`. Tested build, load, keytar, IPC trigger, and HTTP bridge successfully. Corrected backend server startup using `python -m engine.core.server` or `uvicorn`.
+- **Next steps:** Proceed with Day 26.1 tasks sequentially: Implement functional main process GitHub OAuth flow using temp HTTP server and keytar.
+- **Active decisions:** Verified Day 26 refactoring successful. Confirmed file structure changes from `electron-forge import` are correct and supersede older guide instructions regarding config file locations. Confirmed backend server requires specific startup command (`python -m` or `uvicorn`).
+- **Key Challenges/Blockers:** None currently. Need to ensure GitHub App callback URL and secrets are correctly handled during Day 26.1 testing.

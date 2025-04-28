@@ -347,42 +347,8 @@ Template for Entries must be completed at least Daily!
 *   **Anthony's Feedback/Vibe:** Guided debugging, approved completion.
 *   **Next Task Context:** Proceeding to Day 26, Task: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
 
-<<<<<<< HEAD
-## Task: Day 26 Foundational Cleanup (Performed before Day 26 Rev 9 Tasks)
-
-*   **Summary:** Encountered critical build failures preventing `npm start`. Performed extensive refactoring to stabilize the project structure and build process:
-    *   Consolidated conflicting `package.json` files into the root `C:\DreamerAI\package.json`.
-    *   Moved Electron Forge and Webpack configuration files (`forge.config.js`, `webpack.*.js`) from `app/` to the root directory.
-    *   Updated paths within configuration files to reflect the new structure and point to source files in `app/`.
-    *   Resolved Webpack build errors related to `ForgeWebpackPlugin`, `@vercel/webpack-asset-relocator-loader`, and preload script pathing (`MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY`).
-    *   Moved the HTTP server logic (originally for backend bridge) from `app/src/App.jsx` (where it caused errors) to `app/main.js` and implemented an IPC channel (`bridge-message`) for main-to-renderer communication.
-    *   Corrected the WebSocket URL in `app/src/App.jsx`.
-*   **Key Decisions Made:** Prioritized fixing the broken build and project structure over proceeding with Day 26 tasks. Adopted a standard Electron Forge + Webpack structure with configs at the root. Implemented an IPC bridge for UI updates from the main process server logic instead of restoring the potentially problematic V1 HTTP listener in App.jsx (slight deviation from Day 26 Rev 9's bridge plan, but addresses the immediate error source).
-*   **Anthony's Feedback/Vibe:** Expressed confusion and concern about deviation and progress, prompting this clarification and cleanup.
-*   **Blocking Issues Resolved:** `npm start` failures (module not found, constructor errors, loader errors, preload errors), `http.createServer` error in renderer.
-*   **Current Status:** Build system stabilized. Application launches successfully via `npm start`. Preload script loads correctly. Basic IPC bridge (`bridge-message`) functional. WebSocket connection to backend established. Project structure is now more conventional.
-=======
-## Day 26 (Rev 6) Task 1: Clean Up Dependencies
-
-*   **Summary:** Uninstalled `electron-oauth2` and `keytar` from `app/` directory due to identified security vulnerability (GHSA-r683-j2x4-v87g in `node-fetch` via `electron-oauth2`) and architectural flaws. Implicit `npm audit` after uninstall confirmed 0 vulnerabilities remaining from this source.
-*   **Key Decisions:** Pivoted from Day 26 Rev 5 guide to Rev 6 based on security investigation. Prioritized removing vulnerable dependencies immediately.
-*   **Anthony's Feedback/Vibe:** Approved pivot and investigation, emphasized thoroughness.
-*   **Blocking Issues:** None for this task. Previous vulnerabilities resolved by uninstall.
-*   **Next Task:** Modify main.js (Env Var Check & IPC Placeholder)
-
-## Day 26 (Rev 6) Task 2: Modify main.js (Env Var Check & IPC Placeholder)
-
-*   **Summary:** Modified `app/main.js` to align with Day 26 Rev 6. Implemented secure webPreferences (`nodeIntegration: false`, `contextIsolation: true`). Added checks for `GITHUB_CLIENT_ID`/`SECRET` in `process.env` (loaded via `dotenv`), logging warnings if missing/placeholders. Added placeholder `ipcMain.handle('start-github-auth', ...)` which logs a TODO and returns failure, establishing the trigger point for the future main-process OAuth flow. Integrated existing secure JWT/Keytar IPC handlers from previous days.
-*   **Key Decisions:** Followed guide code precisely, ensuring secure Electron settings and preparing for main-process OAuth.
-*   **Anthony's Feedback/Vibe:** Approved completion.
-*   **Blocking Issues:** None.
-*   **Next Task:** Day 26 (Rev 6) Task 3: Modify preload.js (Whitelist Channel)
-
-## Day 26 (Rev 6) Task 3: Modify preload.js (Whitelist Channel)
-
-*   **Summary:** Replaced the content of `app/preload.js` with the secure version from Day 26 Rev 6 guide. Set up `contextBridge` to expose `window.electronAPI.invoke`. Updated `validInvokeChannels` whitelist to add `start-github-auth` and remove obsolete `get-github-client-id`, aligning with the main-process OAuth flow trigger.
-*   **Key Decisions:** Used the complete secure preload structure assuming it supersedes the minimal existing file.
-*   **Anthony's Feedback/Vibe:** Approved completion.
-*   **Blocking Issues:** None.
-*   **Next Task:** Day 26 (Rev 6) Task 4: Refactor GitHubSignIn.jsx (Trigger Button)
->>>>>>> eda010a1c637c93ec7d6e59dffdca58e02dff56b
+## Day 26: Foundation Refactor (Build Fix, IPC Bridge V2, Secure Auth Prep)
+*   **Summary:** Stabilized foundation after build/merge issues. Ran `electron-forge import` moving build configs (`package.json`, `forge.config.js`, `webpack.*.js`) to root. Installed `electron-rebuild` and rebuilt `keytar` native module successfully for main process. Modified `main.js` (keytar load, IPC placeholder `start-github-auth`), `preload.js` (whitelist), `GitHubSignIn.jsx` (simple IPC trigger), and `App.jsx` (restored V1 HTTP listener). Uninstalled `electron-oauth2`. Successfully tested build, app load, keytar load, IPC trigger, and V1 HTTP bridge.
+*   **Key Decisions:** Adopted standard Electron Forge project structure with configs at root. Confirmed V1 HTTP bridge restoration was necessary and successful. Verified secure IPC placeholder mechanism.
+*   **Issues Resolved:** Build errors, merge conflicts, backend startup failure (relative imports), WebSocket connection refused.
+*   **Next Task:** Day 26.1 - Implement functional main process GitHub OAuth flow.

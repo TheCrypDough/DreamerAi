@@ -457,26 +457,60 @@
     *   Status: [DONE]
 *   **Overall Day Status:** DONE
 
-## Day 26 (Rev 6): Secure GitHub Auth Re-architecture (Phase 1: Main Process Plan & UI Trigger Prep)
+## Day 26: Foundation Refactor (Build Fix, IPC Bridge V2, Secure Auth Prep), Reinforcing for Stability & Security!
+*   **IMPORTANT NOTE:** During this day, critical build configuration files (`package.json`, `forge.config.js`, `webpack.*.js`) were moved from `C:\DreamerAI\app\` to the project root (`C:\DreamerAI\`) via `npx electron-forge import` to align with standard practices and fix build issues. Any guide references to these files being in `app/` are now outdated.
+*   **Cursor Task:** Install electron-rebuild & Update Scripts: Navigate C:\DreamerAI\app. Run npm install --save-dev electron-rebuild. Modify package.json scripts to add "rebuild": "electron-rebuild -f -w keytar".
+    *   Status: DONE
+*   **Cursor Task:** Run Native Module Rebuild: Run npm run rebuild in C:\DreamerAI\app. Verify successful rebuild output for keytar.
+    *   Status: DONE
+*   **Cursor Task:** Configure Webpack/Forge Correctly: Modify forge.config.js, webpack.main.config.js, webpack.renderer.config.js, webpack.rules.js for correct main entry point variable (MAIN_WINDOW_WEBPACK_ENTRY), potential keytar external handling in main bundle. Use code provided below for config file updates. (Note: Partially superseded by `electron-forge import` move later).
+    *   Status: DONE
+*   **Cursor Task:** Modify main.js (Fix Entry, Attempt Keytar, Add Placeholder): Edit C:\DreamerAI\app\main.js. Replace VITE loading logic with correct WEBPACK_ENTRY check. Add require('keytar') try/catch block. Add placeholder ipcMain.handle('start-github-auth', ...). Use code below.
+    *   Status: DONE
+*   **Cursor Task:** Modify preload.js (Whitelist Channel): Edit C:\DreamerAI\app\preload.js. Ensure 'start-github-auth' is in validInvokeChannels. Remove 'get-github-client-id'. Use code below.
+    *   Status: DONE
+*   **Cursor Task:** Uninstall OAuth Library: Run npm uninstall electron-oauth2 in app/. (Note: Path updated to root C:\DreamerAI\ after file moves).
+    *   Status: DONE
+*   **Cursor Task:** Refactor GitHubSignIn.jsx (Trigger Button): Replace entire content with simplified trigger button implementation. Use code below.
+    *   Status: DONE
+*   **Cursor Task:** Restore HTTP Listener in App.jsx: Edit C:\DreamerAI\app\src\App.jsx. Re-add the useEffect hook containing the http.createServer logic listening on port 3131 (or configured port) exactly as implemented successfully end of Day 13/20. Use code below.
+    *   Status: DONE
+*   **Cursor Task:** Comprehensive Test: Start Frontend (npm start). Verify no build errors. Verify window loads correctly. Check Main Process log (Keytar load, IPC setup). Check DevTools Console (HTTP Listener). Test Bridge (chat message). Test Auth Trigger (Settings -> Link GitHub).
+    *   Status: DONE
+*   **Cursor Task:** Present Summary for Approval.
+    *   Status: DONE
+*   **Cursor Task:** (Upon Approval) Stage all modified files, commit, push.
+    *   Status: DONE
+*   **Cursor Task:** (Upon Approval) Execute Auto-Update Triggers & Workflow.
+    *   Status: DONE (Executing Now)
+*   **Overall Day Status:** DONE
+*   **Summary:** Stabilize foundation: Fix build/native modules (keytar), fix window loading, restore V1 HTTP bridge, remove insecure auth lib, set up secure IPC placeholder trigger.
+*   **Issues Encountered:** Merge conflicts resolved post `git pull`. Initial backend start failed due to relative imports (fixed using `python -m` or `uvicorn`). WebSocket connection errors until backend started correctly.
 
-*   **Cursor Task:** Clean Up Dependencies (npm uninstall electron-oauth2 keytar)
-    *   Status: DONE
-*   **Cursor Task:** Modify main.js (Env Var Check & IPC Placeholder)
-    *   Status: DONE
-*   **Cursor Task:** Modify preload.js (Whitelist Channel)
-    *   Status: DONE
-*   **Cursor Task:** Refactor GitHubSignIn.jsx (Trigger Button)
+---
+*(Next Day's Entry Starts Here)*
+
+## Day 26.1: GitHub Auth Flow V2 (Functional Main Process), The Secure Handshake!
+*   **Cursor Task:** (Prep) Configure & Run electron-rebuild: Navigate C:\DreamerAI\app. Run npm install --save-dev electron-rebuild. Modify app/package.json scripts section, add "rebuild": "electron-rebuild -f -w keytar". Run npm run rebuild. Verify successful rebuild output for keytar. (Note: Performed in Day 26, verify only).
     *   Status: TODO
-*   **Cursor Task:** Test Placeholder Trigger
+*   **Cursor Task:** (Prep) Verify keytar Load: Start Frontend (npm start). Check Main Process console logs. Confirm "[Main Process D26] Keytar loaded successfully..." appears. Resolve any load errors before proceeding. (Note: Verified in Day 26 Task 9).
     *   Status: TODO
-*   **Cursor Task:** Present Summary for Approval
+*   **Cursor Task:** Modify main.js (Implement Secure Flow): Edit C:\DreamerAI\app\main.js. Add require statements for http, https, url, querystring, shell. Implement helper functions _startTemporaryRedirectServer, _exchangeCodeForToken, _sendTokenToBackend. Replace placeholder logic inside ipcMain.handle('start-github-auth', ...) with the functional orchestration logic. Use the FULL main.js code block provided below.
     *   Status: TODO
-*   **Cursor Task:** (Upon Approval) Stage changes, commit, push
+*   **Cursor Task:** Modify GitHubSignIn.jsx (Refine Feedback): Edit C:\DreamerAI\app\components\GitHubSignIn.jsx. Update handleStartAuthFlow's success path: If invoke returns { success: true }, set success status message ("Successfully linked...") and call onCheckStatus(). Use the FULL GitHubSignIn.jsx code block provided below.
     *   Status: TODO
-*   **Cursor Task:** (Upon Approval) Execute Auto-Update Triggers & Workflow
+*   **Cursor Task:** Guide Auth Flow Testing: Guide Anthony through: (Prep) Set GitHub App Callback URL to http://localhost:9876/github_callback. Ensure REAL GITHUB_CLIENT_ID/SECRET available to main.js env. Start Backend server. (Execute) Start Frontend (npm start). Go to Settings -> Click "Link GitHub Account". (Verify External) Authorize in Browser. Verify redirect to localhost:9876/... shows success message. (Verify Internal) Check Main Process Logs (redirect rcvd, code extracted, token exchange OK, keytar save OK, backend POST OK). (Verify UI) UI shows success, Settings panel updates to "Linked" (via onCheckStatus). (Verify Storage) Check OS keychain for token. (Verify Backend) Check backend logs for token receipt. (Test Unlink) Settings -> Unlink. Verify main log shows keytar delete. Check keychain. Verify UI updates.
+    *   Status: TODO
+*   **Cursor Task:** Guide Secret Reversion: Instruct Anthony to REMOVE real secrets from main.js env.
+    *   Status: TODO
+*   **Cursor Task:** Present Summary for Approval.
+    *   Status: TODO
+*   **Cursor Task:** (Upon Approval) Stage changes (main.js, GitHubSignIn.jsx, package.json/lockfile), commit, push.
+    *   Status: TODO
+*   **Cursor Task:** (Upon Approval) Execute Auto-Update Triggers & Workflow.
     *   Status: TODO
 *   **Overall Day Status:** TODO
-*   **Summary:** Phase 1 Re-architecture: Uninstall insecure deps, plan main-process flow (via TODOs), prep main env check, add IPC placeholder trigger, refactor UI to simple IPC trigger button.
+*   **Summary:** Implement the functional, secure, main-process-driven GitHub OAuth 2.0 flow using a temporary HTTP server for redirect capture and keytar for token storage.
 *   **Issues Encountered:** None Anticipated Yet
 
 *(Future days/tasks will be added here)*
