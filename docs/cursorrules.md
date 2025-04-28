@@ -229,14 +229,22 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
 *   **Canonical Source**: `C:\DreamerAI\docs\project_structure.md`. Cursor MUST update this file AND log the change to `migration_tracker.md` (per Logging Protocol) automatically upon ANY structural change (file/dir creation, rename, move, delete) within the managed project scope.
 *   **Primary Dev Location**: `C:\DreamerAI\` (Fast SSD preferred).
 *   **Shared Local Models**: `C:\Users\thecr\.ollama\models` (Standard Ollama model cache location). Symlink target for `C:\DreamerAI\data\models\`.
+*   **CRITICAL STRUCTURE NOTE (Post-Day 26 Cleanup - April 27th, 2024):**
+    *   **Configuration Files Moved to Root:** Due to persistent build errors and conflicts with Electron Forge/Webpack standards, the primary frontend build and package configurations were moved from the `C:\DreamerAI\app\` directory to the **root project directory** (`C:\DreamerAI\`).
+    *   **Files Moved:** This includes `package.json`, `package-lock.json`, `forge.config.js`, `webpack.main.config.js`, `webpack.renderer.config.js`, `webpack.rules.js`, and `webpack.plugins.js`.
+    *   **Reason:** To resolve build failures, establish a standard project structure compatible with Electron Forge, and improve maintainability.
+    *   **IMPLICATION:** Any future guide entries or instructions referencing these files within the `app/` directory are **OUTDATED**. These configuration files **MUST** be accessed and modified at the **ROOT** (`C:\DreamerAI\`) level going forward. This overrides any conflicting information in potentially older guide sections.
+    *   The `app/` directory now primarily contains frontend source code (`src/`, `components/`, `utils/`, `assets/`, etc.) and core Electron source files (`main.js`, `preload.js`, `renderer.js`, `index.html`).
 *   **Key Structure (Development - `C:\DreamerAI\`)**:
     ```
     C:\DreamerAI\
-    ├── app/                  # Electron/React Frontend ("Dreamer Desktop")
+    ├── app/                  # Electron/React Frontend Source Code
     │   ├── components/       # React UI Panel Modules (MainChatPanel.js, etc.)
     │   ├── src/              # Core React files (App.jsx, analytics.js)
     │   ├── utils/            # Frontend utilities (backup.js, crypto.js)
-    │   ├── ... (other frontend files)
+    │   ├── locales/          # Internationalization files
+    │   ├── assets/           # Static assets
+    │   └── ... (index.html, main.js, preload.js, renderer.js - Core source)
     ├── data/                 # Configuration, Databases, RAG DBs, Model Symlink
     │   ├── config/           # .env.development, config.dev.toml
     │   ├── db/               # SQLite (dreamer.db - dev), PostgreSQL info TBD
@@ -274,7 +282,13 @@ DreamerAI's vision is to be a scalable, user-friendly powerhouse—crafting AAA-
     ├── build.bat
     ├── README.md
     ├── requirements.txt
-    ├── pyproject.toml        # For python tooling config (pytest, black)
+    ├── package.json          # <--- AT ROOT
+    ├── package-lock.json     # <--- AT ROOT
+    ├── forge.config.js       # <--- AT ROOT
+    ├── webpack.main.config.js # <--- AT ROOT
+    ├── webpack.renderer.config.js # <--- AT ROOT
+    ├── webpack.rules.js      # <--- AT ROOT
+    ├── webpack.plugins.js    # <--- AT ROOT
     └── .gitignore
     ```
 *   **Environments**: Test (`D:\DreamerAI_Test`) and Prod (`D:\DreamerAI_Prod`) mirror this structure with environment-specific configs/DBs/logs. These rules govern DEV (`C:\DreamerAI`).

@@ -191,3 +191,24 @@ This log automatically records all file system structure changes (creations, ren
 [AUTO_TIMESTAMP] - REVERT - Path: C:\DreamerAI\app\src\App.jsx - Details: File reverted to commit 5a13ddb state due to git reset
 [AUTO_TIMESTAMP] - REVERT - Path: C:\DreamerAI\app\package.json - Details: File reverted to commit 5a13ddb state due to git reset (removed electron-oauth2, keytar)
 [AUTO_TIMESTAMP] - REVERT - Path: C:\DreamerAI\app\package-lock.json - Details: File reverted to commit 5a13ddb state due to git reset
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\main.js - Details: Day 26 Task 4 - Fixed Webpack entry load logic, added keytar require block, added start-github-auth IPC placeholder.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\preload.js - Details: Day 26 Task 5 - Added contextBridge setup, whitelisted 'start-github-auth' invoke channel.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\package.json - Details: Day 26 Task 6 - Removed electron-oauth2 dependency.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\package-lock.json - Details: Day 26 Task 6 - Updated lockfile after electron-oauth2 removal.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\components\GitHubSignIn.jsx - Details: Day 26 Task 7 - Replaced component with simple IPC trigger button.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\src\App.jsx - Details: Day 26 Task 8 - Restored HTTP listener useEffect hook from Day 13/20.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\webpack.renderer.config.js - Details: Day 26 Task 9 (Debug Attempt 2) - Added resolve.fallback {http: false}.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\webpack.main.config.js - Details: Day 26 Task 9 (Debug) - Added missing require('path').
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\webpack.main.config.js - Details: Day 26 Task 9 (Debug) - Added console logs for path debugging.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\webpack.rules.js - Details: Day 26 Task 9 (Debug) - Re-enabled @vercel/webpack-asset-relocator-loader rule.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\package.json - Details: Day 26 Fix 1 - Corrected main entry to 'src/main.js'.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\webpack.main.config.js - Details: Day 26 Fix 2 - Corrected entry path to './main.js' (no src/).
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\package.json - Details: Day 26 Task 9 (Debug) - Added dotenv dependency.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\package-lock.json - Details: Day 26 Task 9 (Debug) - Updated lockfile after adding dotenv.
+[AUTO_TIMESTAMP] - MODIFY - Path: C:\DreamerAI\app\main.js - Details: Day 26 Task 9 (Debug) - Corrected fallback loadFile path to point to source index.html.
+[2024-04-27 20:30:00] - DELETE - Path: C:\DreamerAI\app\package.json - Details: Deleted conflicting package.json during structural cleanup.
+[2024-04-27 20:31:00] - MOVE - Path: C:\DreamerAI\forge.config.js - Details: Moved from app/forge.config.js to root during structural cleanup.
+[2024-04-27 20:32:00] - MOVE - Path: C:\DreamerAI\webpack.main.config.js - Details: Moved from app/webpack.main.config.js to root during structural cleanup.
+[2024-04-27 20:33:00] - MOVE - Path: C:\DreamerAI\webpack.renderer.config.js - Details: Moved from app/webpack.renderer.config.js to root during structural cleanup.
+[2024-04-27 20:34:00] - MOVE - Path: C:\DreamerAI\webpack.rules.js - Details: Moved from app/webpack.rules.js to root during structural cleanup.
+[2024-04-27 20:35:00] - MOVE - Path: C:\DreamerAI\webpack.plugins.js - Details: Moved from app/webpack.plugins.js to root during structural cleanup.

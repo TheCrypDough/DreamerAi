@@ -1,5 +1,3 @@
-
-
 # DreamerAI Project Structure (Multi-Environment - Aligned Vision 2025-03-29)
 
 **Note:** This document outlines the mirrored file structure across Development, Test, and Production environments. Environment-specific configurations, databases, logs, and potentially model strategies differ, but the core layout is consistent. The canonical definition is maintained in the Development environment at `C:\DreamerAI\docs\project_structure.md`.
@@ -17,12 +15,14 @@ Use code with caution.
 Markdown
 C:\DreamerAI
 │
-├── app\ # Electron/React Frontend (Panelized "Dreamer Desktop")
-│ ├── components\ # React UI Panel Modules & Components
-│ │ ├── MainChatPanel.js, DreamcoderPanel.js, ThinkTankPanel.js, ... (etc.)
-│ ├── src\ # Core React files (App.jsx, analytics.js)
-│ ├── utils\ # Frontend utilities (backup.js, crypto.js)
-│ ├── ... (firebase.js, i18n.js, index.html, main.js, package.json, preload.js, renderer.js)
+├── app\ # Electron/React Frontend Source Code (Panelized "Dreamer Desktop")
+│   ├── components\       # React UI Panel Modules & Components (MainChatPanel.js, etc.)
+│   ├── src\              # Core React files (App.jsx, analytics.js)
+│   ├── utils\            # Frontend utilities (backup.js, crypto.js)
+│   ├── locales\           # Internationalization files (en/, es/)
+│   ├── assets\            # Static assets (images, icons, etc.)
+│   └── ... (index.html, main.js, preload.js, renderer.js - Core Electron/React source files)
+│           # NOTE: package.json, forge.config.js, webpack.*.js are now at the ROOT level.
 │
 ├── data\ # Configuration, Databases, RAG DBs, Model Symlink (Dev)
 │ ├── config\ # Dev Configurations
@@ -83,6 +83,13 @@ C:\DreamerAI
 ├── build.bat # Windows build script
 ├── README.md # Main project README
 ├── requirements.txt # Python dependencies
+├── package.json          # <-- NOW AT ROOT
+├── package-lock.json     # <-- NOW AT ROOT
+├── forge.config.js       # <-- NOW AT ROOT
+├── webpack.main.config.js # <-- NOW AT ROOT
+├── webpack.renderer.config.js # <-- NOW AT ROOT
+├── webpack.rules.js      # <-- NOW AT ROOT
+├── webpack.plugins.js    # <-- NOW AT ROOT
 └── .gitignore # Git ignore configuration
 
 ## 2. Test Environment
@@ -91,11 +98,14 @@ C:\DreamerAI
 Use code with caution.
 D:\DreamerAI_Test
 │
-├── app\ # Frontend - Mirrored from Dev
-│ ├── components
-│ ├── src
-│ ├── utils
-│ └── ...
+├── app\ # Frontend Source Code - Mirrored from Dev
+│   ├── components\       # Mirrored
+│   ├── src\              # Mirrored
+│   ├── utils\            # Mirrored
+│   ├── locales\           # Mirrored
+│   ├── assets\            # Mirrored
+│   └── ... (index.html, main.js, preload.js, renderer.js - Source Files)
+│           # NOTE: package.json, forge.config.js, webpack.*.js are at the ROOT level.
 │
 ├── data\ # Test Data & Configs
 │ ├── config\ # Test Configurations
@@ -145,6 +155,13 @@ D:\DreamerAI_Test
 ├── build.bat # Build script configured for Test env
 ├── README_test.md # Test environment specifics
 ├── requirements_test.txt # (If different from Dev)
+├── package.json          # <-- NOW AT ROOT (Test Env)
+├── package-lock.json     # <-- NOW AT ROOT (Test Env)
+├── forge.config.js       # <-- NOW AT ROOT (Test Env)
+├── webpack.main.config.js # <-- NOW AT ROOT (Test Env)
+├── webpack.renderer.config.js # <-- NOW AT ROOT (Test Env)
+├── webpack.rules.js      # <-- NOW AT ROOT (Test Env)
+├── webpack.plugins.js    # <-- NOW AT ROOT (Test Env)
 └── .gitignore
 
 ## 3. Production Environment
@@ -153,11 +170,14 @@ D:\DreamerAI_Test
 Use code with caution.
 D:\DreamerAI_Prod
 │
-├── app\ # Frontend - Mirrored/Deployed Stable Version
-│ ├── components
-│ ├── src
-│ ├── utils
-│ └── ...
+├── app\ # Frontend Source Code - Deployed Stable Version
+│   ├── components\       # Deployed
+│   ├── src\              # Deployed
+│   ├── utils\            # Deployed
+│   ├── locales\           # Deployed
+│   ├── assets\            # Deployed
+│   └── ... (index.html, main.js, preload.js, renderer.js - Source Files)
+│           # NOTE: package.json, forge.config.js, webpack.*.js are at the ROOT level.
 │
 ├── data\ # Production Data & Configs
 │ ├── config\ # Production Configurations
@@ -207,6 +227,13 @@ D:\DreamerAI_Prod
 ├── build.bat # (Likely not used directly, CI/CD handles build)
 ├── README_prod.md # Production environment notes (if needed)
 ├── requirements_prod.txt # Production Python dependencies
+├── package.json          # <-- NOW AT ROOT (Prod Env)
+├── package-lock.json     # <-- NOW AT ROOT (Prod Env)
+├── forge.config.js       # <-- NOW AT ROOT (Prod Env)
+├── webpack.main.config.js # <-- NOW AT ROOT (Prod Env)
+├── webpack.renderer.config.js # <-- NOW AT ROOT (Prod Env)
+├── webpack.rules.js      # <-- NOW AT ROOT (Prod Env)
+├── webpack.plugins.js    # <-- NOW AT ROOT (Prod Env)
 └── .gitignore
 
 **Explanation of Multi-Environment Structure:**
@@ -621,7 +648,7 @@ Replaces the original D:\DreamerAI_Main\ (which only had the executable) to meet
 Contains the full source code and data structure, not just the deployed executable, allowing for consistency with dev and test.
 
 Shared Model Storage (D:\DreamerAI_Models\):
-A centralized directory for AI model files, linked via symlinks from each environment’s data\models\ directory.
+A centralized directory for AI model files, linked via symlinks from each environment's data\models\ directory.
 
 Ensures all environments use the same models without duplicating files.
 

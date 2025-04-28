@@ -96,3 +96,5 @@ app/node_modules/
 # Optional: Editor/IDE specific files
 .vscode/
 .idea/
+
+out/

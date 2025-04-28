@@ -346,3 +346,17 @@ Template for Entries must be completed at least Daily!
 *   **Issues Logged/Resolved:** Initial test connection error due to port mismatch (resolved).
 *   **Anthony's Feedback/Vibe:** Guided debugging, approved completion.
 *   **Next Task Context:** Proceeding to Day 26, Task: Navigate to C:\DreamerAI\app. Run npm install electron-oauth2 keytar.
+
+## Task: Day 26 Foundational Cleanup (Performed before Day 26 Rev 9 Tasks)
+
+*   **Summary:** Encountered critical build failures preventing `npm start`. Performed extensive refactoring to stabilize the project structure and build process:
+    *   Consolidated conflicting `package.json` files into the root `C:\DreamerAI\package.json`.
+    *   Moved Electron Forge and Webpack configuration files (`forge.config.js`, `webpack.*.js`) from `app/` to the root directory.
+    *   Updated paths within configuration files to reflect the new structure and point to source files in `app/`.
+    *   Resolved Webpack build errors related to `ForgeWebpackPlugin`, `@vercel/webpack-asset-relocator-loader`, and preload script pathing (`MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY`).
+    *   Moved the HTTP server logic (originally for backend bridge) from `app/src/App.jsx` (where it caused errors) to `app/main.js` and implemented an IPC channel (`bridge-message`) for main-to-renderer communication.
+    *   Corrected the WebSocket URL in `app/src/App.jsx`.
+*   **Key Decisions Made:** Prioritized fixing the broken build and project structure over proceeding with Day 26 tasks. Adopted a standard Electron Forge + Webpack structure with configs at the root. Implemented an IPC bridge for UI updates from the main process server logic instead of restoring the potentially problematic V1 HTTP listener in App.jsx (slight deviation from Day 26 Rev 9's bridge plan, but addresses the immediate error source).
+*   **Anthony's Feedback/Vibe:** Expressed confusion and concern about deviation and progress, prompting this clarification and cleanup.
+*   **Blocking Issues Resolved:** `npm start` failures (module not found, constructor errors, loader errors, preload errors), `http.createServer` error in renderer.
+*   **Current Status:** Build system stabilized. Application launches successfully via `npm start`. Preload script loads correctly. Basic IPC bridge (`bridge-message`) functional. WebSocket connection to backend established. Project structure is now more conventional.

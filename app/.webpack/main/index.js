@@ -1,6 +1,387 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./node_modules/dotenv/lib/main.js":
+/*!*****************************************!*\
+  !*** ./node_modules/dotenv/lib/main.js ***!
+  \*****************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const fs = __webpack_require__(/*! fs */ "fs")
+const path = __webpack_require__(/*! path */ "path")
+const os = __webpack_require__(/*! os */ "os")
+const crypto = __webpack_require__(/*! crypto */ "crypto")
+const packageJson = __webpack_require__(/*! ../package.json */ "./node_modules/dotenv/package.json")
+
+const version = packageJson.version
+
+const LINE = /(?:^|^)\s*(?:export\s+)?([\w.-]+)(?:\s*=\s*?|:\s+?)(\s*'(?:\\'|[^'])*'|\s*"(?:\\"|[^"])*"|\s*`(?:\\`|[^`])*`|[^#\r\n]+)?\s*(?:#.*)?(?:$|$)/mg
+
+// Parse src into an Object
+function parse (src) {
+  const obj = {}
+
+  // Convert buffer to string
+  let lines = src.toString()
+
+  // Convert line breaks to same format
+  lines = lines.replace(/\r\n?/mg, '\n')
+
+  let match
+  while ((match = LINE.exec(lines)) != null) {
+    const key = match[1]
+
+    // Default undefined or null to empty string
+    let value = (match[2] || '')
+
+    // Remove whitespace
+    value = value.trim()
+
+    // Check if double quoted
+    const maybeQuote = value[0]
+
+    // Remove surrounding quotes
+    value = value.replace(/^(['"`])([\s\S]*)\1$/mg, '$2')
+
+    // Expand newlines if double quoted
+    if (maybeQuote === '"') {
+      value = value.replace(/\\n/g, '\n')
+      value = value.replace(/\\r/g, '\r')
+    }
+
+    // Add to object
+    obj[key] = value
+  }
+
+  return obj
+}
+
+function _parseVault (options) {
+  const vaultPath = _vaultPath(options)
+
+  // Parse .env.vault
+  const result = DotenvModule.configDotenv({ path: vaultPath })
+  if (!result.parsed) {
+    const err = new Error(`MISSING_DATA: Cannot parse ${vaultPath} for an unknown reason`)
+    err.code = 'MISSING_DATA'
+    throw err
+  }
+
+  // handle scenario for comma separated keys - for use with key rotation
+  // example: DOTENV_KEY="dotenv://:key_1234@dotenvx.com/vault/.env.vault?environment=prod,dotenv://:key_7890@dotenvx.com/vault/.env.vault?environment=prod"
+  const keys = _dotenvKey(options).split(',')
+  const length = keys.length
+
+  let decrypted
+  for (let i = 0; i < length; i++) {
+    try {
+      // Get full key
+      const key = keys[i].trim()
+
+      // Get instructions for decrypt
+      const attrs = _instructions(result, key)
+
+      // Decrypt
+      decrypted = DotenvModule.decrypt(attrs.ciphertext, attrs.key)
+
+      break
+    } catch (error) {
+      // last key
+      if (i + 1 >= length) {
+        throw error
+      }
+      // try next key
+    }
+  }
+
+  // Parse decrypted .env string
+  return DotenvModule.parse(decrypted)
+}
+
+function _warn (message) {
+  console.log(`[dotenv@${version}][WARN] ${message}`)
+}
+
+function _debug (message) {
+  console.log(`[dotenv@${version}][DEBUG] ${message}`)
+}
+
+function _dotenvKey (options) {
+  // prioritize developer directly setting options.DOTENV_KEY
+  if (options && options.DOTENV_KEY && options.DOTENV_KEY.length > 0) {
+    return options.DOTENV_KEY
+  }
+
+  // secondary infra already contains a DOTENV_KEY environment variable
+  if (process.env.DOTENV_KEY && process.env.DOTENV_KEY.length > 0) {
+    return process.env.DOTENV_KEY
+  }
+
+  // fallback to empty string
+  return ''
+}
+
+function _instructions (result, dotenvKey) {
+  // Parse DOTENV_KEY. Format is a URI
+  let uri
+  try {
+    uri = new URL(dotenvKey)
+  } catch (error) {
+    if (error.code === 'ERR_INVALID_URL') {
+      const err = new Error('INVALID_DOTENV_KEY: Wrong format. Must be in valid uri format like dotenv://:key_1234@dotenvx.com/vault/.env.vault?environment=development')
+      err.code = 'INVALID_DOTENV_KEY'
+      throw err
+    }
+
+    throw error
+  }
+
+  // Get decrypt key
+  const key = uri.password
+  if (!key) {
+    const err = new Error('INVALID_DOTENV_KEY: Missing key part')
+    err.code = 'INVALID_DOTENV_KEY'
+    throw err
+  }
+
+  // Get environment
+  const environment = uri.searchParams.get('environment')
+  if (!environment) {
+    const err = new Error('INVALID_DOTENV_KEY: Missing environment part')
+    err.code = 'INVALID_DOTENV_KEY'
+    throw err
+  }
+
+  // Get ciphertext payload
+  const environmentKey = `DOTENV_VAULT_${environment.toUpperCase()}`
+  const ciphertext = result.parsed[environmentKey] // DOTENV_VAULT_PRODUCTION
+  if (!ciphertext) {
+    const err = new Error(`NOT_FOUND_DOTENV_ENVIRONMENT: Cannot locate environment ${environmentKey} in your .env.vault file.`)
+    err.code = 'NOT_FOUND_DOTENV_ENVIRONMENT'
+    throw err
+  }
+
+  return { ciphertext, key }
+}
+
+function _vaultPath (options) {
+  let possibleVaultPath = null
+
+  if (options && options.path && options.path.length > 0) {
+    if (Array.isArray(options.path)) {
+      for (const filepath of options.path) {
+        if (fs.existsSync(filepath)) {
+          possibleVaultPath = filepath.endsWith('.vault') ? filepath : `${filepath}.vault`
+        }
+      }
+    } else {
+      possibleVaultPath = options.path.endsWith('.vault') ? options.path : `${options.path}.vault`
+    }
+  } else {
+    possibleVaultPath = path.resolve(process.cwd(), '.env.vault')
+  }
+
+  if (fs.existsSync(possibleVaultPath)) {
+    return possibleVaultPath
+  }
+
+  return null
+}
+
+function _resolveHome (envPath) {
+  return envPath[0] === '~' ? path.join(os.homedir(), envPath.slice(1)) : envPath
+}
+
+function _configVault (options) {
+  const debug = Boolean(options && options.debug)
+  if (debug) {
+    _debug('Loading env from encrypted .env.vault')
+  }
+
+  const parsed = DotenvModule._parseVault(options)
+
+  let processEnv = process.env
+  if (options && options.processEnv != null) {
+    processEnv = options.processEnv
+  }
+
+  DotenvModule.populate(processEnv, parsed, options)
+
+  return { parsed }
+}
+
+function configDotenv (options) {
+  const dotenvPath = path.resolve(process.cwd(), '.env')
+  let encoding = 'utf8'
+  const debug = Boolean(options && options.debug)
+
+  if (options && options.encoding) {
+    encoding = options.encoding
+  } else {
+    if (debug) {
+      _debug('No encoding is specified. UTF-8 is used by default')
+    }
+  }
+
+  let optionPaths = [dotenvPath] // default, look for .env
+  if (options && options.path) {
+    if (!Array.isArray(options.path)) {
+      optionPaths = [_resolveHome(options.path)]
+    } else {
+      optionPaths = [] // reset default
+      for (const filepath of options.path) {
+        optionPaths.push(_resolveHome(filepath))
+      }
+    }
+  }
+
+  // Build the parsed data in a temporary object (because we need to return it).  Once we have the final
+  // parsed data, we will combine it with process.env (or options.processEnv if provided).
+  let lastError
+  const parsedAll = {}
+  for (const path of optionPaths) {
+    try {
+      // Specifying an encoding returns a string instead of a buffer
+      const parsed = DotenvModule.parse(fs.readFileSync(path, { encoding }))
+
+      DotenvModule.populate(parsedAll, parsed, options)
+    } catch (e) {
+      if (debug) {
+        _debug(`Failed to load ${path} ${e.message}`)
+      }
+      lastError = e
+    }
+  }
+
+  let processEnv = process.env
+  if (options && options.processEnv != null) {
+    processEnv = options.processEnv
+  }
+
+  DotenvModule.populate(processEnv, parsedAll, options)
+
+  if (lastError) {
+    return { parsed: parsedAll, error: lastError }
+  } else {
+    return { parsed: parsedAll }
+  }
+}
+
+// Populates process.env from .env file
+function config (options) {
+  // fallback to original dotenv if DOTENV_KEY is not set
+  if (_dotenvKey(options).length === 0) {
+    return DotenvModule.configDotenv(options)
+  }
+
+  const vaultPath = _vaultPath(options)
+
+  // dotenvKey exists but .env.vault file does not exist
+  if (!vaultPath) {
+    _warn(`You set DOTENV_KEY but you are missing a .env.vault file at ${vaultPath}. Did you forget to build it?`)
+
+    return DotenvModule.configDotenv(options)
+  }
+
+  return DotenvModule._configVault(options)
+}
+
+function decrypt (encrypted, keyStr) {
+  const key = Buffer.from(keyStr.slice(-64), 'hex')
+  let ciphertext = Buffer.from(encrypted, 'base64')
+
+  const nonce = ciphertext.subarray(0, 12)
+  const authTag = ciphertext.subarray(-16)
+  ciphertext = ciphertext.subarray(12, -16)
+
+  try {
+    const aesgcm = crypto.createDecipheriv('aes-256-gcm', key, nonce)
+    aesgcm.setAuthTag(authTag)
+    return `${aesgcm.update(ciphertext)}${aesgcm.final()}`
+  } catch (error) {
+    const isRange = error instanceof RangeError
+    const invalidKeyLength = error.message === 'Invalid key length'
+    const decryptionFailed = error.message === 'Unsupported state or unable to authenticate data'
+
+    if (isRange || invalidKeyLength) {
+      const err = new Error('INVALID_DOTENV_KEY: It must be 64 characters long (or more)')
+      err.code = 'INVALID_DOTENV_KEY'
+      throw err
+    } else if (decryptionFailed) {
+      const err = new Error('DECRYPTION_FAILED: Please check your DOTENV_KEY')
+      err.code = 'DECRYPTION_FAILED'
+      throw err
+    } else {
+      throw error
+    }
+  }
+}
+
+// Populate process.env with parsed values
+function populate (processEnv, parsed, options = {}) {
+  const debug = Boolean(options && options.debug)
+  const override = Boolean(options && options.override)
+
+  if (typeof parsed !== 'object') {
+    const err = new Error('OBJECT_REQUIRED: Please check the processEnv argument being passed to populate')
+    err.code = 'OBJECT_REQUIRED'
+    throw err
+  }
+
+  // Set process.env
+  for (const key of Object.keys(parsed)) {
+    if (Object.prototype.hasOwnProperty.call(processEnv, key)) {
+      if (override === true) {
+        processEnv[key] = parsed[key]
+      }
+
+      if (debug) {
+        if (override === true) {
+          _debug(`"${key}" is already defined and WAS overwritten`)
+        } else {
+          _debug(`"${key}" is already defined and was NOT overwritten`)
+        }
+      }
+    } else {
+      processEnv[key] = parsed[key]
+    }
+  }
+}
+
+const DotenvModule = {
+  configDotenv,
+  _configVault,
+  _parseVault,
+  config,
+  decrypt,
+  parse,
+  populate
+}
+
+module.exports.configDotenv = DotenvModule.configDotenv
+module.exports._configVault = DotenvModule._configVault
+module.exports._parseVault = DotenvModule._parseVault
+module.exports.config = DotenvModule.config
+module.exports.decrypt = DotenvModule.decrypt
+module.exports.parse = DotenvModule.parse
+module.exports.populate = DotenvModule.populate
+
+module.exports = DotenvModule
+
+
+/***/ }),
+
+/***/ "./node_modules/dotenv/package.json":
+/*!******************************************!*\
+  !*** ./node_modules/dotenv/package.json ***!
+  \******************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = /*#__PURE__*/JSON.parse('{"name":"dotenv","version":"16.5.0","description":"Loads environment variables from .env file","main":"lib/main.js","types":"lib/main.d.ts","exports":{".":{"types":"./lib/main.d.ts","require":"./lib/main.js","default":"./lib/main.js"},"./config":"./config.js","./config.js":"./config.js","./lib/env-options":"./lib/env-options.js","./lib/env-options.js":"./lib/env-options.js","./lib/cli-options":"./lib/cli-options.js","./lib/cli-options.js":"./lib/cli-options.js","./package.json":"./package.json"},"scripts":{"dts-check":"tsc --project tests/types/tsconfig.json","lint":"standard","pretest":"npm run lint && npm run dts-check","test":"tap run --allow-empty-coverage --disable-coverage --timeout=60000","test:coverage":"tap run --show-full-coverage --timeout=60000 --coverage-report=lcov","prerelease":"npm test","release":"standard-version"},"repository":{"type":"git","url":"git://github.com/motdotla/dotenv.git"},"homepage":"https://github.com/motdotla/dotenv#readme","funding":"https://dotenvx.com","keywords":["dotenv","env",".env","environment","variables","config","settings"],"readmeFilename":"README.md","license":"BSD-2-Clause","devDependencies":{"@types/node":"^18.11.3","decache":"^4.6.2","sinon":"^14.0.1","standard":"^17.0.0","standard-version":"^9.5.0","tap":"^19.2.0","typescript":"^4.8.4"},"engines":{"node":">=12"},"browser":{"fs":false}}');
+
+/***/ }),
+
 /***/ "./node_modules/electron-squirrel-startup/index.js":
 /*!*********************************************************!*\
   !*** ./node_modules/electron-squirrel-startup/index.js ***!
@@ -905,6 +1286,17 @@ module.exports = require("child_process");
 
 /***/ }),
 
+/***/ "crypto":
+/*!*************************!*\
+  !*** external "crypto" ***!
+  \*************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("crypto");
+
+/***/ }),
+
 /***/ "electron":
 /*!***************************!*\
   !*** external "electron" ***!
@@ -927,6 +1319,17 @@ module.exports = require("fs");
 
 /***/ }),
 
+/***/ "keytar":
+/*!*************************!*\
+  !*** external "keytar" ***!
+  \*************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("keytar");
+
+/***/ }),
+
 /***/ "net":
 /*!**********************!*\
   !*** external "net" ***!
@@ -935,6 +1338,17 @@ module.exports = require("fs");
 
 "use strict";
 module.exports = require("net");
+
+/***/ }),
+
+/***/ "os":
+/*!*********************!*\
+  !*** external "os" ***!
+  \*********************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("os");
 
 /***/ }),
 
@@ -1009,7 +1423,13 @@ var __webpack_exports__ = {};
 /*!*****************!*\
   !*** ./main.js ***!
   \*****************/
-const { app, BrowserWindow, session } = __webpack_require__(/*! electron */ "electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  safeStorage,
+  shell
+} = __webpack_require__(/*! electron */ "electron");
 const path = __webpack_require__(/*! path */ "path");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -1017,54 +1437,214 @@ if (__webpack_require__(/*! electron-squirrel-startup */ "./node_modules/electro
   app.quit();
 }
 
+// --- Attempt Keytar Load ---
+let keytar = null;
+try {
+  keytar = __webpack_require__(/*! keytar */ "keytar");
+  console.log("[Main Process D26] Keytar loaded successfully (Prerequisite check OK).");
+} catch (error) {
+  console.error("!!! [Main Process D26] Failed to load keytar. GitHub token storage will fail! Run `npm run rebuild`? !!!", error);
+  keytar = null;
+}
+// -------------------------
+
+// Keep JWT storage V1 vars...
+let encryptedJwtBuffer = null;
+let encryptionAvailable = false;
+
+// --- GitHub Config Check (Env Vars - Needs setup for D26.1+) ---
+// Load dotenv configuration based on the environment
+(__webpack_require__(/*! dotenv */ "./node_modules/dotenv/lib/main.js").config)({
+  path: path.resolve(__dirname, '..', 'data', 'config', '.env.development')
+});
+const GITHUB_CLIENT_ID_MAIN = process.env.GITHUB_CLIENT_ID;
+const GITHUB_CLIENT_SECRET_MAIN = process.env.GITHUB_CLIENT_SECRET;
+let githubCredentialsOk = true;
+if (!GITHUB_CLIENT_ID_MAIN || !GITHUB_CLIENT_SECRET_MAIN) {
+  console.error("!!! [Main Process D26] GitHub Client ID or Secret NOT FOUND in environment variables! OAuth flow will fail. Check data/config/.env.development !!!");
+  githubCredentialsOk = false;
+} else {
+  console.log("[Main Process D26] GitHub Client ID found (Env var check OK).");
+}
+// -----------------------------------------------------------
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1200, // Starting width
-    height: 800, // Starting height
+    width: 1200,
+    // Starting width
+    height: 800,
+    // Starting height
     webPreferences: {
       // preload: path.join(__dirname, 'preload.js'), // Old way
-      preload: 'C:\\DreamerAI\\app\\.webpack\\renderer\\main_window\\preload.js', // Use Webpack preload entry
-      nodeIntegration: true, // Allow Node.js APIs in renderer process (simplifies early dev, review later)
-      contextIsolation: false, // Disable context isolation (simplifies early dev, review later)
-      devTools: true // Ensure DevTools are enabled for debugging
+      preload: __webpack_require__.ab + "preload.js",
+      // Corrected path assumes main.js is in src/
+      nodeIntegration: false,
+      // SECURE
+      contextIsolation: true,
+      // SECURE
+      devTools: !app.isPackaged
     }
   });
 
   // Load the index.html of the app.
   // mainWindow.loadFile(path.join(__dirname, 'index.html')); // Old way
-  mainWindow.loadURL('http://localhost:3000/main_window'); // Use Webpack main window entry
+  // --- CORRECTED Loading Logic for Electron Forge + Webpack ---
+  // The MAIN_WINDOW_WEBPACK_ENTRY variable will be populated by webpack. Define it if not present.
+  // This variable name is specific to electron-forge.
+  if (true) {
+    console.log(`[Main Process D26] Loading Renderer Entry: ${'http://localhost:3000/main_window'}`);
+    mainWindow.loadURL('http://localhost:3000/main_window');
+  } else {}
+  // --- End Corrected Logic ---
 
-  // Open the DevTools automatically in development
-  // mainWindow.webContents.openDevTools();
+  if (!app.isPackaged) mainWindow.webContents.openDevTools();
+  // Store mainWindow reference? Maybe for IPC send later?
+  // global.mainWindow = mainWindow; // Avoid globals if possible
 };
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', () => {
-  createWindow();
-});
+// --- Ensure single instance lock --- //
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+    // Handle protocol links if needed (e.g., for OAuth callbacks if using custom protocol)
+    // Example: Handle dreamerai:// links
+    const url = commandLine.pop(); // Get the last argument which might be the URL
+    if (url && url.startsWith('dreamerai://')) {
+      console.log(`[Main Process D26] Second instance opened with URL: ${url}`);
+      // Implement logic to handle the URL, e.g., parse OAuth code
+      // mainWindow.webContents.send('protocol-link', url);
+    }
+  });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+  // Create mainWindow, load the rest of the app, etc...
+  app.whenReady().then(() => {
+    // Load environment variables (Moved earlier)
+    console.log("[Main Process D26] App ready.");
+    encryptionAvailable = safeStorage.isEncryptionAvailable(); // Check safeStorage
+    console.log(`[Main Process D26] safeStorage Available: ${encryptionAvailable}`);
+
+    // --- Setup IPC Handlers ---
+    // Existing handlers (JWT, Keytar Placeholders/Functional if implemented D66/D105)
+    ipcMain.handle('secure-jwt-save', async (event, token) => {
+      /* D105 Logic/Placeholder */console.warn("IPC: secure-jwt-save not implemented");
+      return {
+        success: false,
+        error: 'Not implemented'
+      };
+    });
+    ipcMain.handle('secure-jwt-get', async event => {
+      /* D105 Logic/Placeholder */console.warn("IPC: secure-jwt-get not implemented");
+      return {
+        success: false,
+        token: null,
+        error: 'Not implemented'
+      };
+    });
+    ipcMain.handle('secure-jwt-delete', async event => {
+      /* D105 Logic/Placeholder */console.warn("IPC: secure-jwt-delete not implemented");
+      return {
+        success: false,
+        error: 'Not implemented'
+      };
+    });
+    const GITHUB_KEYCHAIN_SERVICE = 'DreamerAI_GitHub_Token_Service_D66';
+    const GITHUB_KEYCHAIN_ACCOUNT = 'user_github_access_token';
+    if (keytar) {
+      // Only setup if keytar loaded
+      ipcMain.handle('secure-keytar-save', async (event, {
+        service,
+        account,
+        token
+      }) => {
+        /* D66 Functional Logic Here */console.warn("IPC: secure-keytar-save not implemented");
+        return {
+          success: false,
+          error: 'Not implemented'
+        };
+      });
+      ipcMain.handle('secure-keytar-get', async (event, {
+        service,
+        account
+      }) => {
+        /* D66 Functional Logic Here */console.warn("IPC: secure-keytar-get not implemented");
+        return {
+          success: false,
+          token: null,
+          error: 'Not implemented'
+        };
+      });
+      ipcMain.handle('secure-keytar-delete', async (event, {
+        service,
+        account
+      }) => {
+        /* D66 Functional Logic Here */console.warn("IPC: secure-keytar-delete not implemented");
+        return {
+          success: false,
+          error: 'Not implemented'
+        };
+      });
+      console.log("[Main Process D26] IPC: Keytar placeholder handlers configured.");
+    } else {
+      // Define fallback handlers if keytar is not available
+      const keytarError = 'Keytar native module not loaded. Secure storage unavailable.';
+      ipcMain.handle('secure-keytar-save', async () => ({
+        success: false,
+        error: keytarError
+      }));
+      ipcMain.handle('secure-keytar-get', async () => ({
+        success: false,
+        token: null,
+        error: keytarError
+      }));
+      ipcMain.handle('secure-keytar-delete', async () => ({
+        success: false,
+        error: keytarError
+      }));
+      console.error("[Main Process D26] IPC: Keytar fallback error handlers configured.");
+    }
+
+    // --- Day 26 Placeholder GitHub Auth Trigger --- //
+    ipcMain.handle('start-github-auth', async () => {
+      console.warn("IPC <<< Received 'start-github-auth' request from renderer.");
+      console.error("<<<<< ERROR: Actual GitHub OAuth logic not implemented yet. TODO: Implement in Day 26.1+ >>>>>");
+      // In a real implementation (Day 26.1+), this would:
+      // 1. Check if githubCredentialsOk
+      // 2. Generate state, construct GitHub authorization URL
+      // 3. Open the URL in the default browser using shell.openExternal()
+      // 4. Setup a temporary server OR use protocol handler to catch the redirect
+      // 5. Exchange code for token
+      // 6. Save token securely (using keytar handler)
+      // 7. Return success/failure to renderer
+      return {
+        success: false,
+        error: 'Main process GitHub OAuth flow not implemented yet (Planned D26.1+).'
+      };
+    });
+    console.log("[Main Process D26] IPC: 'start-github-auth' placeholder handler configured.");
+    // ------------------------------------------ //
+
+    createWindow(); // Create the main window
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
+  }); // End app.whenReady()
+}
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
 
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
-
 // In this file, you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here. 
+// code. You can also put them in separate files and import them here.
 })();
 
 module.exports = __webpack_exports__;

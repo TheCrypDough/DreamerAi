@@ -1,132 +1,91 @@
 const React = require('react');
-const { useState } = React;
-const PropTypes = require('prop-types'); // Import PropTypes
-const { Button, Box, Typography } = require('@mui/material'); // Added Box and Typography
-// Dynamically import electron-oauth2 to handle potential issues in non-Electron envs?
-// For simplicity V1, use standard require. Ensure running within Electron.
-let OAuth;
-let keytar;
-try {
-    OAuth = require('electron-oauth2').default; // Note the .default
-    keytar = require('keytar');
-} catch (error) {
-    console.error("Failed to load electron-oauth2 or keytar. GitHub auth unavailable.", error);
-    // Handle the error gracefully in the component, e.g., disable the button
-}
+const { useState, useEffect } = React;
+const Button = require('@mui/material/Button').default;
+const Typography = require('@mui/material/Typography').default;
+const CircularProgress = require('@mui/material/CircularProgress').default;
+const GitHubIcon = require('@mui/icons-material/GitHub').default;
+const Box = require('@mui/material/Box').default;
 
-// --- TODO: SECURE CONFIG INJECTION ---
-// HARDCODING SECRETS HERE IS BAD PRACTICE & INSECURE.
-// Replace these with a secure method to get config into the renderer process,
-// e.g., via contextBridge in preload.js or IPC calls to the main process
-// which reads from the environment/config files safely.
-const GITHUB_CLIENT_ID_PLACEHOLDER = "Ov23li40T3xrObxKqbXP";
-const GITHUB_CLIENT_SECRET_PLACEHOLDER = "4ee406c6f14d4baa7de718e17cb9fe68b4a1f25c";
-// --- END TODO ---
-
-/**
- * @param {object} props
- * @param {function({accessToken: string}): void} props.onSignInSuccess - Callback function on successful sign-in.
- */
-function GitHubSignIn({ onSignInSuccess }) {
+function GitHubSignIn() {
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [statusMessage, setStatusMessage] = useState('');
+    const [isError, setIsError] = useState(false);
 
-    const handleSignIn = async () => {
-        if (!OAuth || !keytar) {
-            setError("GitHub Sign-In libraries not loaded.");
+    const setStatus = (message, error = false) => {
+        setStatusMessage(message);
+        setIsError(error);
+    };
+
+    useEffect(() => {
+        // Optionally clear status on component mount or specific events
+        setStatus('');
+    }, []);
+
+    const handleStartAuthFlow = async () => {
+        setIsLoading(true);
+        setStatus('Contacting main application...', false);
+        
+        if (!window.electronAPI?.invoke) {
+            setStatus('Error: Electron API bridge not available. Cannot start auth.', true);
+            setIsLoading(false);
             return;
         }
 
-        setIsLoading(true);
-        setError(null);
-
-        const config = {
-            clientId: GITHUB_CLIENT_ID_PLACEHOLDER, // Use placeholder or injected config
-            clientSecret: GITHUB_CLIENT_SECRET_PLACEHOLDER, // Use placeholder or injected config
-            authorizationUrl: 'https://github.com/login/oauth/authorize',
-            tokenUrl: 'https://github.com/login/oauth/access_token',
-            useBasicAuthorizationHeader: false,
-            // The redirectUri must match exactly what's configured in your GitHub OAuth App settings.
-            // 'http://localhost' is often used for simple Electron setups, but might need adjustment.
-            redirectUri: 'http://localhost'
-        };
-
-        // Ensure window options are suitable (size might need adjustment)
-        const windowOptions = {
-             width: 800,
-             height: 600,
-             webPreferences: {
-                 nodeIntegration: false, // Keep nodeIntegration false for the auth window itself
-                 contextIsolation: true
-            }
-        };
-
-        const githubOAuth = new OAuth(config, windowOptions);
-
         try {
-            console.log("Initiating GitHub OAuth flow...");
-            // Request 'repo' scope for full repository access
-            const token = await githubOAuth.getAccessToken({ scope: 'repo' });
-            console.log('GitHub OAuth Success:', token); // Log full token object initially for debug
+            // Trigger placeholder handler in main.js
+            console.log("[GitHubSignIn] Invoking 'start-github-auth'...");
+            const result = await window.electronAPI.invoke('start-github-auth');
+            console.log("[GitHubSignIn] Received result from main process:", result);
 
-            if (!token || !token.access_token) {
-                throw new Error("Received invalid token object from GitHub.");
+            // Expecting failure V1 because the main process handler is a placeholder
+            if (!result || !result.success) {
+                throw new Error(result?.error || 'Main process rejected the request.');
             }
 
-            // Store the access token securely using keytar
-            // Use a service name and account name convention
-            const service = 'DreamerAI_GitHub';
-            const account = 'user_access_token'; // Or link to user ID later
-            await keytar.setPassword(service, account, token.access_token);
-            console.log(`Token stored securely in keychain (Service: ${service})`);
-
-            // Send the token to the backend V1 endpoint
-            console.log("Sending token to backend...");
-            const backendResponse = await fetch('http://localhost:8000/auth/github/token', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token.access_token })
-            });
-
-            if (!backendResponse.ok) {
-                const errorData = await backendResponse.json();
-                throw new Error(`Backend token storage failed: ${errorData.detail || backendResponse.statusText}`);
-            }
-            console.log("Backend acknowledged token receipt.");
-
-            // Call the success handler passed from parent (e.g., SettingsPanel)
-            if (onSignInSuccess) {
-                // Pass relevant info, maybe username if available, or just signal success
-                onSignInSuccess({ accessToken: token.access_token });
-            }
-
+            // Success handling (only after Day 26.1+ implementation in main.js)
+            // setStatus('GitHub authentication successful! Token should be stored.', false);
         } catch (err) {
-            console.error('GitHub OAuth Error:', err);
-            setError(`GitHub Sign-In Failed: ${err.message}`);
+             // Display the expected "Not Implemented" error from the placeholder
+             console.error("[GitHubSignIn] Error during auth flow:", err);
+             setStatus(`Error: ${err.message}`, true);
         } finally {
             setIsLoading(false);
         }
     };
 
-    if (!OAuth || !keytar) {
-         return React.createElement(Button, { variant: "contained", disabled: true }, "GitHub Sign-In Unavailable");
-    }
+    const isAvailable = window.electronAPI?.invoke;
 
-    // Corrected the return statement to use Box and Typography
-    return React.createElement(Box, null,
-        React.createElement(Button, {
-            variant: "contained",
-            color: "primary",
-            onClick: handleSignIn,
-            disabled: isLoading
-        }, isLoading ? "Signing In..." : "Sign in with GitHub"),
-        error && React.createElement(Typography, { color: "error", sx: { mt: 1 } }, error)
+    return (
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, p: 2, border: '1px dashed grey', borderRadius: 1 }}>
+            <Typography variant="h6">Link GitHub Account</Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+                Connect your GitHub account to enable related features.
+            </Typography>
+            <Button
+                variant="contained"
+                startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <GitHubIcon />}
+                onClick={handleStartAuthFlow}
+                disabled={isLoading || !isAvailable}
+                sx={{ minWidth: '200px' }}
+            >
+                {isLoading ? 'Processing...' : 'Connect with GitHub'}
+            </Button>
+            {statusMessage && (
+                <Typography 
+                    variant="caption" 
+                    color={isError ? 'error' : 'text.secondary'}
+                    sx={{ mt: 1, textAlign: 'center' }}
+                >
+                    {statusMessage}
+                </Typography>
+            )}
+            {!isAvailable && (
+                 <Typography variant="caption" color="error" sx={{ mt: 1, textAlign: 'center' }}>
+                    Error: Cannot communicate with main process. IPC unavailable.
+                 </Typography>
+            )}
+        </Box>
     );
 }
-
-// Add propTypes definition
-GitHubSignIn.propTypes = {
-    onSignInSuccess: PropTypes.func.isRequired
-};
 
 exports.default = GitHubSignIn; 

@@ -1,5 +1,5 @@
 const React = require('react');
-const { useState, useEffect, useCallback } = React; // Added useCallback
+const { useState, useEffect, useCallback, useMemo, useRef } = React;
 const http = require('http'); // Node.js http module for listener
 
 // Import Material UI components
@@ -20,17 +20,46 @@ const DreamTheatrePanel = require('../components/DreamTheatrePanel').default;
 const ProjectManagerPanel = require('../components/ProjectManagerPanel').default;
 const SettingsPanel = require('../components/SettingsPanel').default;
 
+const BRIDGE_LISTENER_PORT = 3131; // Make sure this matches bridge.py
+
 // --- App Component ---
 
 function App() {
     // State for active tab and beginner mode
     const [activeTab, setActiveTab] = useState(0); // Index of the active tab
     const [beginnerMode, setBeginnerMode] = useState(false);
-    const [chatMessages, setChatMessages] = useState([
-        { role: 'assistant', content: "Welcome to DreamerAI! I'm Jeff. How can I help you build today?" } // Initial welcome
-    ]);
+    const [chatMessages, setChatMessages] = useState([{ role: 'system', content: 'Welcome to DreamerAI!' }]);
     const [lastBackendStatus, setLastBackendStatus] = useState(''); // For non-chat updates
     const [uiError, setUiError] = useState(null); // For displaying UI/Network errors
+    const [isDarkMode, setIsDarkMode] = useState(true);
+    const [wsStatus, setWsStatus] = useState('disconnected');
+    const wsRef = useRef(null);
+
+    // --- Add Effect Hook to listen for Bridge Messages from Main Process ---
+    useEffect(() => {
+        if (window.electronAPI && typeof window.electronAPI.onBridgeMessage === 'function') {
+            console.log("[App.jsx] Setting up Bridge Message listener...");
+            const removeListener = window.electronAPI.onBridgeMessage((receivedData) => {
+                console.log('[App.jsx] Bridge Message received from Main:', receivedData);
+                if (receivedData.agent === 'Jeff' && receivedData.type === 'chat_response') {
+                    setChatMessages(prev => [...prev, { role: 'assistant', content: receivedData.payload }]);
+                } else if (receivedData.type === 'error') {
+                    setUiError(receivedData.payload || 'Unknown error from backend bridge');
+                }
+                // Handle other message types if needed
+            });
+
+            // Cleanup function to remove the listener when the component unmounts
+            return () => {
+                console.log("[App.jsx] Removing Bridge Message listener.");
+                removeListener();
+            };
+        } else {
+            console.error("[App.jsx] window.electronAPI.onBridgeMessage is not available! Preload script might have failed.");
+            setUiError("Critical Error: IPC bridge to main process failed to load.");
+        }
+    }, []); // Empty dependency array ensures this runs only once on mount
+    // --- End Bridge Message Listener ---
 
     // Handle tab change
     const handleTabChange = (event, newValue) => {
@@ -82,107 +111,130 @@ function App() {
     }, []); // useCallback to stabilize the function reference
 
     // MODIFY Effect hook for backend listener - Revert to specific path check
-    useEffect(() => {
-        const port = 3131; // Keep changed port
-        const server = http.createServer((req, res) => {
-            // Revert DEBUG: Log only specific requests if needed
-            // console.log(`Listener (Port ${port}) received request: Method=${req.method}, URL=${req.url}`);
+    // useEffect(() => { // <<<<< SERVER LOGIC REMOVED FROM HERE (Lines 90-125 approx)
+    //     const server = http.createServer((req, res) => {
+    //          if (req.method === 'POST' && req.url === '/update') {
+    //              ...
+    //          }
+    //     });
+    //     server.listen(BRIDGE_LISTENER_PORT, '127.0.0.1', () => { ... });
+    //     server.on('error', (err) => { ... });
+    //     return () => { server.close(); };
+    // }, []); // Run only once on mount <<<<< SERVER LOGIC REMOVED UNTIL HERE
 
-            // Revert check: Check for POST method AND specific /update path
-            if (req.method === 'POST' && req.url === '/update') {
-                // console.log(`POST request received for URL: ${req.url}`); // Keep logging specific URL?
-                let body = '';
-                req.on('data', chunk => { body += chunk.toString(); });
-                req.on('end', () => {
-                    // Keep JSON parsing logic
-                    try {
-                        const receivedData = JSON.parse(body);
-                        console.log('UI Listener received:', receivedData);
-
-                        // Process based on message type/agent
-                        if (receivedData.agent === 'Jeff' && receivedData.type === 'chat_response') {
-                            // Add Jeff's response to chat
-                             // Check if payload is an error object or string
-                            const content = typeof receivedData.payload === 'object' && receivedData.payload.error
-                                ? `Jeff Error: ${receivedData.payload.error}`
-                                : receivedData.payload;
-                             setChatMessages(prev => [...prev, { role: 'assistant', content: content }]);
-                        } else if (receivedData.type === 'error') {
-                             // Handle generic error messages from backend agents
-                             console.error("Backend Agent Error:", receivedData.payload);
-                             setChatMessages(prev => [...prev, { role: 'system', content: `Agent Error: ${receivedData.payload}` }]);
-                        } else {
-                            // Handle other message types later (e.g., progress, status)
-                            setLastBackendStatus(`Received: ${receivedData.type} from ${receivedData.agent}`);
-                        }
-
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ status: 'Message Received by UI (/update)' })); // Updated status msg
-                    } catch (e) {
-                        console.error('UI Listener: Failed to parse JSON:', e, 'Body:', body);
-                        setUiError('Received invalid message from backend.');
-                        res.writeHead(400, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ status: 'error', message: 'Invalid JSON received (/update)' }));
-                    }
-                });
-                 req.on('error', (err) => {
-                     console.error('Request error in UI listener (/update):', err); // Updated log msg
-                     if (!res.writableEnded) {
-                         res.writeHead(500);
-                         res.end('Server error processing request (/update)');
-                     }
-                 });
-            } else {
-                 // Handle non-POST or non-/update requests
-                 // console.log(`Non-POST/update request (${req.method}) received for URL: ${req.url}. Responding 404.`);
-                 if (!res.writableEnded) {
-                     res.writeHead(404);
-                     res.end('Not Found'); // Revert status msg
-                 }
-            }
-        });
-
-        server.listen(port, '127.0.0.1', () => {
-            console.log(`UI Backend Listener started on port ${port}`); // <-- Updated log message
-        });
-
-        server.on('error', (err) => {
-             console.error(`UI Listener Server error (Port ${port}): ${err}`); // <-- Updated log message
-             setUiError(`UI Listener failed: ${err.message}`); // Set UI error state
-             if (err.code === 'EADDRINUSE') {
-                console.error(`ERROR: Port ${port} is already in use. Backend bridge may fail.`);
+    // Keep Persistent WebSocket Management useEffect from D62.1 ...
+     useEffect(() => {
+         const WS_URL = 'ws://localhost:8090/ws/dream-theatre/frontend-client'; // Corrected path based on backend logs
+         let connectAttempts = 0;
+         let maxConnectAttempts = 5; // Limit reconnection attempts
+         let reconnectTimeoutId = null;
+ 
+         function connectWebSocket() {
+             if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+                 console.log('WebSocket already open.');
+                 return;
              }
-         });
-
-        // Cleanup function to close the server when the component unmounts
-        return () => {
-            console.log('Closing UI Backend Listener...');
-            server.close();
-        };
-    }, []);
+             if (connectAttempts >= maxConnectAttempts) {
+                 console.error('WebSocket max reconnect attempts reached.');
+                 setWsStatus('failed');
+                 setUiError('Failed to connect to Dream Theatre WebSocket after multiple attempts.');
+                 return;
+             }
+ 
+             console.log(`Attempting WebSocket connection (${connectAttempts + 1}/${maxConnectAttempts})...`);
+             setWsStatus('connecting');
+             wsRef.current = new WebSocket(WS_URL);
+ 
+             wsRef.current.onopen = () => {
+                 console.log('Dream Theatre WebSocket Connected');
+                 setWsStatus('connected');
+                 setUiError(null); // Clear previous connection errors
+                 connectAttempts = 0; // Reset attempts on successful connection
+                 // Optional: Send identification or join message
+                 // wsRef.current.send(JSON.stringify({ type: 'join', clientId: 'dreamer-ui' }));
+             };
+ 
+             wsRef.current.onmessage = (event) => {
+                 try {
+                     const message = JSON.parse(event.data);
+                     console.log('WebSocket Message Received:', message);
+                     // Handle different message types from the backend
+                     if (message.type === 'agent_update') {
+                         // Update specific agent state if needed
+                     } else if (message.type === 'broadcast') {
+                         // Display broadcast message (maybe in a specific panel or snackbar)
+                         setUiError(`Broadcast: ${message.payload}`); // Example: Use Snackbar for broadcasts
+                     } else if (message.type === 'error') {
+                         setUiError(message.payload || 'Unknown WebSocket error');
+                     } else {
+                         // Handle other message types as needed
+                     }
+                 } catch (e) {
+                     console.error('Error parsing WebSocket message:', e);
+                     setUiError('Received invalid message from WebSocket.');
+                 }
+             };
+ 
+             wsRef.current.onerror = (error) => {
+                 console.error('WebSocket Error:', error);
+                 setWsStatus('error');
+                 // Don't set UI error here, rely on onclose handling for reconnect/failure message
+             };
+ 
+             wsRef.current.onclose = (event) => {
+                 console.log(`WebSocket Disconnected. Code: ${event.code}, Reason: ${event.reason || 'N/A'}`);
+                 setWsStatus('disconnected');
+                 wsRef.current = null;
+                 if (connectAttempts < maxConnectAttempts) {
+                     const delay = Math.pow(2, connectAttempts) * 1000; // Exponential backoff
+                     console.log(`Attempting to reconnect WebSocket in ${delay / 1000}s...`);
+                     reconnectTimeoutId = setTimeout(connectWebSocket, delay);
+                     connectAttempts++;
+                 } else {
+                     console.error('WebSocket connection closed permanently after multiple retries.');
+                     setUiError('WebSocket connection lost. Please check backend and refresh.');
+                     setWsStatus('failed');
+                 }
+             };
+         }
+ 
+         connectWebSocket(); // Initial connection attempt
+ 
+         // Cleanup function
+         return () => {
+             console.log('Cleaning up WebSocket connection...');
+             clearTimeout(reconnectTimeoutId); // Clear any pending reconnect timeout
+             if (wsRef.current) {
+                 wsRef.current.close(1000, 'Component unmounting'); // Normal closure
+                 wsRef.current = null;
+             }
+             setWsStatus('disconnected');
+         };
+     }, []); // Empty dependency array ensures this runs only once on mount
 
     // Define theme (using default dark theme for now)
-    const theme = createTheme({
+    const theme = useMemo(() => createTheme({
         palette: {
-            mode: 'dark',
+            mode: isDarkMode ? 'dark' : 'light',
         },
-    });
+    }), [isDarkMode]);
 
     // Define Tab Labels (can be internationalized later)
-    const tabLabels = ["Chat", "Plan/Build", "Dream Theatre", "Project Manager", "Settings"];
+    const tabLabels = ["Main Chat", "Dream Theatre", "Project Manager", "Plan/Build", "Settings"];
 
     // MODIFY Render Content for Active Tab
     const renderTabContent = (tabIndex) => {
         switch (tabIndex) {
             case 0: // Chat Panel
                 return React.createElement(MainChatPanel, { messages: chatMessages, onSendMessage: handleSendMessage });
-            case 1: return React.createElement(Typography, null, "Plan/Build Panel Placeholder");
-            case 2: // Dream Theatre Panel
-                return React.createElement(DreamTheatrePanel);
-            case 3: // Project Manager Panel
+            case 1: return React.createElement(DreamTheatrePanel, { wsStatus: wsStatus });
+            case 2: // Project Manager Panel
                 return React.createElement(ProjectManagerPanel);
-            case 4: // Settings Panel
-                return React.createElement(SettingsPanel);
+            case 3: // Plan/Build Panel (NEW)
+                // TODO: Replace with actual PlanBuildPanel component later
+                return React.createElement(Typography, null, "Plan/Build Panel Placeholder");
+            case 4: // Settings Panel (Index shifted)
+                return React.createElement(SettingsPanel, { toggleDarkMode: () => setIsDarkMode(!isDarkMode), isDarkMode: isDarkMode });
             default: return React.createElement(Typography, null, "Unknown Tab");
         }
     };
