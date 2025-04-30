@@ -7,6 +7,7 @@ from pathlib import Path
 import json
 import traceback
 import httpx # NEW Import for Day 25 Test
+import time # For timestamp in repo names
 
 # Add project root...
 project_root_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '.')) # Use . for root
@@ -36,6 +37,14 @@ except Exception as e:
      sys.exit(1)
 
 DEFAULT_USER_DIR = r"C:\DreamerAI\Users\Example User"
+
+# --- CRITICAL: Test Setup Variables ---
+# Need VALID values obtained AFTER running UI Login (D105/D56) for this test to work.
+# Anthony: Replace placeholders before running Day 27 test!
+TEST_USER_JWT = "PASTE_VALID_INTERNAL_JWT_HERE" # Get from browser localStorage after D105 login
+TEST_USER_UID = "EXTRACT_UID_FROM_JWT_PAYLOAD_OR_AUTH_RESPONSE" # Matches JWT sub claim
+# Need a Project ID created by TEST_USER_UID in setup_test_data or prior run
+KNOWN_OWNED_PROJECT_ID = 1 # Assumes test data setup creates project 1 for this user
 
 async def run_dreamer_flow_and_tests(): # Renamed function
     logger.info("--- Initializing DreamerAI Backend (Week 3 Review Test) ---")
@@ -158,6 +167,12 @@ async def run_dreamer_flow_and_tests(): # Renamed function
     # --- NEW: Test GitHub Token Endpoint (Day 25) ---
     await test_github_token_endpoint()
 
+    # --- NEW: Test VC Remote Endpoints (Day 27) ---
+    if "PASTE_VALID" not in TEST_USER_JWT and TEST_USER_UID != "EXTRACT_UID":
+         await test_vc_remote_endpoints(TEST_USER_JWT, TEST_USER_UID, KNOWN_OWNED_PROJECT_ID)
+    else: 
+        print("\nSKIPPING VC REMOTE API TEST: Valid TEST_USER_JWT and TEST_USER_UID required in main.py.")
+
     print("\n--- All Tests Finished ---")
     print("-----------------------------------------")
     logger.info("run_dreamer_flow_and_tests finished.") # Added final log
@@ -200,6 +215,97 @@ async def test_github_token_endpoint():
     except Exception as e:
         logger.exception("Token Endpoint Test: Unexpected error during test.")
         print(f"Token Endpoint Test: FAILED - Unexpected error: {e}")
+
+# --- NEW Test Function for VC Remote API Endpoints ---
+async def test_vc_remote_endpoints(valid_jwt: str, user_uid: str, project_id: int):
+    print("\n--- Testing VC Remote API Endpoints (Day 27) ---")
+    if not valid_jwt or "PASTE_VALID" in valid_jwt: 
+        print("SKIPPING: Valid JWT required.")
+        return
+    if not user_uid or "EXTRACT_UID" in user_uid: 
+        print("SKIPPING: Valid User UID required.")
+        return
+    if not project_id: 
+        print("SKIPPING: Valid Project ID required.")
+        return
+
+    headers = {"Authorization": f"Bearer {valid_jwt}", "Content-Type": "application/json"}
+    base_url = "http://localhost:8090" # Check port if not using compose
+
+    # --- Pre-Test Setup ---
+    # 1. Ensure project exists and path is valid for the ID
+    try:
+        from engine.core.db import get_db_instance_pg
+        db = await get_db_instance_pg()
+        project = None
+        project_path = None
+        if db: 
+            project = await db.get_project(project_id)
+        if project and project['user_uid'] == user_uid: 
+            project_path = Path(project['project_path'])
+        else: 
+            print(f"ERROR: Pre-test check failed. Project {project_id} not found or not owned by user {user_uid}.")
+            return
+
+        if not project_path or not project_path.is_dir(): 
+            print(f"ERROR: Pre-test check failed. Project path not found: {project_path}")
+            return
+
+        # 2. Ensure Local Git Repo exists and has a commit for the push test
+        print(f"Setting up local repo for tests at: {project_path}")
+        vc_setup = VersionControl(str(project_path))
+        if not vc_setup.repo: 
+            vc_setup.init_repo()
+        test_file = project_path / f"test_d27_{int(time.time())}.txt"
+        test_file.write_text(f"Commit for D27 tests at {time.time()}")
+        if vc_setup.stage_all_changes() and vc_setup.commit_changes(f"Test commit D27"): 
+            print("Local test commit created.")
+        else: 
+            print("WARNING: Failed local test commit creation.") # Test might fail
+
+        # --- Test 1: Create GitHub Repo ---
+        repo_create_url = f"{base_url}/projects/{project_id}/vc/remote/create"
+        repo_name = f"dreamerai-test-d27-{int(time.time())}"
+        create_payload = {"repo_name": repo_name, "private": False} # Test public repo
+        print(f"\nTesting POST {repo_create_url} (Create Repo: {repo_name})...")
+        create_repo_success = False
+        clone_url_created = None
+        try:
+            async with httpx.AsyncClient() as client:
+                 response = await client.post(repo_create_url, headers=headers, json=create_payload, timeout=45)
+                 if response.status_code == 200 or response.status_code == 201:
+                     print(f" -> Create Repo API Call SUCCESS ({response.status_code}): {response.json()}")
+                     clone_url_created = response.json().get("clone_url")
+                     print(f" -> ACTION REQUIRED: Manually verify repo '{repo_name}' was created on GitHub.")
+                     create_repo_success = True
+                 else:
+                     print(f" -> Create Repo API Call FAILED ({response.status_code}): {response.text}")
+        except Exception as e: 
+            print(f" -> Create Repo HTTPX ERROR: {e}")
+
+        await asyncio.sleep(2) # Pause before push
+
+        # --- Test 2: Push to Remote ---
+        repo_push_url = f"{base_url}/projects/{project_id}/vc/remote/push"
+        if create_repo_success: # Only try push if create seemed to work
+            print(f"\nTesting POST {repo_push_url} (Push Repo)...")
+            print("    (Note: V1 push relies on system-level auth like SSH Keys / Helper)")
+            try:
+                 async with httpx.AsyncClient() as client:
+                      response = await client.post(repo_push_url, headers=headers, timeout=90) # Longer timeout for push
+                      if response.status_code == 200:
+                           print(f" -> Push Attempt API Call SUCCESS ({response.status_code}): {response.json()}")
+                           print(f" -> ACTION REQUIRED: Manually verify commit pushed to '{repo_name}' on GitHub.")
+                      else:
+                           print(f" -> Push Attempt API Call FAILED ({response.status_code}): {response.text}")
+                           print(f"    (Check backend logs for GitCommandError - likely system auth issue)")
+            except Exception as e: 
+                print(f" -> Push ERROR: {e}")
+        else:
+            print("\nSkipping Push Test because repo creation failed.")
+    except Exception as e:
+        print(f"ERROR in test_vc_remote_endpoints: {e}")
+        logger.exception(f"Error in test_vc_remote_endpoints: {e}")
 
 if __name__ == "__main__":
     # Ensure all prerequisites are met (venv, Ollama/Keys, DB seeds if needed, toolchest.json)

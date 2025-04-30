@@ -1,12 +1,14 @@
 import uvicorn
-from fastapi import FastAPI, Request, HTTPException, WebSocket, WebSocketDisconnect # Added WebSocket imports
+from fastapi import FastAPI, Request, HTTPException, WebSocket, WebSocketDisconnect, Body, Depends # Added Body and Depends for VC endpoints
 from fastapi.middleware.cors import CORSMiddleware # To allow frontend requests
 import sys
 import os
-from typing import Optional # Added for github_token type hint
+import time # For timestamp generation
+from typing import Optional, Dict, Any # Added Dict, Any for VC endpoints
 from pathlib import Path
 import json
 import traceback # Added for detailed exception logging
+from dependency_injector.wiring import inject, Provide # Added for DI
 
 # Add project root to path for sibling imports (engine, etc.)
 # Adjust based on actual execution context if needed
@@ -14,16 +16,42 @@ project_root = Path(__file__).resolve().parent.parent.parent
 if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
+# Try to import keytar for secure token storage
+try:
+    import keytar
+    KEYTAR_AVAILABLE_BACKEND = True
+except ImportError: 
+    KEYTAR_AVAILABLE_BACKEND = False
+    logger.error("Backend keytar missing!")
+
 try:
     from .logger import logger_instance as logger
     from .db import db_instance # Use the initialized DB instance from db.py
     from .project_manager import ProjectManager # NEW import
     from engine.agents.main_chat import ChefJeff # Keep Jeff import for its endpoint
+    from engine.core.version_control import VersionControl
 except ImportError as e:
      logger.error(f"Failed core imports in server.py: {e}")
      db_instance = None
      ProjectManager = None # Ensure ProjectManager is None if import fails
      ChefJeff = None # Ensure ChefJeff is None if import fails
+     VersionControl = None # Ensure VersionControl is None if import fails
+
+# Import container wiring
+try:
+    from engine.di.container import Container
+except ImportError:
+    logger.error("Failed to import Dependency Injection Container!")
+    Container = None
+
+# Import User model for auth verification
+try:
+    from engine.models.user import UserSchema
+    from engine.core.auth import get_current_active_user
+except ImportError:
+    logger.error("Failed to import User auth models!")
+    UserSchema = None
+    get_current_active_user = None
 
 # Import WebSocket Manager
 try:
@@ -31,6 +59,70 @@ try:
 except ImportError:
     logger.error("Failed to import ConnectionManager for Dream Theatre!")
     manager = None # Allow server to start but WS will fail
+
+# --- Constants for Backend Keytar Store ---
+GITHUB_KEYCHAIN_SERVICE_BE = 'DreamerAI_GitHub_Backend_D66' # Unique backend service name
+GITHUB_KEYCHAIN_ACCOUNT_BE = 'user_github_token_for_user_{uid}' # User-scoped V2 naming pattern
+
+# --- Helper to Get GitHub Token from Backend Keychain (V2: User Scoped) ---
+async def get_token_from_keychain(user_uid: str) -> Optional[str]:
+    """ Retrieves GitHub token securely stored by the backend via keytar for a SPECIFIC user. """
+    if not KEYTAR_AVAILABLE_BACKEND: 
+        logger.error("Keytar unavailable on backend.")
+        return None
+    
+    # Construct user-specific account name
+    account_name = GITHUB_KEYCHAIN_ACCOUNT_BE.format(uid=user_uid)
+    try:
+        token = await keytar.get_password(GITHUB_KEYCHAIN_SERVICE_BE, account_name)
+        if not token: 
+            logger.warning(f"No GitHub token found in keychain for account {account_name}.")
+        else: 
+            logger.debug("Retrieved GitHub token from backend keychain.")
+        return token
+    except Exception as e:
+        # Catch specific errors maybe? V1 log generic.
+        logger.error(f"Failed to get GitHub token from keychain for account {account_name}: {e}")
+        return None
+
+# --- Helper to Save GitHub Token to Backend Keychain (NEW) ---
+async def save_token_to_keychain(user_uid: str, token: str) -> bool:
+    """ Securely stores GitHub token via backend keytar for a SPECIFIC user. """
+    if not KEYTAR_AVAILABLE_BACKEND: 
+        logger.error("Keytar unavailable on backend.")
+        return False
+    
+    account_name = GITHUB_KEYCHAIN_ACCOUNT_BE.format(uid=user_uid)
+    try:
+        await keytar.set_password(GITHUB_KEYCHAIN_SERVICE_BE, account_name, token)
+        logger.info(f"Stored GitHub token securely in backend keychain for account {account_name}.")
+        return True
+    except Exception as e:
+        logger.exception(f"Failed to store GitHub token in keychain for account {account_name}: {e}")
+        return False
+
+# --- Helper to Get Project Path and Verify Ownership ---
+async def get_project_path_for_user(project_id: int, user: UserSchema, db_pool) -> Path:
+    """Get project path and verify the user owns the project."""
+    async with db_pool.acquire() as conn:
+        query = "SELECT * FROM projects WHERE id = $1"
+        project = await conn.fetchrow(query, project_id)
+        
+        if not project:
+            logger.error(f"Project with ID {project_id} not found.")
+            raise HTTPException(404, f"Project not found: {project_id}")
+        
+        # Verify project ownership
+        if project['user_uid'] != user.firebase_uid:
+            logger.error(f"User {user.firebase_uid} attempted to access project {project_id} owned by {project['user_uid']}.")
+            raise HTTPException(403, "You don't have permission to access this project.")
+        
+        project_path = Path(project['project_path'])
+        if not project_path.exists():
+            logger.error(f"Project path {project_path} doesn't exist on the filesystem.")
+            raise HTTPException(500, "Project directory not found on server.")
+            
+        return project_path
 
 # --- FastAPI App Initialization ---
 app = FastAPI(title="DreamerAI Backend API", version="0.1.0")
@@ -203,36 +295,119 @@ async def create_subproject_endpoint(project_id: int, request: Request):
         logger.exception(f"Error creating subproject for project {project_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Internal server error creating subproject: {str(e)}")
 
-# --- NEW Endpoint for GitHub Auth Token Receipt (Day 25) ---
+# --- MODIFY Auth Endpoint (/auth/github/token D25/66) ---
 @app.post("/auth/github/token")
-async def receive_github_token(request: Request):
-    """
-    Endpoint to receive the GitHub access token obtained by the frontend OAuth flow.
-    V1 simply stores it in a global variable (placeholder).
-    """
-    global github_token # Allow modification of global var
-    logger.info("Received request at /auth/github/token")
-    try:
-        data = await request.json()
+@inject # Make sure container available if db access added later maybe?
+async def receive_github_token_and_store_backend(
+    request: Request,
+    # Future: Inject User from internal JWT maybe via different Depends
+    # user: UserSchema = Depends(get_current_active_user) # V2+ need user context here too! V1 implicit.
+    # V1 Hack: How do we get user_uid here reliably?
+    # Option 1: UI sends UID along with token (INSECURE).
+    # Option 2: Endpoint requires internal JWT header + returns success? (Better)
+    # Decision V1: Require internal JWT from D101, use UID from there for keytar.
+    current_user: UserSchema = Depends(get_current_active_user) # Use the internal auth dependency!
+):
+    """ Receives GitHub token obtained by UI, stores it SECURELY in backend keytar. """
+    token = None; uid = current_user.firebase_uid # Get UID from verified internal JWT
+    try: 
+        data = await request.json(); 
         token = data.get("token")
+    except: 
+        raise HTTPException(400, "Invalid JSON.")
+    
+    if not token: 
+        raise HTTPException(400, "Token required.")
 
-        if not token or not isinstance(token, str):
-            logger.warning("Received invalid or missing token in request body.")
-            raise HTTPException(status_code=400, detail="Valid 'token' string required in request body.")
+    logger.info(f"Received GitHub token from UI for user {uid}. Storing in backend keychain...")
+    store_ok = await save_token_to_keychain(uid, token)
 
-        # V1: Store globally - UNSAFE FOR PRODUCTION / MULTI-USER
-        # TODO: Implement secure, user-specific token storage (e.g., encrypted in DB linked to user session)
-        github_token = token
-        logger.info(f"Successfully received and stored GitHub access token (globally - V1). Token starts with: {token[:10]}...") # Log prefix only
+    if store_ok:
+        return {"status": "success", "message": "GitHub token received and stored securely."}
+    else:
+        raise HTTPException(500, "Failed to store GitHub token securely in backend.")
 
-        return {"status": "success", "message": "GitHub token received by backend."}
+# --- Add NEW VC Remote Endpoints ---
+@app.post("/projects/{project_id}/vc/remote/create")
+@inject
+async def create_github_repo_endpoint(
+    project_id: int,
+    payload: Dict[str, Any] = Body({"repo_name": None, "private": False}),
+    user: UserSchema = Depends(get_current_active_user),
+    db_pool = Depends(Provide[Container.db_pool_provider]) # V1 Pool DI Hack
+):
+    repo_name = payload.get("repo_name")
+    is_private = payload.get("private", False)
+    pool = await db_pool() # V1 get pool
+    
+    if not pool: 
+        raise HTTPException(503, "DB Pool unavailable.")
+    if not VersionControl: 
+        raise HTTPException(503, "VC Service unavailable.")
 
-    except json.JSONDecodeError:
-         logger.error("Failed to decode JSON body for GitHub token.")
-         raise HTTPException(status_code=400, detail="Invalid JSON format in request body.")
-    except Exception as e:
-        logger.exception(f"Error receiving GitHub token: {e}")
-        raise HTTPException(status_code=500, detail=f"Internal server error receiving token: {str(e)}")
+    try:
+        project_path = await get_project_path_for_user(project_id, user, pool) # Existing helper D106 check
+        if not repo_name: 
+            repo_name = f"{project_path.name}-dreamerai-{int(time.time())}" # Auto-name
+
+        logger.info(f"User {user.firebase_uid} creating GitHub repo '{repo_name}' @ {project_path}")
+        github_token = await get_token_from_keychain(user.firebase_uid) # Secure retrieve for this user
+        if not github_token: 
+            raise HTTPException(401, "Backend GitHub token missing or inaccessible.")
+
+        vc = VersionControl(str(project_path))
+        if not vc.repo: 
+            vc.init_repo() # Init repo if needed before setting remote
+
+        clone_url = await vc.create_github_repo(repo_name, github_token, is_private) # Pass token
+
+        if clone_url: 
+            return {"status": "success", "message": "GitHub repository created.", "clone_url": clone_url}
+        else: 
+            raise HTTPException(500, "Failed to create GitHub repository.") # VC method logs detail
+    except HTTPException as http_exc: 
+        raise http_exc
+    except Exception as e: 
+        logger.exception(f"Error creating GitHub repo: {e}")
+        raise HTTPException(500, f"Internal server error: {e}")
+
+
+@app.post("/projects/{project_id}/vc/remote/push")
+@inject
+async def push_to_github_endpoint(
+    project_id: int,
+    payload: Dict[str, Any] = Body(...),
+    user: UserSchema = Depends(get_current_active_user),
+    db_pool = Depends(Provide[Container.db_pool_provider]) # V1 Pool DI Hack
+):
+    branch = payload.get("branch") if payload else None
+    pool = await db_pool() # V1 get pool
+    
+    if not pool: 
+        raise HTTPException(503, "DB Pool unavailable.")
+    if not VersionControl: 
+        raise HTTPException(503, "VC Service unavailable.")
+
+    try:
+        project_path = await get_project_path_for_user(project_id, user, pool) # Get/Verify path
+        logger.info(f"User {user.firebase_uid} pushing project {project_id} @ {project_path}")
+
+        vc = VersionControl(str(project_path))
+        if not vc.repo: 
+            raise HTTPException(400, "Local repo not initialized.")
+
+        # Token NOT needed for vc.push_to_remote V1 (relies on system auth)
+        success = await vc.push_to_remote(branch=branch)
+
+        if success: 
+            return {"status": "success", "message": "Push attempted (Verify via System Git/GitHub)."}
+        else: 
+            raise HTTPException(500, "Push command failed. Check backend logs/system auth.")
+    except HTTPException as http_exc: 
+        raise http_exc
+    except Exception as e: 
+        logger.exception(f"Error pushing to GitHub: {e}")
+        raise HTTPException(500, f"Internal server error: {e}")
 
 # --- Dream Theatre WebSocket Endpoint ---
 @app.websocket("/ws/dream-theatre/{client_id}")

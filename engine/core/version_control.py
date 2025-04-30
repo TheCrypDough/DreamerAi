@@ -2,173 +2,189 @@
 import os
 import traceback
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any
 import asyncio # Added for async placeholders
 import git
 import logging
 from engine.core.logger import logger_instance # Correct import
+import requests # For GitHub API
 
 # Import GitPython - raises ImportError if not installed
 try:
-    from git import Repo, GitCommandError
+    from git import Repo, GitCommandError, PushInfo
     GITPYTHON_INSTALLED = True
 except ImportError:
     git = None  # type: ignore
     Repo = None  # type: ignore
     GitCommandError = Exception  # type: ignore
+    PushInfo = None  # type: ignore
     GITPYTHON_INSTALLED = False
 
 # Setup logging
 logger = logger_instance # Use the imported instance
 
 class VersionControl:
-    """Manages Git operations for project versioning within DreamerAI."""
+    """ V2: Handles Local and Remote Git/GitHub operations asynchronously. """
 
-    def __init__(self, project_path: str):
-        """
-        Initializes the VersionControl system for a given project path.
+    def __init__(self, repo_path: str):
+        """ Initializes the VersionControl manager for a specific repository path. """
+        self.repo_path = Path(repo_path)
+        self.repo: Optional[Repo] = None
 
-        Args:
-            project_path (str): The absolute path to the project directory.
-        """
-        self.project_path = project_path
-        self.repo = None
-        try:
-            if os.path.exists(os.path.join(project_path, '.git')):
-                self.repo = git.Repo(self.project_path)
-                logger.info(f"Existing Git repository loaded for project: {project_path}")
-            else:
-                self.repo = self.initialize_repository()
-        except git.InvalidGitRepositoryError:
-            logger.warning(f"Invalid Git repository detected at {project_path}. Attempting re-initialization.")
-            self.repo = self.initialize_repository()
-        except Exception as e:
-            logger.error(f"Failed to initialize or load repository at {project_path}: {e}", exc_info=True)
-            raise  # Re-raise critical errors
-
-    def initialize_repository(self) -> git.Repo | None:
-        """
-        Initializes a new Git repository in the project path if one doesn't exist.
-
-        Returns:
-            git.Repo | None: The initialized Repo object or None if initialization failed.
-        """
-        try:
-            repo = git.Repo.init(self.project_path)
-            # Create initial .gitignore
-            gitignore_path = os.path.join(self.project_path, '.gitignore')
-            if not os.path.exists(gitignore_path):
-                with open(gitignore_path, 'w') as f:
-                    f.write("# DreamerAI Generated Files\n")
-                    f.write("*.log\n")
-                    f.write("*.db\n") # Example: ignore database files
-                    f.write("*.db-journal\n")
-                    f.write("__pycache__/\n")
-                    f.write("*.pyc\n")
-                    f.write(".env*\n")
-                    f.write("node_modules/\n")
-                    f.write("dist/\n")
-                    f.write("build/\n")
-            logger.info(f"Initialized new Git repository and .gitignore in: {self.project_path}")
-            return repo
-        except Exception as e:
-            logger.error(f"Failed to initialize Git repository at {self.project_path}: {e}", exc_info=True)
-            return None
-
-    def stage_changes(self, files: Optional[list[str]] = None):
-        """
-        Stages specified files or all changes if no files are provided.
-
-        Args:
-            files (list[str], optional): List of file paths relative to the project root to stage.
-                                         Defaults to None, which stages all changes.
-        """
-        if not self.repo:
-            logger.error("Repository not initialized. Cannot stage changes.")
+        if not GITPYTHON_INSTALLED:
+            logger.error("GitPython library is not installed. Version control features disabled.")
             return
 
-        try:
-            if files:
-                # Ensure paths are relative to repo root if absolute paths are given
-                relative_files = []
-                for f in files:
-                    if os.path.isabs(f):
-                        # Attempt to make relative; may fail if outside repo
-                        try:
-                             rel_path = os.path.relpath(f, self.project_path)
-                             relative_files.append(rel_path)
-                        except ValueError:
-                            logger.warning(f"File {f} is outside the repository root {self.project_path}. Skipping.")
-                    else:
-                        relative_files.append(f) # Assume already relative
+        # Ensure the repo path itself exists if we're operating on it
+        if not self.repo_path.is_dir():
+             # Maybe create it? Or assume caller ensures it exists? V1 Assume parent exists.
+             self.repo_path.mkdir(parents=True, exist_ok=True)
+             logger.warning(f"Repo path {self.repo_path} did not exist, created.")
+             # If just created, no .git dir will exist yet
 
-                logger.info(f"Staging specific files: {relative_files}")
-                self.repo.index.add(relative_files)
-            else:
-                logger.info("Staging all changes.")
-                self.repo.index.add('*') # Stage all tracked and untracked files
-            logger.info("Changes staged successfully.")
-            return True # Explicitly return True on success
-        except Exception as e:
-            logger.error(f"Failed to stage changes: {e}", exc_info=True)
-            # Implicitly returns None on exception
-
-    def commit_changes(self, message: str):
-        """
-        Commits staged changes with a given message.
-
-        Args:
-            message (str): The commit message.
-        """
-        if not self.repo:
-            logger.error("Repository not initialized. Cannot commit changes.")
-            return
-
-        try:
-            # Check if there are staged changes
-            # diff returns empty list if no changes, raises BadName if HEAD doesn't exist (first commit)
-            staged_changes = False
+        if (self.repo_path / ".git").is_dir():
             try:
-                if self.repo.index.diff("HEAD"): # Compare index against last commit
-                     staged_changes = True
-            except git.exc.BadName: # Handles the case where HEAD doesn't exist (initial commit)
-                 if self.repo.index.diff(None): # Compare index against empty tree
-                     staged_changes = True
+                self.repo = Repo(self.repo_path)
+                logger.info(f"Opened existing Git repository at: {self.repo_path}")
+            except Exception as e:
+                logger.error(f"Failed to open existing repository at {self.repo_path}: {e}")
+        else:
+            logger.info(f"No existing Git repository found at: {self.repo_path}. Use init_repo() to create one.")
 
-            if not staged_changes and not self.repo.untracked_files:
-                 # Also check untracked files specifically for the initial commit scenario
-                 # where .gitignore might be the only change and needs staging first.
-                 # A better approach might be to ensure .gitignore is staged *before* calling commit.
-                 # Let's refine: stage_changes should be called before commit.
-                 # This check primarily prevents empty commits.
-                 logger.info("No changes staged for commit.")
-                 return # Prevent empty commits
-
-            self.repo.index.commit(message)
-            logger.info(f"Changes committed successfully with message: '{message}'")
-            return True # Explicitly return True on success
-        except Exception as e:
-            logger.error(f"Failed to commit changes: {e}", exc_info=True)
-            # Implicitly returns None on exception
-
-    def get_status(self) -> str:
-        """
-        Gets the current status of the repository.
-
-        Returns:
-            str: A string describing the repository status (output of git status).
-        """
-        if not self.repo:
-            logger.error("Repository not initialized. Cannot get status.")
-            return "Error: Repository not initialized."
+    # --- Local Operations (Keep Sync V1 unless causing blocking issues) ---
+    def init_repo(self, remote_url: Optional[str] = None) -> bool:
+        if not GITPYTHON_INSTALLED: return False
+        if self.repo: logger.warning(f"Repo already exists at {self.repo_path}"); return True
+        logger.info(f"Initializing new Git repo at: {self.repo_path}")
         try:
-            # Fetch the status using git command directly for comprehensive output
-            status_output = self.repo.git.status()
-            logger.info("Retrieved repository status.")
-            return status_output
-        except Exception as e:
-            logger.error(f"Failed to get repository status: {e}", exc_info=True)
-            return f"Error getting status: {e}"
+            self.repo = Repo.init(self.repo_path)
+            logger.info("Local repository initialized successfully.")
+            if remote_url: self._set_origin_remote(remote_url)
+            return True
+        except Exception as e: logger.exception(f"Failed to initialize repo: {e}"); self.repo=None; return False
+
+    def _set_origin_remote(self, url: str) -> bool:
+        if not self.repo: return False
+        try:
+            origin = self.repo.remote(name='origin')
+            if origin.url != url:
+                with origin.config_writer as cw: cw.set("url", url)
+                logger.info(f"Updated remote 'origin' URL to: {url}")
+            else: logger.debug("Remote 'origin' URL already set.")
+        except ValueError: # Remote doesn't exist
+            self.repo.create_remote('origin', url)
+            logger.info(f"Added remote 'origin': {url}")
+        except Exception as e: logger.error(f"Failed setting remote 'origin' to {url}: {e}"); return False
+        return True
+
+    def stage_all_changes(self) -> bool:
+        if not self.repo: logger.error("Stage fail: Repo not loaded."); return False
+        logger.debug("Staging all changes...");
+        try: self.repo.git.add(all=True); logger.info("All changes staged."); return True
+        except Exception as e: logger.error(f"Staging error: {e}"); return False
+
+    def commit_changes(self, message: str) -> bool:
+        if not self.repo: logger.error("Commit fail: Repo not loaded."); return False
+        if not message: logger.error("Commit fail: Message empty."); return False
+        logger.info(f"Attempting commit: '{message}'")
+        try:
+            # Check for changes BEFORE trying to commit
+            if not self.repo.is_dirty(untracked_files=True) and not self.repo.index.diff("HEAD"):
+                 logger.warning("Commit skipped: No changes staged or modified."); return True
+            self.repo.index.commit(message); logger.info("Commit successful."); return True
+        except GitCommandError as e:
+            if "nothing to commit" in str(e).lower(): logger.warning("Commit reported no changes."); return True
+            logger.error(f"Commit GitCommandError: {e}"); return False
+        except Exception as e: logger.exception(f"Commit error: {e}"); return False
+
+    def get_status(self) -> Dict[str, Any]:
+        if not self.repo: return {"status":"uninitialized", "error":"Repo not loaded."}
+        try:
+             branch = self.repo.active_branch.name; is_dirty = self.repo.is_dirty(untracked_files=True)
+             staged = bool(self.repo.index.diff("HEAD")); untracked = len(self.repo.untracked_files)
+             log = self.repo.git.log('-1', '--pretty=%h %s');
+             return {"status": "ready", "branch": branch, "is_dirty": is_dirty, "has_staged_changes": staged, "untracked_files": untracked, "last_commit": log.strip() if log else "None"}
+        except Exception as e: logger.error(f"Error getting status: {e}"); return {"status":"error", "error": f"{e}"}
+
+    # --- Functional Async Remote Operations ---
+
+    async def create_github_repo(self, name: str, token: str, private: bool = False) -> Optional[str]:
+        """ ASYNC: Creates a GitHub repo using requests API call in executor. Sets local origin. """
+        if not token: logger.error("Cannot create repo: GitHub token missing."); return None
+        api_url = "https://api.github.com/user/repos"
+        headers = { "Authorization": f"Bearer {token}", "Accept": "application/vnd.github.v3+json", "X-GitHub-Api-Version": "2022-11-28" }
+        payload = { "name": name, "private": private, "auto_init": False }
+        logger.info(f"Async create GitHub repo '{name}' via API...")
+
+        try:
+            loop = asyncio.get_running_loop()
+            response = await loop.run_in_executor(None,
+                lambda: requests.post(api_url, headers=headers, json=payload, timeout=20)
+            )
+            response.raise_for_status() # Raise HTTPError for 4xx/5xx
+
+            if response.status_code == 201:
+                repo_data = response.json(); clone_url = repo_data.get("clone_url")
+                if not clone_url: logger.error("GitHub API response missing clone_url."); return None
+                logger.info(f"Async GitHub repo created successfully: {clone_url}")
+                # Attempt to set remote AFTER repo creation confirmed
+                self._set_origin_remote(clone_url)
+                return clone_url
+            else:
+                logger.error(f"Unexpected success status {response.status_code} creating repo: {response.text}")
+                return None
+        except requests.exceptions.HTTPError as http_err:
+             # Log specific error for repo already exists (422) or auth issue (401)
+             status_code = http_err.response.status_code
+             error_text = http_err.response.text
+             logger.error(f"HTTP error creating GitHub repo '{name}': {status_code} - {error_text}")
+             if status_code == 422: logger.error("-> This likely means the repository name already exists on GitHub.")
+             elif status_code == 401: logger.error("-> This likely means the GitHub token is invalid or lacks 'repo' scope.")
+        except requests.exceptions.RequestException as req_err: logger.error(f"Network error creating repo '{name}': {req_err}")
+        except Exception as e: logger.exception(f"Unexpected error creating repo '{name}': {e}")
+        return None
+
+    async def push_to_remote(self, remote_name: str = "origin", branch: Optional[str] = None) -> bool:
+        """
+        ASYNC: Pushes to remote using GitPython in executor.
+        *** V1 RELIES ON SYSTEM-LEVEL GIT AUTH (SSH Key/HTTPS Helper). Token NOT used here. ***
+        """
+        logger.warning(f"Attempting ASYNC push to '{remote_name}'. [V1 RELIES ON SYSTEM GIT AUTH: SSH/Helper]")
+        if not self.repo: logger.error("Push fail: Repo not loaded."); return False
+        if not GITPYTHON_INSTALLED: logger.error("Push fail: GitPython missing."); return False
+        try: remote = self.repo.remote(name=remote_name)
+        except ValueError: logger.error(f"Push fail: Remote '{remote_name}' missing."); return False
+
+        try:
+            target_branch = branch or self.repo.active_branch.name
+            logger.info(f"Attempting async push: {target_branch} -> {remote_name}...")
+            loop = asyncio.get_running_loop()
+            # Run blocking GitPython push call in executor
+            # Need to pass necessary arguments to the push lambda if not accessible via self
+            # push_lambda = lambda: remote.push(refspec=f'{target_branch}:{target_branch}')
+            # Simplified: Assume remote and target_branch are stable
+            push_infos = await loop.run_in_executor(None, remote.push, f'{target_branch}:{target_branch}')
+
+            # Analyze PushInfo flags (more detailed logging)
+            push_failed = False; failure_details = []
+            for info in push_infos:
+                if info.flags & PushInfo.ERROR: failure_details.append(f"[ERROR {info.local_ref or 'N/A'}] {info.summary}")
+                if info.flags & PushInfo.REJECTED: failure_details.append(f"[REJECTED {info.local_ref or 'N/A'}] {info.summary}")
+                if info.flags & PushInfo.REMOTE_REJECTED: failure_details.append(f"[REMOTE_REJ {info.local_ref or 'N/A'}] {info.summary}")
+                if info.flags & PushInfo.REMOTE_FAILURE: failure_details.append(f"[REMOTE_FAIL {info.local_ref or 'N/A'}] {info.summary}")
+            if failure_details:
+                 logger.error(f"Push failed. Details: {'; '.join(failure_details)}")
+                 return False
+            else:
+                 logger.info(f"Push command executed successfully for branch '{target_branch}' to remote '{remote_name}'.")
+                 return True
+        except GitCommandError as e:
+            error_detail = str(e.stderr or e.stdout or e).strip() # Get most specific error
+            logger.error(f"Push failed (GitCommandError): {error_detail}")
+            if "permission denied" in error_detail.lower() or "authentication failed" in error_detail.lower():
+                logger.error(">>> Push Error suggests SYSTEM Git Authentication Failure! Configure SSH Key or HTTPS Credential Helper. <<<")
+            return False
+        except Exception as e: logger.exception(f"Unexpected error during async push: {e}"); return False
 
     def get_changed_files(self) -> dict:
         """
@@ -224,69 +240,6 @@ class VersionControl:
         except Exception as e:
             logger.error(f"Failed to get changed files: {e}", exc_info=True)
             return {'modified': [], 'untracked': [], 'staged': []}
-
-    # --- Placeholder Remote Operations (Require Authentication/API Interaction Later) ---
-
-    async def create_github_repo(self, name: str, access_token: str) -> Optional[str]:
-        """
-        Placeholder: Creates a new repository on GitHub. V1 Structure Only.
-        Requires implemented GitHub OAuth and requests library.
-        """
-        logger.warning("Placeholder create_github_repo called. Requires Day 25+ Auth & API implementation.")
-        # --- Example Logic (Deferred Implementation) ---
-        # import requests
-        # url = "https://api.github.com/user/repos"
-        # headers = {"Authorization": f"token {access_token}", "Accept": "application/vnd.github.v3+json"}
-        # data = {"name": name, "private": False} # Or True based on user choice
-        # try:
-        #    response = requests.post(url, headers=headers, json=data)
-        #    if response.status_code == 201:
-        #        remote_url = response.json()["clone_url"]
-        #        logger.info(f"Successfully created GitHub repo: {name}")
-        #        # Attempt to add remote if repo is initialized
-        #        if self.repo:
-        #             try:
-        #                self.repo.create_remote("origin", remote_url)
-        #                logger.info(f"Added remote 'origin': {remote_url}")
-        #             except Exception as e:
-        #                logger.warning(f"Could not add remote 'origin' for new repo: {e}")
-        #        return remote_url
-        #    else:
-        #        logger.error(f"Failed to create GitHub repo ({response.status_code}): {response.text}")
-        #        return None
-        # except Exception as e:
-        #    logger.error(f"Error calling GitHub API: {e}")
-        #    return None
-        # --- End Example Logic ---
-        return None
-
-
-    async def push_to_remote(self, remote_name: str = "origin", branch: Optional[str] = None) -> bool:
-        """
-        Placeholder: Pushes the current branch to the specified remote. V1 Structure Only.
-        Requires remote to be configured and authentication handled (e.g., PAT, SSH key).
-        """
-        logger.warning(f"Placeholder push_to_remote called for remote '{remote_name}'. Requires Day 25+ Auth implementation.")
-        if not self.repo:
-            logger.error("Cannot push: Repository not initialized.")
-            return False
-        try:
-            target_branch = branch or self.repo.active_branch.name
-            logger.info(f"Simulating push to remote '{remote_name}' branch '{target_branch}'...")
-            # --- Example Logic (Deferred Implementation) ---
-            # remote = self.repo.remote(name=remote_name)
-            # # GitPython push might require credential helper or SSH key setup on system
-            # push_info = remote.push(refspec=f'{target_branch}:{target_branch}')
-            # logger.info(f"Push successful: {push_info}")
-            # --- End Example Logic ---
-            await asyncio.sleep(0.1) # Simulate async placeholder
-            return True # Simulate success
-        except GitCommandError as e:
-            logger.error(f"Git command failed during push simulation: {e}")
-            return False
-        except Exception as e:
-            logger.error(f"Unexpected error during push simulation: {e}")
-            return False
 
 # --- Test Block --- Note: This is from the guide, not intended for direct main.py use
 async def test_version_control_local():
