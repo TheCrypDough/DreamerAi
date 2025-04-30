@@ -237,12 +237,21 @@ async def receive_github_token(request: Request):
 # --- Dream Theatre WebSocket Endpoint ---
 @app.websocket("/ws/dream-theatre/{client_id}")
 async def websocket_endpoint(websocket: WebSocket, client_id: str):
+    logger.info(f"WebSocket connection attempt received for client: {client_id}")
     if not manager:
         logger.error("ConnectionManager not available. Cannot handle WebSocket connection.")
         await websocket.close(code=1008) # Policy Violation
         return
 
-    await manager.connect(websocket, client_id)
+    try:
+        logger.info(f"Attempting manager.connect for client: {client_id}")
+        await manager.connect(websocket, client_id)
+        logger.info(f"Successfully completed manager.connect for client: {client_id}")
+    except Exception as connect_exc:
+         logger.error(f"*** EXCEPTION during manager.connect for {client_id}: {connect_exc} ***", exc_info=True)
+         await websocket.close(code=1011)
+         return
+
     try:
         while True:
             # Keep connection open, listen for messages (if frontend needs to send any)
@@ -254,8 +263,9 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
     except WebSocketDisconnect:
         logger.info(f"Dream Theatre WebSocket client {client_id} disconnected.")
     except Exception as e:
-        logger.error(f"Error in Dream Theatre WebSocket for {client_id}: {e}", exc_info=True)
+        logger.error(f"Error in Dream Theatre WebSocket loop for {client_id}: {e}", exc_info=True)
     finally:
+        logger.info(f"Disconnecting client {client_id} in finally block.")
         manager.disconnect(websocket, client_id)
 
 # Add more endpoints here later for:

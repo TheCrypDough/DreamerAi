@@ -25756,10 +25756,26 @@ exports.default = DreamTheatrePanel;
 **Motivation:**
 “The theatre lights are ON! Users can now see the basic status of the Dream Team agents working behind the scenes in real-time. Transparency achieved!”
 
+(DAy 62.1 if necessary)
+
+Context: During testing after Day 26.1, a recurring WebSocket error (Code 1006: "WebSocket is closed before the connection is established") was observed when navigating to the Dream Theatre panel.
+Issue: This error is caused by the current implementation where the WebSocket connection lifecycle is managed within the DreamTheatrePanel.jsx component's useEffect hook. When the user navigates away from the Dream Theatre tab, the component unmounts, and the useEffect cleanup function closes the WebSocket connection. If navigation happens quickly, or due to React Strict Mode re-renders in development, the connection can be closed during the initial handshake attempt.
+Proposed Task (e.g., Day 62.1): Refactor WebSocket Connection Management
+Goal: Ensure a persistent WebSocket connection for the Dream Theatre service that is not tied to the lifecycle of the DreamTheatrePanel.jsx component.
+Implementation:
+Remove the WebSocket connection logic (useEffect hook managing new WebSocket(...), onopen, onmessage, onerror, onclose, and cleanup) from app/components/DreamTheatrePanel.jsx.
+Move the WebSocket connection management logic to a higher-level, persistent component, likely app/src/App.jsx.
+Manage the WebSocket connection state (instance, status, received messages) within App.jsx's state.
+Pass down the necessary data (e.g., connection status, last message) and potentially functions (e.g., a function to manually send a message if needed later) as props to DreamTheatrePanel.jsx for display purposes only.
+(Optional) Consider creating a dedicated React Context for WebSocket management if multiple components need access later.
+Testing: Verify that the WebSocket connects successfully upon application start (or first access) and remains connected when navigating between different UI tabs. Verify that messages broadcast from the backend are received and displayed in the Dream Theatre panel regardless of tab navigation history. Confirm the Code 1006 error no longer occurs due to tab switching.
+
+
 **(End of COMPLETE Guide Entry for Day 62)**
 
 
 (Start of COMPLETE Guide Entry for Day 62.1)
+
 Day 62.1 - WebSocket Refactor (Persistent Connection), Taming the Timing!
 Anthony's vision: "Hermie... keeps the user up to date through his own UI window... see exactly what is happening behind the scenes, all the agents processes percentage finished... Dream Theatre" / "yeah that works but is this really how it is going to react during runtime, its bad if thats the case" Your feedback highlighted a critical flaw: the initial Dream Theatre updates were missed if the user wasn't actively viewing that specific panel. For a truly reliable, "bulletproof" experience where the user is always informed and never feels like they're "waiting around," the backend communication needs to be persistent and independent of UI navigation state. This refactor ensures the Dream Theatre's window always reflects the current reality.
 Description:
